@@ -65,6 +65,8 @@ public class FindEvenNumberOfDigits {
             for (int i = 0; i < TABLE.length; i++) {
                 if (n > TABLE[i])
                     curCnt++;
+                else
+                    break;
             }
             if ((curCnt & 1) == 0)
                 cnt++;
