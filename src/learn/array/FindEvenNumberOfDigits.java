@@ -2,6 +2,8 @@ package learn.array;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.function.ToIntFunction;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
@@ -39,12 +41,40 @@ public class FindEvenNumberOfDigits {
         return cnt;
     }
 
-    @Test
-    public void testFindNumbers() {
+    void test(ToIntFunction<int[]> function) {
         int[] a = {12, 345, 2, 6, 7896};
-        assertEquals(findNumbers(a), 2);
+        assertEquals(function.applyAsInt(a), 2);
 
         int[] a2 = {555, 901, 482, 1771};
-        assertEquals(findNumbers(a2), 1);
+        assertEquals(function.applyAsInt(a2), 1);
+    }
+
+    @Test
+    public void testFindNumbers() {
+        test(this::findNumbers);
+    }
+
+
+    private static final int[] TABLE = {9, 99, 999, 9999, 99999, 999999, 9999999, 99999999,
+            999999999};
+
+    public int tableDriverFindNumbers(int[] nums) {
+        int cnt = 0;
+        for (int n : nums) {
+            int curCnt = 1;
+            for (int i = 0; i < TABLE.length; i++) {
+                if (n > TABLE[i])
+                    curCnt++;
+            }
+            if ((curCnt & 1) == 0)
+                cnt++;
+        }
+
+        return cnt;
+    }
+
+    @Test
+    public void testTableDriverFindNumbers() {
+        test(this::tableDriverFindNumbers);
     }
 }
