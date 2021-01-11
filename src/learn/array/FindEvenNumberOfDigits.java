@@ -55,9 +55,13 @@ public class FindEvenNumberOfDigits {
     }
 
 
+
     private static final int[] TABLE = {9, 99, 999, 9999, 99999, 999999, 9999999, 99999999,
             999999999};
 
+    /**
+     * 使用表驱动法改进
+     */
     public int tableDriverFindNumbers(int[] nums) {
         int cnt = 0;
         for (int n : nums) {
@@ -78,5 +82,24 @@ public class FindEvenNumberOfDigits {
     @Test
     public void testTableDriverFindNumbers() {
         test(this::tableDriverFindNumbers);
+    }
+
+
+    /**
+     * 针对输入的限制条件硬编码
+     */
+    public int pointAtConstraint(int[] nums) {
+        int cnt = 0;
+        for (int n : nums) {
+            if ((n >= 10 && n < 100) || (n >= 1000 && n < 10000) || n == 100000)
+                cnt++;
+        }
+
+        return cnt;
+    }
+
+    @Test
+    public void testPointAtConstraint() {
+        test(this::pointAtConstraint);
     }
 }
