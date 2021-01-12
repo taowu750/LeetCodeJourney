@@ -76,6 +76,9 @@ public class SortedSquares {
 
 
 
+    /**
+     * 从数组两端到中间遍历、从数组中间到两端遍历，适用于不同的情况。
+     */
     public int[] shorterMethod(int[] nums) {
         int len = nums.length;
         int[] result = new int[len];
