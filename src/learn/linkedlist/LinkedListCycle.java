@@ -65,6 +65,12 @@ public class LinkedListCycle {
         return head;
     }
 
+    static ListNode getNodeAt(ListNode head, int idx) {
+        for (; head != null && --idx >= 0; head = head.next);
+
+        return head;
+    }
+
     static void test(Predicate<ListNode> method) {
         ListNode head = newList(1, 3, 2, 0, -4);
         assertTrue(method.test(head));
@@ -77,6 +83,7 @@ public class LinkedListCycle {
     }
 
     public boolean hasCycle(ListNode head) {
+        // 使用快慢指针
         ListNode slow = head, fast = head;
         while (fast != null && fast.next != null) {
             slow = slow.next;
