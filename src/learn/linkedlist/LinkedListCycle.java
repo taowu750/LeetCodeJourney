@@ -71,6 +71,14 @@ public class LinkedListCycle {
         return head;
     }
 
+    static ListNode intersectList(ListNode listA, ListNode intersect, int... listBElements) {
+        ListNode B = newList(-1, listBElements), p = B;
+        for (;p.next != null; p = p.next);
+        p.next = intersect;
+
+        return B;
+    }
+
     static void test(Predicate<ListNode> method) {
         ListNode head = newList(1, 3, 2, 0, -4);
         assertTrue(method.test(head));
