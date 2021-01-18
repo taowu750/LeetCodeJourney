@@ -79,6 +79,36 @@ public class LinkedListCycle {
         return B;
     }
 
+    static void printList(ListNode head, int len) {
+        if (len <= 0) {
+            for (;head != null; head = head.next) {
+                System.out.print(head.val);
+                if (head.next != null)
+                    System.out.print("->");
+            }
+            System.out.println();
+        } else {
+            for (int i = 0; i < len; i++, head = head.next) {
+                System.out.print(head.val);
+                if (i != len - 1)
+                    System.out.print("->");
+            }
+            System.out.println();
+        }
+    }
+
+    static void printList(ListNode head) {
+        printList(head, 0);
+    }
+
+    static boolean listEquals(ListNode head, int... comparedElements) {
+        for (int i = 0; i < comparedElements.length; i++, head = head.next) {
+            if (head == null || head.val != comparedElements[i])
+                return false;
+        }
+        return head == null;
+    }
+
     static void test(Predicate<ListNode> method) {
         ListNode head = newList(1, 3, 2, 0, -4);
         assertTrue(method.test(head));
