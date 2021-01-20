@@ -229,4 +229,39 @@ public class FlattenAMultilevelDoublyLinkedList {
     public void testFlatten() {
         test(this::flatten);
     }
+
+
+    /**
+     * 不使用栈的方法
+     */
+    public Node noStackMethod(Node head) {
+        if (head == null)
+            return null;
+
+        Node p = head;
+        while (p != null) {
+            if (p.child == null) {
+                p = p.next;
+                continue;
+            }
+            Node pChild = p.child;
+            // 移动到下级链表的末尾
+            while (pChild.next != null)
+                pChild = pChild.next;
+            pChild.next = p.next;
+            if (p.next != null)
+                p.next.prev = pChild;
+
+            p.next = p.child;
+            p.child.prev = p.next;
+            p.child = null;
+        }
+
+        return head;
+    }
+
+    @Test
+    public void testNoStackMethod() {
+        test(this::noStackMethod);
+    }
 }
