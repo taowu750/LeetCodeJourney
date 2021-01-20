@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class LinkedListCycle {
 
-    static class ListNode {
+    public static class ListNode {
         int val;
         ListNode next;
 
@@ -45,7 +45,7 @@ public class LinkedListCycle {
         }
     }
 
-    static ListNode newList(int pos, int... vals) {
+    public static ListNode newList(int pos, int... vals) {
         ListNode head = null, posNode = null, p = null;
 
         for (int i = 0; i < vals.length; i++) {
@@ -65,13 +65,13 @@ public class LinkedListCycle {
         return head;
     }
 
-    static ListNode getNodeAt(ListNode head, int idx) {
+    public static ListNode getNodeAt(ListNode head, int idx) {
         for (; head != null && --idx >= 0; head = head.next);
 
         return head;
     }
 
-    static ListNode intersectList(ListNode listA, ListNode intersect, int... listBElements) {
+    public static ListNode intersectList(ListNode listA, ListNode intersect, int... listBElements) {
         ListNode B = newList(-1, listBElements), p = B;
         for (;p.next != null; p = p.next);
         p.next = intersect;
@@ -79,7 +79,7 @@ public class LinkedListCycle {
         return B;
     }
 
-    static void printList(ListNode head, int len) {
+    public static void printList(ListNode head, int len) {
         if (len <= 0) {
             for (;head != null; head = head.next) {
                 System.out.print(head.val);
@@ -97,11 +97,11 @@ public class LinkedListCycle {
         }
     }
 
-    static void printList(ListNode head) {
+    public static void printList(ListNode head) {
         printList(head, 0);
     }
 
-    static boolean listEquals(ListNode head, int... comparedElements) {
+    public static boolean listEquals(ListNode head, int... comparedElements) {
         for (int i = 0; i < comparedElements.length; i++, head = head.next) {
             if (head == null || head.val != comparedElements[i])
                 return false;
