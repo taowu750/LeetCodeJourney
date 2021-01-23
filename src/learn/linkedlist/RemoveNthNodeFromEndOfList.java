@@ -44,7 +44,7 @@ public class RemoveNthNodeFromEndOfList {
         ListNode head = newList(-1, 1, 2, 3, 4, 5);
         head = method.removeNthFromEnd(head, 2);
         printList(head);
-        assertTrue(listEquals(head,1, 2, 3, 5));
+        assertTrue(listEqual(head,1, 2, 3, 5));
 
         head = newList(-1, 1);
         head = method.removeNthFromEnd(head, 1);
@@ -53,12 +53,12 @@ public class RemoveNthNodeFromEndOfList {
         head = newList(-1, 1, 2);
         head = method.removeNthFromEnd(head, 1);
         printList(head);
-        assertTrue(listEquals(head,1));
+        assertTrue(listEqual(head,1));
 
         head = newList(-1, 1, 2, 3, 4);
         head = method.removeNthFromEnd(head, 4);
         printList(head);
-        assertTrue(listEquals(head, 2, 3, 4));
+        assertTrue(listEqual(head, 2, 3, 4));
     }
 
     public ListNode removeNthFromEnd(ListNode head, int n) {

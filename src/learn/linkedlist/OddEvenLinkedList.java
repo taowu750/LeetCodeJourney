@@ -32,17 +32,17 @@ public class OddEvenLinkedList {
         ListNode head = newList(-1, 1, 2, 3, 4, 5);
         head = method.apply(head);
         printList(head);
-        assertTrue(listEquals(head, 1, 3, 5, 2, 4));
+        assertTrue(listEqual(head, 1, 3, 5, 2, 4));
 
         head = newList(-1, 2, 1, 3, 5, 6, 4, 7);
         head = method.apply(head);
         printList(head);
-        assertTrue(listEquals(head, 2, 3, 6, 7, 1, 5, 4));
+        assertTrue(listEqual(head, 2, 3, 6, 7, 1, 5, 4));
 
         head = new ListNode(1);
         head = method.apply(head);
         printList(head);
-        assertTrue(listEquals(head, 1));
+        assertTrue(listEqual(head, 1));
 
         head = method.apply(null);
         assertNull(head);

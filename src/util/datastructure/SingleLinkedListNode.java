@@ -1,35 +1,39 @@
 package util.datastructure;
 
 
+import java.lang.reflect.Constructor;
+
 /**
  * 单链表结点，定义了一组实用方法
  */
-public class SingleListNode<T extends SingleListNode<T>> {
+public class SingleLinkedListNode<T extends SingleLinkedListNode<T>> {
 
     public int val;
     public T next;
 
-    public SingleListNode() {}
+    public SingleLinkedListNode() {}
 
-    public SingleListNode(int val) {
+    public SingleLinkedListNode(int val) {
         this.val = val;
     }
 
-    public SingleListNode(int val, T next) {
+    public SingleLinkedListNode(int val, T next) {
         this.val = val;
         this.next = next;
     }
 
-    public static <T extends SingleListNode<T>> T newList(Class<T> clazz, int pos, int... vals) {
+    public static <T extends SingleLinkedListNode<T>> T newList(Class<T> clazz, int pos, int... vals) {
         try {
             T head = null, posNode = null, p = null;
 
+            Constructor<T> constructor = clazz.getConstructor(int.class);
+            constructor.setAccessible(true);
             for (int i = 0; i < vals.length; i++) {
                 if (head == null) {
-                    head = clazz.getConstructor(int.class).newInstance(vals[i]);
+                    head = constructor.newInstance(vals[i]);
                     p = head;
                 } else {
-                    p.next = clazz.getConstructor(int.class).newInstance(vals[i]);
+                    p.next = constructor.newInstance(vals[i]);
                     p = p.next;
                 }
                 if (pos == i)
@@ -37,6 +41,7 @@ public class SingleListNode<T extends SingleListNode<T>> {
             }
             if (posNode != null)
                 p.next = posNode;
+            constructor.setAccessible(false);
 
             return head;
         } catch (ReflectiveOperationException e) {
@@ -44,13 +49,13 @@ public class SingleListNode<T extends SingleListNode<T>> {
         }
     }
 
-    public static <T extends SingleListNode<T>> T getNodeAt(T head, int idx) {
+    public static <T extends SingleLinkedListNode<T>> T getNodeAt(T head, int idx) {
         for (; head != null && --idx >= 0; head = head.next);
 
         return head;
     }
 
-    public static <T extends SingleListNode<T>> T intersectList(Class<T> clazz, T listA, T intersect, int... listBElements) {
+    public static <T extends SingleLinkedListNode<T>> T intersectList(Class<T> clazz, T listA, T intersect, int... listBElements) {
         T B = newList(clazz, -1, listBElements), p = B;
         for (;p.next != null; p = p.next);
         p.next = intersect;
@@ -58,7 +63,7 @@ public class SingleListNode<T extends SingleListNode<T>> {
         return B;
     }
 
-    public static <T extends SingleListNode<T>> void printList(T head, int len) {
+    public static <T extends SingleLinkedListNode<T>> void printList(T head, int len) {
         if (len <= 0) {
             for (;head != null; head = head.next) {
                 System.out.print(head.val);
@@ -75,11 +80,11 @@ public class SingleListNode<T extends SingleListNode<T>> {
         System.out.println();
     }
 
-    public static <T extends SingleListNode<T>> void printList(T head) {
+    public static <T extends SingleLinkedListNode<T>> void printList(T head) {
         printList(head, 0);
     }
 
-    public static <T extends SingleListNode<T>> boolean listEquals(T head, int... comparedElements) {
+    public static <T extends SingleLinkedListNode<T>> boolean listEqual(T head, int... comparedElements) {
         for (int i = 0; i < comparedElements.length; i++, head = head.next) {
             if (head == null || head.val != comparedElements[i])
                 return false;

@@ -37,19 +37,19 @@ public class AddTwoNumbers {
                 l2 = newList(-1, 5, 6, 4);
         ListNode sum = method.apply(l1, l2);
         printList(sum);
-        assertTrue(listEquals(sum, 7, 0, 8));
+        assertTrue(listEqual(sum, 7, 0, 8));
 
         l1 = newList(-1, 0);
         l2 = newList(-1, 0);
         sum = method.apply(l1, l2);
         printList(sum);
-        assertTrue(listEquals(sum, 0));
+        assertTrue(listEqual(sum, 0));
 
         l1 = newList(-1, 9, 9, 9, 9, 9, 9, 9);
         l2 = newList(-1, 9, 9, 9, 9);
         sum = method.apply(l1, l2);
         printList(sum);
-        assertTrue(listEquals(sum, 8, 9, 9, 9, 0, 0, 0, 1));
+        assertTrue(listEqual(sum, 8, 9, 9, 9, 0, 0, 0, 1));
     }
 
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {

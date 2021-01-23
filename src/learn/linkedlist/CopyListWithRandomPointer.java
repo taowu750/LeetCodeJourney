@@ -1,15 +1,15 @@
 package learn.linkedlist;
 
 import org.junit.jupiter.api.Test;
+import util.datastructure.RandomLinkedListNode;
 
-import java.util.ArrayList;
 import java.util.IdentityHashMap;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static util.datastructure.RandomLinkedListNode.deepEqualRandomList;
+import static util.datastructure.RandomLinkedListNode.printRandomList;
 
 /**
  * 给定一个链表，其中每个节点都包含一个附加的随机指针，该指针可以指向列表中的任何节点或为空。
@@ -44,78 +44,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class CopyListWithRandomPointer {
 
-    public static class Node {
-        int val;
-        Node next;
-        Node random;
+    public static class Node extends RandomLinkedListNode<Node> {
 
         public Node(int val) {
-            this.val = val;
-            this.next = null;
-            this.random = null;
+            super(val);
         }
     }
 
     public static Node newRandomList(Integer... valAndRandomIndexes) {
-        Node start = new Node(0), p = start;
-        List<Node> nodes = new ArrayList<>(valAndRandomIndexes.length / 2);
-        for (int i = 0; i < valAndRandomIndexes.length; i += 2) {
-            p.next = new Node(valAndRandomIndexes[i]);
-            p = p.next;
-            nodes.add(p);
-        }
-        p = start.next;
-        for (int i = 0; i < valAndRandomIndexes.length; i += 2, p = p.next) {
-            if (valAndRandomIndexes[i + 1] == null)
-                p.random = null;
-            else
-                p.random = nodes.get(valAndRandomIndexes[i + 1]);
-        }
-
-        return start.next;
-    }
-
-    public static void printRandomList(Node head) {
-        LinkedList<Integer> valLens = new LinkedList<>();
-        for (Node p = head; p != null; p = p.next) {
-            int randomVal = p.random == null ? 1000 : p.random.val;
-            valLens.add(Math.max(Integer.toString(p.val).length(),
-                    Integer.toString(randomVal).length()));
-            System.out.printf("%-" + valLens.peekLast() + "d", p.val);
-            if (p.next != null)
-                System.out.print("-->");
-        }
-        System.out.println();
-        for (int valLen : valLens)
-            System.out.printf("%-" + valLen + "s   ", "|");
-        System.out.println();
-        Node p = head;
-        for (int valLen : valLens) {
-            if (p.random == null)
-                System.out.printf("%-" + valLen + "s", "null");
-            else
-                System.out.printf("%-" + valLen + "d", p.random.val);
-            if (p.next != null)
-                System.out.print("-->");
-            p = p.next;
-        }
-        System.out.println();
-    }
-
-    public static boolean deepEqualRandomList(Node l1, Node l2) {
-        while (l1 != null && l2 != null) {
-            if (l1 == l2)
-                return false;
-            if (l1.val != l2.val)
-                return false;
-            if (l1.random == l2.random && l1.random != null)
-                return false;
-            if (l1.random != null && l2.random != null && l1.random.val != l2.random.val)
-                return false;
-            l1 = l1.next;
-            l2 = l2.next;
-        }
-        return l1 == null && l2 == null;
+        return RandomLinkedListNode.newRandomList(Node.class, valAndRandomIndexes);
     }
 
     @Test

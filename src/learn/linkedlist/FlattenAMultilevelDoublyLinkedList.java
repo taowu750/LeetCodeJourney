@@ -1,15 +1,16 @@
 package learn.linkedlist;
 
 import org.junit.jupiter.api.Test;
+import util.datastructure.MultilevelDoubleLinkedListNode;
 
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static util.datastructure.MultilevelDoubleLinkedListNode.listEqual;
+import static util.datastructure.MultilevelDoubleLinkedListNode.printList;
 
 /**
  * 给定一个双向链接列表，该列表除了下一个和上一个指针外，还可以具有一个子指针，
@@ -63,138 +64,52 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class FlattenAMultilevelDoublyLinkedList {
 
-    public static class Node {
-        public int val;
-        public Node prev;
-        public Node next;
-        public Node child;
+    public static class Node extends MultilevelDoubleLinkedListNode<Node> {
 
         public Node() {
         }
 
         public Node(int val) {
-            this.val = val;
+            super(val);
         }
 
         public Node(int val, Node prev) {
-            this.val = val;
-            this.prev = prev;
-        }
-
-        public Node(int val, Node prev, Node next) {
-            this.val = val;
-            this.prev = prev;
-            this.next = next;
+            super(val, prev);
         }
     }
 
-    public static Node newMDL(Integer... vals) {
-        Node head = new Node(), ph = head, p = ph;
-        boolean child = false;
-        for (Integer val : vals) {
-            if (val != null) {
-                if (child) {
-                    Node childHead = new Node(val);
-                    ph.child = childHead;
-                    ph = new Node(0);
-                    ph.next = childHead;
-                    p = ph.next;
-                    child = false;
-                } else {
-                    p.next = new Node(val, p);
-                    p = p.next;
-                }
-            } else {
-                child = true;
-                ph = ph.next;
-            }
-        }
-
-        return head.next;
-    }
-
-    public static void printMDL(Node head) {
-        String leadingBlanks = "";
-        do {
-            Node childHead = null;
-            int blankLen = 0;
-            System.out.print(leadingBlanks);
-            for (;head != null; head = head.next) {
-                String val = Integer.toString(head.val);
-                System.out.print(val);
-                if (head.next != null)
-                    System.out.print("---");
-
-                if (head.child != null)
-                    childHead = head.child;
-                if (childHead == null)
-                    blankLen += val.length() + 3;
-            }
-            System.out.println();
-            if (childHead != null) {
-                head = childHead;
-                leadingBlanks = leadingBlanks + IntStream.range(0, blankLen)
-                        .mapToObj(i -> " ")
-                        .collect(Collectors.joining());
-                System.out.println(leadingBlanks + "|");
-            }
-        } while (head != null);
-    }
-
-    public static boolean MDLEqual(Node head, int... vals) {
-        for (int i = 0; i < vals.length; i++, head = head.next) {
-            if (head == null || head.val != vals[i])
-                return false;
-        }
-        return head == null;
-    }
-
-    @Test
-    public void testMDL() {
-        Node head = newMDL(1, 2, 3, 4, 5, 6, null,
-                null, null, 7, 8, 9, 10, null,
-                null, 11, 12);
-        printMDL(head);
-
-        head = newMDL(1, 2, null,
-                3);
-        printMDL(head);
-
-        head = newMDL(37099, 10580, 33214, 85010, 91986, 30187, null,
-                85793, 98560, 46360, 50155, 37244, null,
-                null, null, 27598, 81763, null,
-                40623);
-        printMDL(head);
+    public static Node newList(Integer... vals) {
+        return MultilevelDoubleLinkedListNode.newList(Node.class, vals);
     }
 
     static void test(Function<Node, Node> method) {
-        Node head = newMDL(1, 2, 3, 4, 5, 6, null,
+        Node head = newList(1, 2, 3, 4, 5, 6, null,
                 null, null, 7, 8, 9, 10, null,
                 null, 11, 12);
         head = method.apply(head);
-        printMDL(head);
-        assertTrue(MDLEqual(head, 1, 2, 3, 7, 8, 11, 12, 9, 10, 4, 5, 6));
+        printList(head);
+        assertTrue(listEqual(head, 1, 2, 3, 7, 8, 11, 12, 9, 10, 4, 5, 6));
 
-        head = newMDL(1, 2, null,
+        head = newList(1, 2, null,
                 3);
         head = method.apply(head);
-        printMDL(head);
-        assertTrue(MDLEqual(head, 1, 3, 2));
+        printList(head);
+        assertTrue(listEqual(head, 1, 3, 2));
 
         assertNull(method.apply(null));
 
-        head = newMDL(1, 2, 3, 4);
+        head = newList(1, 2, 3, 4);
         head = method.apply(head);
-        printMDL(head);
-        assertTrue(MDLEqual(head, 1, 2, 3, 4));
+        printList(head);
+        assertTrue(listEqual(head, 1, 2, 3, 4));
 
-        head = newMDL(37099, 10580, 33214, 85010, 91986, 30187, null,
+        head = newList(37099, 10580, 33214, 85010, 91986, 30187, null,
                 85793, 98560, 46360, 50155, 37244, null,
                 null, null, 27598, 81763, null,
                 40623);
         head = method.apply(head);
-        printMDL(head);
-        assertTrue(MDLEqual(head, 37099, 85793, 98560, 46360, 27598, 40623,
+        printList(head);
+        assertTrue(listEqual(head, 37099, 85793, 98560, 46360, 27598, 40623,
                 81763, 50155, 37244, 10580, 33214, 85010, 91986, 30187));
     }
 

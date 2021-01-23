@@ -23,7 +23,7 @@ public class RemoveLinkedListElements {
         ListNode head = newList(-1, 1, 2, 6, 3, 4, 5, 6);
         head = method.removeElements(head, 6);
         printList(head);
-        assertTrue(listEquals(head, 1, 2, 3, 4, 5));
+        assertTrue(listEqual(head, 1, 2, 3, 4, 5));
 
         head = new ListNode(1);
         assertNull(method.removeElements(head, 1));

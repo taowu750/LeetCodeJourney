@@ -21,10 +21,10 @@ public class ReverseLinkedList {
         ListNode head = newList(-1, 1, 2, 3, 4, 5);
         head = method.apply(head);
         printList(head);
-        assertTrue(listEquals(head, 5, 4, 3, 2, 1));
+        assertTrue(listEqual(head, 5, 4, 3, 2, 1));
 
         head = new ListNode(3);
-        assertTrue(listEquals(method.apply(head), 3));
+        assertTrue(listEqual(method.apply(head), 3));
     }
 
     public ListNode reverseList(ListNode head) {

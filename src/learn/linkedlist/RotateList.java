@@ -32,18 +32,18 @@ public class RotateList {
         ListNode head = newList(-1, 1, 2, 3, 4, 5);
         head = method.rotateRight(head, 2);
         printList(head);
-        assertTrue(listEquals(head, 4, 5, 1, 2, 3));
+        assertTrue(listEqual(head, 4, 5, 1, 2, 3));
 
         head = newList(-1, 0, 1, 2);
         head = method.rotateRight(head, 4);
         printList(head);
-        assertTrue(listEquals(head, 2, 0, 1));
+        assertTrue(listEqual(head, 2, 0, 1));
 
         head = new ListNode(1);
-        assertTrue(listEquals(method.rotateRight(head, 20000), 1));
+        assertTrue(listEqual(method.rotateRight(head, 20000), 1));
 
         head = newList(-1, 1, 2);
-        assertTrue(listEquals(method.rotateRight(head, 20001), 2, 1));
+        assertTrue(listEqual(method.rotateRight(head, 20001), 2, 1));
     }
 
     public ListNode rotateRight(ListNode head, int k) {

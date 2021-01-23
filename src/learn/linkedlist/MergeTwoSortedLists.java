@@ -35,11 +35,11 @@ public class MergeTwoSortedLists {
                 l2 = newList(-1, 1, 3, 4);
         ListNode merged = method.apply(l1, l2);
         printList(merged);
-        assertTrue(listEquals(merged, 1, 1, 2, 3, 4, 4));
+        assertTrue(listEqual(merged, 1, 1, 2, 3, 4, 4));
 
         assertNull(method.apply(null, null));
 
-        assertTrue(listEquals(method.apply(null, new ListNode(0)),
+        assertTrue(listEqual(method.apply(null, new ListNode(0)),
                 0));
     }
 

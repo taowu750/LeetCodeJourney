@@ -1,11 +1,11 @@
 package learn.linkedlist;
 
-import util.datastructure.SingleListNode;
+import util.datastructure.SingleLinkedListNode;
 
 /**
  * 单链表结点，和 LeetCode 的单链表名称保持一致
  */
-public class ListNode extends SingleListNode<ListNode> {
+public class ListNode extends SingleLinkedListNode<ListNode> {
 
     public ListNode() {}
 
