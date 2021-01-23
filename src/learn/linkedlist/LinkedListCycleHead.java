@@ -6,7 +6,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import static learn.linkedlist.LinkedListCycle.*;
+import static learn.linkedlist.ListNode.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 

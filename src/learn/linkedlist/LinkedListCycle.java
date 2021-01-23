@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
+import static learn.linkedlist.ListNode.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -35,86 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * - pos 是 -1 或合法下标
  */
 public class LinkedListCycle {
-
-    public static class ListNode {
-        int val;
-        ListNode next;
-
-        public ListNode() {}
-
-        public ListNode(int val) {
-            this.val = val;
-        }
-
-        public ListNode(int val, ListNode next) {
-            this.val = val;
-            this.next = next;
-        }
-    }
-
-    public static ListNode newList(int pos, int... vals) {
-        ListNode head = null, posNode = null, p = null;
-
-        for (int i = 0; i < vals.length; i++) {
-            if (head == null) {
-                head = new ListNode(vals[i]);
-                p = head;
-            } else {
-                p.next = new ListNode(vals[i]);
-                p = p.next;
-            }
-            if (pos == i)
-                posNode = p;
-        }
-        if (posNode != null)
-            p.next = posNode;
-
-        return head;
-    }
-
-    public static ListNode getNodeAt(ListNode head, int idx) {
-        for (; head != null && --idx >= 0; head = head.next);
-
-        return head;
-    }
-
-    public static ListNode intersectList(ListNode listA, ListNode intersect, int... listBElements) {
-        ListNode B = newList(-1, listBElements), p = B;
-        for (;p.next != null; p = p.next);
-        p.next = intersect;
-
-        return B;
-    }
-
-    public static void printList(ListNode head, int len) {
-        if (len <= 0) {
-            for (;head != null; head = head.next) {
-                System.out.print(head.val);
-                if (head.next != null)
-                    System.out.print("->");
-            }
-            System.out.println();
-        } else {
-            for (int i = 0; i < len; i++, head = head.next) {
-                System.out.print(head.val);
-                if (i != len - 1)
-                    System.out.print("->");
-            }
-            System.out.println();
-        }
-    }
-
-    public static void printList(ListNode head) {
-        printList(head, 0);
-    }
-
-    public static boolean listEquals(ListNode head, int... comparedElements) {
-        for (int i = 0; i < comparedElements.length; i++, head = head.next) {
-            if (head == null || head.val != comparedElements[i])
-                return false;
-        }
-        return head == null;
-    }
 
     static void test(Predicate<ListNode> method) {
         ListNode head = newList(1, 3, 2, 0, -4);

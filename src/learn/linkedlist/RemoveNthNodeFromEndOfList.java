@@ -1,9 +1,8 @@
 package learn.linkedlist;
 
-import learn.linkedlist.LinkedListCycle.*;
 import org.junit.jupiter.api.Test;
 
-import static learn.linkedlist.LinkedListCycle.*;
+import static learn.linkedlist.ListNode.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

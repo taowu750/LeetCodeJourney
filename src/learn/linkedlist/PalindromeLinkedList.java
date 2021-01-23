@@ -1,11 +1,10 @@
 package learn.linkedlist;
 
-import learn.linkedlist.LinkedListCycle.ListNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Predicate;
 
-import static learn.linkedlist.LinkedListCycle.newList;
+import static learn.linkedlist.ListNode.*;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
