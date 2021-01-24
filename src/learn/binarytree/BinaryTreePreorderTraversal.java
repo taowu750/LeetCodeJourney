@@ -2,10 +2,7 @@ package learn.binarytree;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 
 import static learn.binarytree.TreeNode.newTree;
@@ -87,5 +84,67 @@ public class BinaryTreePreorderTraversal {
     @Test
     public void testPreorderTraversal() {
         test(this::preorderTraversal);
+    }
+
+
+    /**
+     * 使用迭代的方式先序遍历
+     */
+    public List<Integer> iterateTraversal(TreeNode root) {
+        if (root == null)
+            return Collections.emptyList();
+
+        Deque<TreeNode> stack = new LinkedList<>();
+        List<Integer> orderTraversal = new ArrayList<>();
+        for(;;) {
+            orderTraversal.add(root.val);
+            if (root.left != null) {
+                if (root.right != null)
+                    stack.push(root.right);
+                root = root.left;
+            } else {
+                if (root.right != null)
+                    root = root.right;
+                else if (!stack.isEmpty()) {
+                    root = stack.pop();
+                } else
+                    break;
+            }
+        }
+
+        return orderTraversal;
+    }
+
+    @Test
+    public void testIterateTraversal() {
+        test(this::iterateTraversal);
+    }
+
+
+    public List<Integer> conciseIterate(TreeNode root) {
+        if (root == null)
+            return Collections.emptyList();
+
+        Deque<TreeNode> stack = new LinkedList<>();
+        List<Integer> orderTraversal = new ArrayList<>();
+        for(;;) {
+            while (root != null) {
+                orderTraversal.add(root.val);
+                if (root.right != null)
+                    stack.push(root.right);
+                root = root.left;
+            }
+            if (!stack.isEmpty())
+                root = stack.pop();
+            else
+                break;
+        }
+
+        return orderTraversal;
+    }
+
+    @Test
+    public void testConciseIterate() {
+        test(this::conciseIterate);
     }
 }
