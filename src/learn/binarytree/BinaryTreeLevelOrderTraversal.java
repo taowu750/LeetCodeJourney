@@ -91,4 +91,38 @@ public class BinaryTreeLevelOrderTraversal {
     public void testLevelOrder() {
         test(this::levelOrder);
     }
+
+
+    /**
+     * 不需要哨兵结点
+     */
+    public List<List<Integer>> betterMethod(TreeNode root) {
+        if (root == null)
+            return Collections.emptyList();
+
+        List<List<Integer>> allLevels = new ArrayList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int cnt = queue.size();
+            List<Integer> levels = new ArrayList<>(cnt);
+            for (int i = 0; i < cnt; i++) {
+                TreeNode node = queue.poll();
+                //noinspection ConstantConditions
+                levels.add(node.val);
+                if (node.left != null)
+                    queue.offer(node.left);
+                if (node.right != null)
+                    queue.offer(node.right);
+            }
+            allLevels.add(levels);
+        }
+
+        return allLevels;
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
+    }
 }
