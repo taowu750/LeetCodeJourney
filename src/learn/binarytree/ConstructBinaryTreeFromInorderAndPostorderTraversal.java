@@ -121,4 +121,45 @@ public class ConstructBinaryTreeFromInorderAndPostorderTraversal {
     public void testBuildTree() {
         test(this::buildTree);
     }
+
+
+    private int pInorder;
+    private int pPostorder;
+
+    /**
+     * 此方法好在避免了在中序序列中循环查找根节点的开销
+     */
+    public TreeNode betterMethod(int[] inorder, int[] postorder) {
+        pInorder = inorder.length - 1;
+        pPostorder = postorder.length - 1;
+
+        return betterMethod(inorder, postorder, null);
+    }
+
+    // 参数 end 是子树的左边界
+    private TreeNode betterMethod(int[] inorder, int[] postorder, TreeNode end) {
+        if (pPostorder < 0)
+            return null;
+
+        // 将后序数组中的最后一个元素作为根
+        TreeNode root = new TreeNode(postorder[pPostorder--]);
+        // 如果存在右子树，则构建右子树
+        if (inorder[pInorder] != root.val)
+            // 右子树的左边界是当前根
+            root.right = betterMethod(inorder, postorder, root);
+        // 右子树创建完成，pInorder 也指向了根，
+        // 将其减 1，开始处理左子树
+        pInorder--;
+        // 如果存在左子树，则构建左子树。
+        if ((end == null) || (inorder[pInorder] != end.val))
+            // 左子树的左边界是父亲的左边界
+            root.left = betterMethod(inorder, postorder, end);
+
+        return root;
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
+    }
 }

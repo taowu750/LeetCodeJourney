@@ -120,4 +120,44 @@ public class ConstructBinaryTreeFromPreorderAndInorderTraversal {
     public void testBuildTree() {
         test(this::buildTree);
     }
+
+
+    private int pInorder;
+    private int nPreorder;
+    private int len;
+
+    public TreeNode betterMethod(int[] preorder, int[] inorder) {
+        pInorder = 0;
+        nPreorder = 0;
+        len = inorder.length;
+
+        return betterMethod(inorder, preorder, null);
+    }
+
+    // 参数 end 是子树的右边界
+    private TreeNode betterMethod(int[] inorder, int[] preorder, TreeNode end) {
+        if (nPreorder >= len)
+            return null;
+
+        // 将先序数组中的第一个元素作为根
+        TreeNode root = new TreeNode(preorder[nPreorder++]);
+        // 如果存在左子树，则构建左子树
+        if (inorder[pInorder] != root.val)
+            // 左子树的右边界是根节点
+            root.left = betterMethod(inorder, preorder, root);
+        // 左子树创建完成，pInorder 也指向了根，
+        // 将其加 1，开始处理右子树
+        pInorder++;
+        // 如果存在左子树，则构建左子树。
+        if ((end == null) || (inorder[pInorder] != end.val))
+            // 右子树的右边界和父亲相同
+            root.right = betterMethod(inorder, preorder, end);
+
+        return root;
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
+    }
 }
