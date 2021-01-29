@@ -166,4 +166,59 @@ public class LowestCommonAncestorOfABinaryTree {
     public void testLowestCommonAncestor() {
         test(this::lowestCommonAncestor);
     }
+
+
+    public TreeNode postRecursiveMethod(TreeNode root, TreeNode p, TreeNode q) {
+        recuseTree(root, p, q);
+        return lca;
+    }
+
+    private boolean recuseTree(TreeNode curNode, TreeNode p, TreeNode q) {
+        if (curNode == null)
+            return false;
+
+        // 如果当前结点等于查找的值，则 mid 设为 1
+        int mid = curNode.val == p.val || curNode.val == q.val ? 1 : 0;
+        // 搜索左子树包不包含查找的值
+        int left = recuseTree(curNode.left, p, q) ? 1 : 0;
+        // 搜索右子树包不包含查找的值
+        int right = recuseTree(curNode.right, p, q) ? 1 : 0;
+        int sum = left + mid + right;
+
+        // 如果 sum >= 2，说明两个查找的值都已找到，
+        // 则最近公共祖先为 curNode
+        if (sum >= 2)
+            lca = curNode;
+
+        return sum > 0;
+    }
+
+    @Test
+    public void testPostRecursiveMethod() {
+        test(this::postRecursiveMethod);
+    }
+
+
+    public TreeNode betterRecursiveMethod(TreeNode root, TreeNode p, TreeNode q) {
+        if (root == null)
+            return null;
+
+        if (root.val == p.val || root.val == q.val)
+            return root;
+
+        TreeNode left = betterRecursiveMethod(root.left, p, q);
+        TreeNode right = betterRecursiveMethod(root.right, p, q);
+
+        if (left != null && right != null)
+            return root;
+        else if (left != null)
+            return left;
+        else
+            return right;
+    }
+
+    @Test
+    public void testBetterRecursiveMethod() {
+        test(this::betterRecursiveMethod);
+    }
 }
