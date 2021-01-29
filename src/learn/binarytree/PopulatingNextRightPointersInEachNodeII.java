@@ -123,24 +123,29 @@ public class PopulatingNextRightPointersInEachNodeII {
         Node pRoot = root;
         while (pRoot != null) {
             Node p = pRoot, last = null;
+            pRoot = null;
             do {
                 if (p.left != null && p.right != null) {
                     p.left.next = p.right;
                     if (last != null)
                         last.next = p.left;
                     last = p.right;
+                    if (pRoot == null)
+                        pRoot = p;
                 } else {
                     Node child = p.left != null ? p.left : p.right;
                     if (last != null)
                         last.next = child;
-                    if (child != null)
+                    if (child != null) {
                         last = child;
+                        if (pRoot == null)
+                            pRoot = p;
+                    }
                 }
                 p = p.next;
             } while (p != null);
-            while (pRoot.left == null && pRoot.right == null && pRoot.next != null)
-                pRoot = pRoot.next;
-            pRoot = pRoot.left != null ? pRoot.left : pRoot.right;
+            if (pRoot != null)
+                pRoot = pRoot.left != null ? pRoot.left : pRoot.right;
         }
 
         return root;
@@ -149,5 +154,31 @@ public class PopulatingNextRightPointersInEachNodeII {
     @Test
     public void testConnect() {
         test(this::connect);
+    }
+
+
+    public Node recursiveMethod(Node root) {
+        if (root == null)
+            return null;
+        Node head = new Node(), p = head, pRoot = root;
+        while (pRoot != null) {
+            if (pRoot.left != null) {
+                p.next = pRoot.left;
+                p = p.next;
+            }
+            if (pRoot.right != null) {
+                p.next = pRoot.right;
+                p = p.next;
+            }
+            pRoot = pRoot.next;
+        }
+        recursiveMethod(head.next);
+
+        return root;
+    }
+
+    @Test
+    public void testRecursiveMethod() {
+        test(this::recursiveMethod);
     }
 }
