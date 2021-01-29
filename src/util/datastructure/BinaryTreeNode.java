@@ -69,6 +69,15 @@ public class BinaryTreeNode<T extends BinaryTreeNode<T>> {
         }
     }
 
+    public static <T extends BinaryTreeNode<T>> T find(T root, int val) {
+        if (root == null || root.val == val)
+            return root;
+        T result = find(root.left, val);
+        if (result != null)
+            return result;
+        return find(root.right, val);
+    }
+
     public static <T extends BinaryTreeNode<T>> boolean equals(T t1, T t2) {
         if (t1 == null && t2 == null)
             return true;
