@@ -1,13 +1,11 @@
 package learn.binarytree;
 
+import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
 import util.datastructure.BinaryTreeNode;
 import util.datastructure.function.TriFunction;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import static learn.binarytree.TreeNode.newTree;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -220,5 +218,111 @@ public class LowestCommonAncestorOfABinaryTree {
     @Test
     public void testBetterRecursiveMethod() {
         test(this::betterRecursiveMethod);
+    }
+
+
+    public TreeNode iterateMethod(TreeNode root, TreeNode p, TreeNode q) {
+        Map<TreeNode, TreeNode> parent = new HashMap<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        // 使用 parent 记录结点的父结点
+        parent.put(root, null);
+        queue.add(root);
+        // 使用层序遍历找出 p 和 q 结点
+        while (!parent.containsKey(p) || !parent.containsKey(q)) {
+            TreeNode node = queue.remove();
+            if (node.left != null) {
+                parent.put(node.left, node);
+                queue.add(node.left);
+            }
+            if (node.right != null) {
+                parent.put(node.right, node);
+                queue.add(node.right);
+            }
+        }
+        Set<TreeNode> ancestor = new HashSet<>();
+        // 保存 p 的所有祖先结点
+        while (p != null) {
+            ancestor.add(p);
+            p = parent.get(p);
+        }
+        // 从 q 结点向上查找最近的公共祖先
+        while (!ancestor.contains(q))
+            q = parent.get(q);
+
+        return q;
+    }
+
+    @Test
+    public void testIterateMethod() {
+        test(this::iterateMethod);
+    }
+
+
+    /*
+    下面是三个静态变量，表示栈中结点的不同状态。
+    只有处于 BOTH_DONE 的结点才能被弹出。
+     */
+    // 当前结点没有第一次被访问
+    public static final int BOTH_PENDING = 2;
+    // 当前结点左子树已被遍历
+    public static final int LEFT_DONE = 1;
+    // 当前结点已遍历完成
+    public static final int BOTH_DONE = 0;
+
+    public TreeNode withStateIterate(TreeNode root, TreeNode p, TreeNode q) {
+        Deque<Pair<TreeNode, Integer>> stack = new LinkedList<>();
+        // 是不是已经找到其中一个结点了
+        boolean oneNodeFound = false;
+        TreeNode lca = null;
+        TreeNode childNode;
+
+        stack.push(new Pair<>(root, BOTH_PENDING));
+        while (!stack.isEmpty()) {
+            Pair<TreeNode, Integer> top = stack.peek();
+            TreeNode node = top.getKey();
+            int state = top.getValue();
+
+            // 如果 state 不等于 BOTH_DONE，这意味着还不能弹出 node。
+            if (state != BOTH_DONE) {
+                // 如果两个子结点都还没遍历
+                if (state == BOTH_PENDING) {
+                    // 检查当前结点是不是要查找的结点
+                    if (node.val == p.val || node.val == q.val) {
+                        // 如果之前已经找到一个节点，则意味着我们已经找到了两个节点。
+                        // 则直接返回 lca
+                        if (oneNodeFound)
+                            return lca;
+                        else {
+                            // 否则标记已找到一个结点，并将 lca 设为这个结点
+                            oneNodeFound = true;
+                            lca = node;
+                        }
+                    }
+                    // 两个子结点都未遍历，则先遍历左子节点
+                    childNode = node.left;
+                } else {
+                    // 已遍历左子节点，则再遍历右子结点
+                    childNode = node.right;
+                }
+                stack.pop();
+                // 转换栈顶结点状态
+                stack.push(new Pair<>(node, state - 1));
+                // 子结点存在，将其压入栈中
+                if (childNode != null)
+                    stack.push(new Pair<>(childNode, BOTH_PENDING));
+            } else {
+                // 如果当前结点遍历完成，则弹出该结点。
+                // 并且查看它是不是等于 lca，是的话，让 lca 在树中向上移动。
+                if (lca == stack.pop().getKey() && oneNodeFound)
+                    lca = stack.peek().getKey();
+            }
+        }
+
+        return null;
+    }
+
+    @Test
+    public void testWithStateIterate() {
+        test(this::withStateIterate);
     }
 }
