@@ -162,4 +162,53 @@ public class SerializeAndDeserializeBinaryTree {
     public void testSD() {
         test(this::serialize, this::deserialize);
     }
+
+
+    /**
+     * 使用先序遍历递归地进行序列化和反序列化。
+     */
+    public String preorderSerialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder(32);
+        preorderSerialize(root, sb);
+        sb.deleteCharAt(sb.length() - 1);
+
+        return sb.toString();
+    }
+
+    private void preorderSerialize(TreeNode root, StringBuilder sb) {
+        if (root == null)
+            sb.append('n').append(',');
+        else {
+            sb.append(root.val).append(',');
+            preorderSerialize(root.left, sb);
+            preorderSerialize(root.right, sb);
+        }
+    }
+
+    private int idx;
+
+    public TreeNode preorderDeserialize(String data) {
+        idx = 0;
+        String[] numbers = data.split(",");
+        return preorderDeserialize(numbers);
+    }
+
+    private TreeNode preorderDeserialize(String[] numbers) {
+        if (idx >= numbers.length)
+            return null;
+        String number = numbers[idx++];
+        if (!number.equals("n")) {
+            TreeNode node = new TreeNode(Integer.parseInt(number));
+            node.left = preorderDeserialize(numbers);
+            node.right = preorderDeserialize(numbers);
+
+            return node;
+        } else
+            return null;
+    }
+
+    @Test
+    public void testPreorderSD() {
+        test(this::preorderSerialize, this::preorderDeserialize);
+    }
 }
