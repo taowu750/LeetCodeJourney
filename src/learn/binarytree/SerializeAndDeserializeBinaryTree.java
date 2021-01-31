@@ -100,7 +100,6 @@ public class SerializeAndDeserializeBinaryTree {
 
     /**
      * 此方法使用 LeetCode 的格式进行序列化。
-     * 此方法最底层 null 也会被序列化，会造成一定的空间浪费。
      */
     public String serialize(TreeNode root) {
         if (root == null)
@@ -109,16 +108,22 @@ public class SerializeAndDeserializeBinaryTree {
         StringBuilder sb = new StringBuilder(32);
         Queue<TreeNode> queue = new LinkedList<>();
         queue.offer(root);
+        // 记录后导 null 的个数
+        int trailingNullCnt = 0;
         while (!queue.isEmpty()) {
             TreeNode node = queue.poll();
             if (node != null) {
                 sb.append(node.val).append(',');
                 queue.offer(node.left);
                 queue.offer(node.right);
-            } else
+                trailingNullCnt = 0;
+            } else {
                 sb.append('n').append(',');
+                trailingNullCnt++;
+            }
         }
-        sb.deleteCharAt(sb.length() - 1);
+        // 删除后导 null 值
+        sb.delete(sb.length() - (trailingNullCnt << 1), sb.length());
 
         return sb.toString();
     }
@@ -133,25 +138,20 @@ public class SerializeAndDeserializeBinaryTree {
             Queue<TreeNode> queue = new LinkedList<>();
             queue.offer(root);
             int len = numbers.length;
-            for (int i = 1, childCnt = 0; i < len;) {
-                if (childCnt == 0) {
-                    if (!numbers[i].equals("n"))
-                        queue.peek().left = new TreeNode(Integer.parseInt(numbers[i]));
-                    childCnt++;
-                    i++;
-                } else if (childCnt == 1) {
-                    if (!numbers[i].equals("n"))
-                        queue.peek().right = new TreeNode(Integer.parseInt(numbers[i]));
-                    childCnt++;
-                    i++;
-                } else {
-                    childCnt = 0;
-                    TreeNode lastParent = queue.poll();
-                    if (lastParent.left != null)
-                        queue.offer(lastParent.left);
-                    if (lastParent.right != null)
-                        queue.offer(lastParent.right);
+            for (int i = 1; i < len;) {
+                TreeNode node = queue.poll();
+                if (!numbers[i].equals("n")) {
+                    node.left = new TreeNode(Integer.parseInt(numbers[i]));
+                    queue.offer(node.left);
                 }
+                i++;
+                if (i >= len)
+                    break;
+                if (!numbers[i].equals("n")) {
+                    node.right = new TreeNode(Integer.parseInt(numbers[i]));
+                    queue.offer(node.right);
+                }
+                i++;
             }
         }
 
