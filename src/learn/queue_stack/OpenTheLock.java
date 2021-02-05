@@ -128,19 +128,33 @@ public class OpenTheLock {
     }
 
 
+    int[] bases = {1, 10, 100, 1000};
+
     /**
      * 双向 BFS，从起始状态和结束状态往中间遍历，相遇后即解锁。
      * 和普通的 BFS 相比，不用保存所有状态，大大减少了空间和时间需求。
+     *
+     * 假设图的分支因子为 b，起始点到终点的最短距离为 d，则普通的 BFS 时间复杂度
+     * 为 O(b**d)，而双向 BFS 的时间复杂度为 O(b**(d/2) + b**(d/2))。
+     *
+     * 详细说明参见：
+     * https://www.geeksforgeeks.org/bidirectional-search/
+     *
+     * 又通过将字符串转为数字，避免了耗时的字符串处理。
+     *
+     * LeetCode 耗时：17ms - 98.48%
      */
     public int bidirectionalBFS(String[] deadends, String target) {
-        Set<String> visited = new HashSet<>(Arrays.asList(deadends));
-        Set<String> begin = new HashSet<>();
-        Set<String> end = new HashSet<>();
-        begin.add("0000");
-        end.add(target);
+        Set<Integer> visited = new HashSet<>();
+        for (String deadend : deadends) {
+            visited.add(Integer.parseInt(deadend));
+        }
+        Set<Integer> begin = new HashSet<>();
+        Set<Integer> end = new HashSet<>();
+        begin.add(0);
+        end.add(Integer.parseInt(target));
 
-        Set<String> temp;
-        StringBuilder codeBuilder = new StringBuilder("0000");
+        Set<Integer> temp;
         int level = 0;
         while (!begin.isEmpty() && !end.isEmpty()) {
             // 始终使用包含较小状态数的进行遍历，进一步减少时间消耗
@@ -150,30 +164,24 @@ public class OpenTheLock {
                 end = temp;
             }
             temp = new HashSet<>();
-            for (String s : begin) {
-                if (end.contains(s))
+            for (int code : begin) {
+                if (end.contains(code))
                     return level;
-                if (visited.contains(s))
+                if (visited.contains(code))
                     continue;
                 // 防止已经遍历过的状态再次被遍历
-                visited.add(s);
-                // 使用 codeBuilder 构造下一个轮盘序列
+                visited.add(code);
+                // 添加下一轮状态
                 for (int i = 0; i < 4; i++) {
-                    codeBuilder.setCharAt(i, s.charAt(i));
-                }
-                for (int i = 0; i < 4; i++) {
-                    char ch = s.charAt(i);
                     // 添加加 1 的轮盘序列
-                    codeBuilder.setCharAt(i, ch == '9' ? '0' : (char) (ch + 1));
-                    String nextCode = codeBuilder.toString();
+                    int d = (code / bases[i]) % 10;
+                    int nextCode = d == 9 ? code - 9 * bases[i] : code + bases[i];
                     if (!visited.contains(nextCode))
                         temp.add(nextCode);
                     // 添加减 1 的轮盘序列
-                    codeBuilder.setCharAt(i, ch == '0' ? '9' : (char) (ch - 1));
-                    nextCode = codeBuilder.toString();
+                    nextCode = d == 0 ? code + 9 * bases[i] : code - bases[i];
                     if (!visited.contains(nextCode))
                         temp.add(nextCode);
-                    codeBuilder.setCharAt(i, ch);
                 }
             }
             level++;
