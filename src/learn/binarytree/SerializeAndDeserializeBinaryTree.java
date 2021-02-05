@@ -211,4 +211,51 @@ public class SerializeAndDeserializeBinaryTree {
     public void testPreorderSD() {
         test(this::preorderSerialize, this::preorderDeserialize);
     }
+
+
+    /**
+     * 改进的版本，避免在反序列化开头切分字符串。
+     *
+     * LeetCode 时间消耗：3ms
+     */
+    public String improvedPreorderSerialize(TreeNode root) {
+        StringBuilder sb = new StringBuilder();
+        improvedPreorderSerialize(root, sb);
+
+        return sb.toString();
+    }
+
+    private void improvedPreorderSerialize(TreeNode root, StringBuilder sb) {
+        if (root == null) {
+            sb.append(';');
+            return;
+        }
+        sb.append(root.val).append(',');
+        improvedPreorderSerialize(root.left, sb);
+        improvedPreorderSerialize(root.right, sb);
+    }
+
+    public TreeNode improvedPreorderDeserialize(String data) {
+        idx = 0;
+        return improvedPreorderDe(data);
+    }
+
+    public TreeNode improvedPreorderDe(String data) {
+        if (idx >= data.length() || data.charAt(idx) == ';') {
+            idx++;
+            return null;
+        }
+        int spliteratorIdx = data.indexOf(',', idx);
+        TreeNode node = new TreeNode(Integer.parseInt(data.substring(idx, spliteratorIdx)));
+        idx = spliteratorIdx + 1;
+        node.left = improvedPreorderDe(data);
+        node.right = improvedPreorderDe(data);
+
+        return node;
+    }
+
+    @Test
+    public void testImprovedPreorderSD() {
+        test(this::improvedPreorderSerialize, this::improvedPreorderDeserialize);
+    }
 }
