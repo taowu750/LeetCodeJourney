@@ -79,4 +79,31 @@ public class ValidParentheses {
     public void testIsValid() {
         test(this::isValid);
     }
+
+
+    /**
+     * 逆向思维
+     */
+    public boolean betterMethod(String s) {
+        int len = s.length();
+        Deque<Character> stack = new ArrayDeque<>(len);
+
+        for (char c : s.toCharArray()) {
+            if (c == '(')
+                stack.push(')');
+            else if (c == '[')
+                stack.push(']');
+            else if (c == '{')
+                stack.push('}');
+            else if (stack.isEmpty() || c != stack.pop())
+                return false;
+        }
+
+        return stack.isEmpty();
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
+    }
 }
