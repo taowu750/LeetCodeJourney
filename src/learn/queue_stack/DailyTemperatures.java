@@ -44,7 +44,7 @@ public class DailyTemperatures {
         for (int i = len - 2; i >= 0; i--) {
             if (T[i] < T[i + 1])
                 predict[i] = 1;
-            else if (predict[i + 1] != 0) {
+            else {
                 // 利用已经记录的信息，进行查找
                 for (int j = i + 1; predict[j] != 0; j = j + predict[j]) {
                     if (T[i] < T[j + predict[j]]) {
@@ -61,5 +61,35 @@ public class DailyTemperatures {
     @Test
     public void testDailyTemperatures() {
         test(this::dailyTemperatures);
+    }
+
+
+    /**
+     * 使用栈的方法。
+     *
+     * LeetCode 耗时：3ms - 99.47%
+     */
+    public int[] stackMethod(int[] T) {
+        int top = -1;
+        int[] stack = new int[T.length];
+        int[] res = new int[T.length];
+
+        // 从左往右
+        for (int i = 0, j; i < T.length; i++) {
+            // 如果当前元素大于栈中下标指向的元素，则弹出该元素，并记录变暖天数
+            while (top > -1 && T[i] > T[stack[top]]) {
+                j = stack[top--];
+                res[j] = i - j;
+            }
+            // 在栈中记录所有元素的下标
+            stack[++top] = i;
+        }
+
+        return res;
+    }
+
+    @Test
+    public void testStackMethod() {
+        test(this::stackMethod);
     }
 }
