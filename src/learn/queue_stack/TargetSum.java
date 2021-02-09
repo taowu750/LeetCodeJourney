@@ -125,4 +125,83 @@ public class TargetSum {
     public void testDpMethod() {
         test(this::dpMethod);
     }
+
+
+    /**
+     * 原始问题等价于：查找需要为正数的 nums 子集，其余的为负数，以使总和等于 target。
+     * 设 P 为正数子集而 N 为负数子集。
+     *
+     * 例如，给定 nums = [1, 2, 3, 4, 5] 和 target = 3，一个解法是 +1-2+3-4+5 = 3。
+     * 因此整数子集 P = [1, 3, 5]，负数子集 N = [2, 4]。
+     *
+     * 然后让我们看看如何将其转换为子集和问题：
+     * (1) sum(P) - sum(N) = target
+     * (2) sum(P) + sum(N) = sum(nums)
+     * (1) + (2) => 2 * sum(P) = target + sum(nums)
+     * 于是我们有 sum(P) = (target + sum(nums)) / 2。
+     *
+     * 请注意，以上公式表明 target+sum(nums) 必须为偶数。
+     * 我们可以利用这一事实来快速确定没有解决方案的输入。
+     */
+    public int dp2dMethod(int[] nums, int S) {
+        int sum = 0;
+        for (int num : nums)
+            sum += num;
+
+        if (sum < S || ((sum + S) & 1) != 0)
+            return 0;
+
+        int ps = (sum + S) >>> 1;
+        /*
+        设 int[][] dp = new int[nums.length + 1][ps + 1]，
+        其中 dp[i][j] 表示使用 nums 前 i 个元素得到和 j 的方法数量。
+        则我们有 dp[i][j] = dp[i-1][j] + dp[i-1][j - nums[i - 1]]。
+         */
+        int[][] dp = new int[nums.length + 1][ps + 1];
+        dp[0][0] = 1;
+        for (int i = 1; i <= nums.length;  i++) {
+            for (int j = 0; j <= ps;  j++) {
+                if (j >= nums[i - 1]) {
+                    dp[i][j] = dp[i - 1][j] + dp[i - 1][j - nums[i - 1]];
+                } else {
+                    dp[i][j] = dp[i - 1][j];
+                }
+            }
+        }
+        return dp[nums.length][ps];
+    }
+
+    @Test
+    public void testDp2dMethod() {
+        test(this::dp2dMethod);
+    }
+
+    public int betterDpMethod(int[] nums, int S) {
+        int sum = 0;
+        for (int num : nums)
+            sum += num;
+
+        if (sum < S || ((sum + S) & 1) != 0)
+            return 0;
+
+        /*
+         2d 版本中的转换总是涉及到 2d 数组中的连续两行，所以可以对 dp 应用经典的状态压缩技巧，
+         并将其简化为 dp[j] = dp[j] + dp[j - nums[i - 1]]，
+         等于 dp[j] += dp[j - nums[i - 1]]。
+         */
+        int ps = (sum + S) >>> 1;
+        int[] dp = new int[ps + 1];
+        dp[0] = 1;
+        for (int num : nums) {
+            for (int i = ps; i >= num; i--)
+                dp[i] += dp[i - num];
+        }
+
+        return dp[ps];
+    }
+
+    @Test
+    public void testBetterDpMethod() {
+        test(this::betterDpMethod);
+    }
 }
