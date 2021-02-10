@@ -54,7 +54,9 @@ public class DecodeString {
     }
 
     /**
-     * 递归方式
+     * 递归方式。
+     *
+     * LeetCode 耗时：0ms - 100%
      */
     public String decodeString(String s) {
         StringBuilder result = new StringBuilder(s.length() << 1);
