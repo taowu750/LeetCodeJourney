@@ -49,38 +49,39 @@ public class MyStack {
     }
 
 
-    private Queue<Integer> queue1, queue2;
+    private Queue<Integer> queue;
 
+    /**
+     * 使用一个队列实现栈。
+     */
     public MyStack() {
-        queue1 = new LinkedList<>();
-        queue2 = new LinkedList<>();
+        queue = new LinkedList<>();
     }
 
+    /**
+     * 也可以在 push 中弹出前面的元素
+     */
     public void push(int x) {
-        queue1.add(x);
+        queue.add(x);
     }
 
     public int pop() {
-        int size = queue1.size();
+        int size = queue.size();
         for (int i = 0; i < size - 1; i++) {
-            queue2.add(queue1.remove());
+            queue.add(queue.remove());
         }
-        int result = queue1.remove();
-        Queue<Integer> tmp = queue1;
-        queue1 = queue2;
-        queue2 = tmp;
 
-        return result;
+        return queue.remove();
     }
 
     public int top() {
         int result = pop();
-        queue1.add(result);
+        queue.add(result);
 
         return result;
     }
 
     public boolean empty() {
-        return queue1.isEmpty();
+        return queue.isEmpty();
     }
 }
