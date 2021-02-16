@@ -125,7 +125,7 @@ public class Matrix01 {
     private int[][] distance;
 
     /**
-     * LeetCode 耗时：19ms - 33.31%
+     * LeetCode 耗时：18ms - 36.24%
      */
     public int[][] updateMatrix(int[][] matrix) {
         this.matrix = matrix;
@@ -144,105 +144,135 @@ public class Matrix01 {
     private void bfs(int r, int c) {
         Queue<Pos> queue = new LinkedList<>();
         Set<Pos> vis = new HashSet<>();
-        Pos pos = new Pos(r, c);
+        Pos pos = new Pos(r, c), root = pos;
         queue.add(pos);
         vis.add(pos);
+        int level = 0;
+        LABEL_OUTER:
         while (!queue.isEmpty()) {
-            pos = queue.remove();
-            r = pos.r;
-            c = pos.c;
-            Pos newPos;
-            // 从下面相邻位置开始，逆时针遍历
-            if (r + 1 < matrix.length) {
-                // 如果遇到 0
-                if (matrix[r + 1][c] == 0) {
-                    // 则当前位置的最小距离是 1
-                    pos.minDis = 1;
-                    break;
-                } else if (distance[r + 1][c] != 0) {
-                    // 否则如果旁边的位置最小距离 d 已经确定，并且 d + 1 小于
-                    // 当前位置的最小距离，则更新当前位置的最小距离
-                    if (pos.minDis > distance[r + 1][c] + 1)
-                        pos.minDis = distance[r + 1][c] + 1;
-                } else if (!vis.contains((newPos = new Pos(r + 1, c, pos)))) {
-                    // 否则如果旁边位置未被遍历，则将其加入队列中
-                    queue.add(newPos);
-                    vis.add(newPos);
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                pos = queue.remove();
+                r = pos.r;
+                c = pos.c;
+                Pos newPos;
+                // 从下面相邻位置开始，逆时针遍历
+                if (r + 1 < matrix.length) {
+                    // 如果遇到 0
+                    if (matrix[r + 1][c] == 0) {
+                        // 则当前位置的最小距离是 1
+                        pos.minDis = 1;
+                        break LABEL_OUTER;
+                    } else if (distance[r + 1][c] != 0) {
+                        // 否则如果旁边的位置最小距离 d 已经确定，并且 d + 1 小于
+                        // 当前位置的最小距离，则更新当前位置的最小距离
+                        if (pos.minDis > distance[r + 1][c] + 1)
+                            pos.minDis = distance[r + 1][c] + 1;
+                    } else if (!vis.contains((newPos = new Pos(r + 1, c, pos)))) {
+                        // 否则如果旁边位置未被遍历，则将其加入队列中
+                        queue.add(newPos);
+                        vis.add(newPos);
+                    }
+                }
+                if (c + 1 < matrix[0].length) {
+                    if (matrix[r][c + 1] == 0) {
+                        pos.minDis = 1;
+                        break LABEL_OUTER;
+                    } else if (distance[r][c + 1] != 0) {
+                        if (pos.minDis > distance[r][c + 1] + 1)
+                            pos.minDis = distance[r][c + 1] + 1;
+                    } else if (!vis.contains((newPos = new Pos(r, c + 1, pos)))) {
+                        queue.add(newPos);
+                        vis.add(newPos);
+                    }
+                }
+                if (r - 1 >= 0) {
+                    if (matrix[r - 1][c] == 0) {
+                        pos.minDis = 1;
+                        break LABEL_OUTER;
+                    } else if (distance[r - 1][c] != 0) {
+                        if (pos.minDis > distance[r - 1][c] + 1)
+                            pos.minDis = distance[r - 1][c] + 1;
+                    } else if (!vis.contains((newPos = new Pos(r - 1, c, pos)))) {
+                        queue.add(newPos);
+                        vis.add(newPos);
+                    }
+                }
+                if (c - 1 >= 0) {
+                    if (matrix[r][c - 1] == 0) {
+                        pos.minDis = 1;
+                        break LABEL_OUTER;
+                    } else if (distance[r][c - 1] != 0) {
+                        if (pos.minDis > distance[r][c - 1] + 1)
+                            pos.minDis = distance[r][c - 1] + 1;
+                    } else if (!vis.contains((newPos = new Pos(r, c - 1, pos)))) {
+                        queue.add(newPos);
+                        vis.add(newPos);
+                    }
                 }
             }
-            if (c + 1 < matrix[0].length) {
-                if (matrix[r][c + 1] == 0) {
-                    pos.minDis = 1;
-                    break;
-                } else if (distance[r][c + 1] != 0) {
-                    if (pos.minDis > distance[r][c + 1] + 1)
-                        pos.minDis = distance[r][c + 1] + 1;
-                } else if (!vis.contains((newPos = new Pos(r, c + 1, pos)))) {
-                    queue.add(newPos);
-                    vis.add(newPos);
-                }
-            }
-            if (r - 1 >= 0) {
-                if (matrix[r - 1][c] == 0) {
-                    pos.minDis = 1;
-                    break;
-                } else if (distance[r - 1][c] != 0) {
-                    if (pos.minDis > distance[r - 1][c] + 1)
-                        pos.minDis = distance[r - 1][c] + 1;
-                } else if (!vis.contains((newPos = new Pos(r - 1, c, pos)))) {
-                    queue.add(newPos);
-                    vis.add(newPos);
-                }
-            }
-            if (c - 1 >= 0) {
-                if (matrix[r][c - 1] == 0) {
-                    pos.minDis = 1;
-                    break;
-                } else if (distance[r][c - 1] != 0) {
-                    if (pos.minDis > distance[r][c - 1] + 1)
-                        pos.minDis = distance[r][c - 1] + 1;
-                } else if (!vis.contains((newPos = new Pos(r, c - 1, pos)))) {
-                    queue.add(newPos);
-                    vis.add(newPos);
-                }
-            }
+            level++;
         }
-        boolean uncertain = false;
+        int rootDis = root.minDis != Integer.MAX_VALUE ? root.minDis + level : Integer.MAX_VALUE;
         int dis = pos.minDis;
-        Deque<Pos> stack = new LinkedList<>();
-        // 从已经确定最小距离的叶子位置开始，从遍历树中一直往上，
-        // 确定它的父结点的最小距离
         do {
-            // 如果父位置最小距离要小于子位置最小距离+1，
-            // 则表示可能从父位置到子位置有更小的距离
-            if (pos.minDis < dis) {
-                distance[pos.r][pos.c] = pos.minDis;
-                dis = pos.minDis;
-                uncertain = true;
-            } else {
-                distance[pos.r][pos.c] = dis;
-                pos.minDis = dis;
-            }
+            // 从当且位置最小距离、到 0 的距离、到根位置的距离中找出最小值
+            int minDis = Math.min(pos.minDis, dis);
+            minDis = Math.min(minDis, rootDis);
+            distance[pos.r][pos.c] = minDis;
             dis += 1;
-            stack.push(pos);
+            rootDis -= 1;
             pos = pos.parent;
         } while (pos != null);
-        // 可能从父位置到子位置更短，因此需要进行检查
-        if (uncertain) {
-            Pos parent = stack.pop();
-            while (!stack.isEmpty()) {
-                pos = stack.pop();
-                if (pos.minDis > parent.minDis + 1) {
-                    pos.minDis = parent.minDis + 1;
-                    distance[pos.r][pos.c] = parent.minDis + 1;
-                }
-                parent = pos;
-            }
-        }
     }
 
     @Test
     public void testUpdateMatrix() {
         test(this::updateMatrix);
+    }
+
+
+    /**
+     * 暴力解法，搜寻最大步数下的所有可能性。暴力解法有时候并不慢
+     *
+     * LeetCode 耗时：4ms - 99.82%
+     */
+    public int[][] bruteMethod(int[][] matrix) {
+        this.matrix = matrix;
+        for (int r = 0; r < matrix.length; r++) {
+            for (int c = 0; c < matrix[0].length; c++) {
+                if (matrix[r][c] > 0)
+                    search(r, c);
+            }
+        }
+
+        return matrix;
+    }
+
+    private void search(int r, int c) {
+        // 到 0 所需的最长步数
+        int maxStep = matrix.length + matrix[0].length - 2;
+        for (int step = 1; step <= maxStep; step++) {
+            for (int rowStep = 0; rowStep <= step; rowStep++) {
+                int colStep = step - rowStep;
+                if (isZero(r + rowStep, c + colStep)
+                        || isZero(r - rowStep, c + colStep)
+                        || isZero(r + rowStep, c - colStep)
+                        || isZero(r - rowStep, c - colStep)) {
+                    matrix[r][c] = step;
+                    return;
+                }
+            }
+        }
+    }
+
+    private boolean isZero(int r, int c) {
+        return r >= 0 && r < matrix.length && c >= 0 && c < matrix[0].length
+                && matrix[r][c] == 0;
+    }
+
+    @Test
+    public void testSearch() {
+        test(this::bruteMethod);
     }
 }
