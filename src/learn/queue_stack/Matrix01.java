@@ -275,4 +275,44 @@ public class Matrix01 {
     public void testSearch() {
         test(this::bruteMethod);
     }
+
+
+    /**
+     * 逆向 BFS，从终点到起点。
+     *
+     * LeetCode 耗时：14ms - 59.86%
+     */
+    public int[][] reverseBFS(int[][] matrix) {
+        int R = matrix.length, C = matrix[0].length;
+        Queue<int[]> queue = new LinkedList<>();
+        for (int r = 0; r < R; r++) {
+            for (int c = 0; c < C; c++) {
+                if (matrix[r][c] == 0)
+                    queue.add(new int[]{r, c});
+                else
+                    matrix[r][c] = Integer.MAX_VALUE;
+            }
+        }
+
+        // 使用表驱动法
+        int[][] dirs = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+        while (!queue.isEmpty()) {
+            int[] pos = queue.poll();
+            for (int[] dir : dirs) {
+                int r = pos[0] + dir[0], c = pos[1] + dir[1];
+                if (r < 0 || r >= R || c < 0 || c >= C
+                        || matrix[r][c] <= matrix[pos[0]][pos[1]] + 1)
+                    continue;
+                matrix[r][c] = matrix[pos[0]][pos[1]] + 1;
+                queue.add(new int[]{r, c});
+            }
+        }
+
+        return matrix;
+    }
+
+    @Test
+    public void testReverseBFS() {
+        test(this::reverseBFS);
+    }
 }
