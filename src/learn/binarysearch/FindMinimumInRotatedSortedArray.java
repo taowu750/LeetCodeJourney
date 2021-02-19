@@ -76,7 +76,7 @@ public class FindMinimumInRotatedSortedArray {
 
 
     /**
-     * 循环不变式方法。
+     * 循环不变式方法，简洁优雅。
      *
      * 有以下循环不变式：
      * - low < high
