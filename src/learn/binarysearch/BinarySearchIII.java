@@ -49,7 +49,7 @@ public class BinarySearchIII {
      * - 如果存在，则有 nums[lo] <= target && nums[hi] >= target
      *
      * 保持：
-     * - nums[mid] <= target，那么 mid >= 最后等于 target 的元素的下标，
+     * - nums[mid] <= target，那么 mid <= 最后等于 target 的元素的下标，
      *   目标元素存在于 [mid, hi] 中。数组大小减少 mid - lo。根据 while 条件，
      *   如果 lo == mid 减少量为 0，此时 hi - lo <= 1，循环结束。
      *   这样避免了死循环。
