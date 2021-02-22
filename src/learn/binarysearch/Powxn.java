@@ -92,4 +92,29 @@ public class Powxn {
     public void testMyPow() {
         test(this::myPow);
     }
+
+
+    /**
+     * 递归方法。
+     */
+    public double recursiveMethod(double x, int n) {
+        if (n == 0)
+            return 1;
+        else if (n < 0) {
+            if (n == Integer.MIN_VALUE) {
+                n += 2;
+                x *= x;
+            }
+            n = -n;
+            x = 1/x;
+        }
+        return (n % 2 == 0)
+                ? recursiveMethod(x * x, n / 2)
+                : x * recursiveMethod(x * x, n / 2);
+    }
+
+    @Test
+    public void testRecursiveMethod() {
+        test(this::recursiveMethod);
+    }
 }
