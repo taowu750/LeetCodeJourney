@@ -47,6 +47,7 @@ public class BinarySearchIII {
      * 循环不变式：
      * - 如果 target 存在初始数组 [0, n-1]，那么它一定在 [lo, hi] 中。
      * - 如果存在，则有 nums[lo] <= target && nums[hi] >= target
+     * - lo <= mid < hi
      *
      * 保持：
      * - nums[mid] <= target，那么 mid <= 最后等于 target 的元素的下标，
@@ -54,10 +55,10 @@ public class BinarySearchIII {
      *   如果 lo == mid 减少量为 0，此时 hi - lo <= 1，循环结束。
      *   这样避免了死循环。
      * - nums[mid] > target，那么目标元素存在于 [lo, mid - 1] 中。
-     *   数组大小减少 hi - mid + 1，至少减少 1。
+     *   数组大小减少 hi - mid。根据循环不变式，至少减少 1。
      *
      * 终止：
-     * - 此时 lo <= hi，如果存在，根据循环不变式，nums[hi] 或 nums[lo]
+     * - 此时 lo + 1 == hi，如果存在，根据循环不变式，nums[hi] 或 nums[lo]
      *   是要找的元素。否则不存在。
      */
     public int search(int[] nums, int target) {
@@ -70,7 +71,7 @@ public class BinarySearchIII {
             if (nums[mid] <= target)
                 lo = mid;
             else
-                hi = mid - 1;
+                hi = mid;
         }
 
         if(nums[hi] == target) return hi;
