@@ -5,9 +5,9 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.function.BiFunction;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static util.ArrayUtil.setEquals;
 
 /**
  * 给定两个数组，编写一个函数来计算它们的交集。
@@ -25,13 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * - 结果可以是任何顺序。
  */
 public class IntersectionOfTwoArrays {
-
-    public static boolean setEquals(int[] expected, int[] actual) {
-        return new HashSet<>(Arrays.asList(
-                IntStream.of(actual).boxed().toArray(Integer[]::new)))
-                .equals(new HashSet<>(Arrays.asList(
-                        IntStream.of(expected).boxed().toArray(Integer[]::new))));
-    }
 
     static void test(BiFunction<int[], int[], int[]> method) {
         assertTrue(setEquals(method.apply(new int[]{1, 2, 2, 1}, new int[]{2, 2}),

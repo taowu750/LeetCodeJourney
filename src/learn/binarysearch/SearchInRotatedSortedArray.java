@@ -2,6 +2,7 @@ package learn.binarysearch;
 
 import learn.binarysearch.BinarySearch.SearchMethod;
 import org.junit.jupiter.api.Test;
+import util.ArrayUtil;
 
 import java.util.*;
 
@@ -40,16 +41,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class SearchInRotatedSortedArray {
 
-    public static int[] rotateArray(int[] arr, int pivot) {
-        if (pivot > 0 && pivot < arr.length) {
-            int[] tmp = Arrays.copyOf(arr, pivot);
-            System.arraycopy(arr, pivot, arr, 0, arr.length - pivot);
-            System.arraycopy(tmp, 0, arr, arr.length - pivot, pivot);
-        }
-
-        return arr;
-    }
-
     static void test(SearchMethod method) {
         assertEquals(method.search(new int[]{4,5,6,7,0,1,2}, 0), 4);
 
@@ -62,7 +53,7 @@ public class SearchInRotatedSortedArray {
         int[] pivots = new int[]{0, 50, 67, 733, 9876};
         Random random = new Random();
         for (int pivot : pivots) {
-            int[] tmp = rotateArray(arr.clone(), pivot);
+            int[] tmp = ArrayUtil.rotateArray(arr.clone(), pivot);
 
             for (int i = 0; i < arr.length / 100; i++) {
                 int target = random.nextInt(arr.length);
