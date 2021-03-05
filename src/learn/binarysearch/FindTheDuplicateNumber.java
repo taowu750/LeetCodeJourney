@@ -92,14 +92,14 @@ public class FindTheDuplicateNumber {
 
 
     /**
-     * 二分查找方法。将索引视为值，然后计算小于等于 mid 的值的数量 cnt。
+     * 二分查找方法。令 count 为 1...mid 范围内的元素数。
      *
-     * 如果 cnt 小于等于 mid，则我们假设重复的数字应位于较高侧，所以我们使 lo = mid + 1；
-     * 否则，我们假设重复的数字应位于较低侧，所以我们使 hi = mid - 1。
+     * 如果 cnt > mid，那么在 lo...mid 范围内有不止 mid 个元素，因此该范围包含重复项。
+     * 如果 cnt <= mid，则在 mid+1...hi 范围内有不止 n-mid 个元素，因此该范围包含重复项。
      */
     public int binarySearch(int[] nums) {
         int lo = 1, hi = nums.length - 1;
-        while (lo <= hi) {
+        while (lo < hi) {
             int mid = (lo + hi) >>> 1;
             int cnt = 0;
             for (int num : nums) {
@@ -109,7 +109,7 @@ public class FindTheDuplicateNumber {
             if (cnt <= mid)
                 lo = mid + 1;
             else
-                hi = mid - 1;
+                hi = mid;
         }
 
         return lo;

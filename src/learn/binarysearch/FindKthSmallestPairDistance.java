@@ -41,10 +41,11 @@ public class FindKthSmallestPairDistance {
         int lo = 0, hi = nums[nums.length - 1] - nums[0];
         while (lo < hi) {
             int mid = (lo + hi) >>> 1;
-            // 计算差的绝对值小于等于 mid 的数量
+            // 计算差的绝对值(距离)小于等于 mid 的数量
             int cnt = 0;
             for (int i = 0; i < nums.length; i++)
                 cnt += upperBound(nums, i, nums.length - 1, nums[i] + mid) - i - 1;
+            // 如果计数小于 k，表示所找距离在 mid+1...hi 中；否则在 lo...mid 中
             if (cnt < k)
                 lo = mid + 1;
             else
@@ -81,11 +82,13 @@ public class FindKthSmallestPairDistance {
         int n = nums.length;
         Arrays.sort(nums);
 
-        int l = 0, r = nums[n - 1] - nums[0];
-        while (l < r) {
-            int mid = (l + r) >>> 1;
+        int lo = 0, hi = nums[n - 1] - nums[0];
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
             int cnt = 0, left = 0;
-            // 此循环同样计算小于等于 mid 的差绝对值数量。
+            // 此循环同样计算小于等于 mid 的距离数量。不过这里计算的是从 right 到 left 的数量，从右到左。
+            // 而 smallestDistancePair 中则是从左到右。相比较而言，此实现内循环无需查找，仅仅调整 left 指针即可，
+            // 因此此实现更快
             for (int right = 0; right < n; ++right) {
                 // 不断循环直到差绝对值小于等于 mid
                 while (nums[right] - nums[left] > mid) left++;
@@ -93,12 +96,12 @@ public class FindKthSmallestPairDistance {
             }
 
             if (cnt < k) {
-                l = mid + 1;
+                lo = mid + 1;
             } else {
-                r = mid;
+                hi = mid;
             }
         }
-        return l;
+        return lo;
     }
 
     @Test
