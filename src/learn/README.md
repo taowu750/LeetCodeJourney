@@ -492,6 +492,12 @@
 
 [题解][173-solution]。
 
+## 701. Insert into a Binary Search Tree【Medium】
+
+[题目链接][701]。
+
+[题解][701-solution]。
+
 
 [485]: https://leetcode.com/problems/max-consecutive-ones/
 [485-solution]: array/FindMaxConsecutiveOnes.java
@@ -656,3 +662,5 @@
 [98-solution]: binarysearchtree/ValidateBinarySearchTree.java
 [173]: https://leetcode.com/problems/binary-search-tree-iterator/
 [173-solution]: binarysearchtree/BinarySearchTreeIterator.java
+[701]: https://leetcode.com/problems/insert-into-a-binary-search-tree/
+[701-solution]: binarysearchtree/InsertIntoABinarySearchTree.java
