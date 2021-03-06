@@ -1,8 +1,7 @@
 package util.datastructure;
 
 import java.lang.reflect.Constructor;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 
 public class BinaryTreeNode<T extends BinaryTreeNode<T>> {
 
@@ -87,5 +86,41 @@ public class BinaryTreeNode<T extends BinaryTreeNode<T>> {
         return t1.val == t2.val
                 && equals(t1.left, t2.left)
                 && equals(t1.right, t2.right);
+    }
+
+    public static <T extends BinaryTreeNode<T>> List<Integer> preorder(T root) {
+        List<Integer> order = new ArrayList<>();
+        preorder(order, root);
+        return order;
+    }
+
+    private static <T extends BinaryTreeNode<T>> void preorder(List<Integer> order, T root) {
+        if (root != null) {
+            order.add(root.val);
+            preorder(order, root.left);
+            preorder(order, root.right);
+        }
+    }
+
+    public static <T extends BinaryTreeNode<T>> boolean isValid(T root) {
+        Deque<T> stack = new LinkedList<>();
+        T pre = null;
+        while (root != null || !stack.isEmpty()) {
+            while (root != null) {
+                stack.push(root);
+                root = root.left;
+            }
+            root = stack.pop();
+            if (pre != null && root.val <= pre.val)
+                return false;
+            pre = root;
+            root = root.right;
+        }
+
+        return true;
+    }
+
+    public static <T extends BinaryTreeNode<T>> boolean contentEquals(T t1, T t2) {
+        return new HashSet<>(preorder(t1)).equals(new HashSet<>(preorder(t2)));
     }
 }
