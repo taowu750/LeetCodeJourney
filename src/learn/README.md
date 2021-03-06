@@ -486,6 +486,12 @@
 
 [题解][98-solution]。
 
+## 173. Binary Search Tree Iterator【Medium】
+
+[题目链接][173]。
+
+[题解][173-solution]。
+
 
 [485]: https://leetcode.com/problems/max-consecutive-ones/
 [485-solution]: array/FindMaxConsecutiveOnes.java
@@ -648,3 +654,5 @@
 
 [98]: https://leetcode.com/problems/validate-binary-search-tree/
 [98-solution]: binarysearchtree/ValidateBinarySearchTree.java
+[173]: https://leetcode.com/problems/binary-search-tree-iterator/
+[173-solution]: binarysearchtree/BinarySearchTreeIterator.java
