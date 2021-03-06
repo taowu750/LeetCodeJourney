@@ -478,6 +478,14 @@
 
 [题解][410-solution]。
 
+# 6. Binary Search Tree
+
+## 98. Validate Binary Search Tree【Medium】
+
+[题目链接][98]。
+
+[题解][98-solution]。
+
 
 [485]: https://leetcode.com/problems/max-consecutive-ones/
 [485-solution]: array/FindMaxConsecutiveOnes.java
@@ -637,3 +645,6 @@
 [719-solution]: binarysearch/FindKthSmallestPairDistance.java
 [410]: https://leetcode.com/problems/split-array-largest-sum/
 [410-solution]: binarysearch/SplitArrayLargestSum.java
+
+[98]: https://leetcode.com/problems/validate-binary-search-tree/
+[98-solution]: binarysearchtree/ValidateBinarySearchTree.java
