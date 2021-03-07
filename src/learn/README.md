@@ -510,6 +510,12 @@
 
 [题解][703-solution]。
 
+## 235. Lowest Common Ancestor of a Binary Search Tree【Easy】
+
+[题目链接][235]。
+
+[题解][235-solution]。
+
 
 [485]: https://leetcode.com/problems/max-consecutive-ones/
 [485-solution]: array/FindMaxConsecutiveOnes.java
@@ -680,3 +686,5 @@
 [450-solution]: binarysearchtree/DeleteNodeInABST.java
 [703]: https://leetcode.com/problems/kth-largest-element-in-a-stream/
 [703-solution]: binarysearchtree/KthLargestElementInAStream.java
+[235]: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
+[235-solution]: binarysearchtree/LowestCommonAncestorOfABinarySearchTree.java
