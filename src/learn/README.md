@@ -498,6 +498,18 @@
 
 [题解][701-solution]。
 
+## 450. Delete Node in a BST【Medium】
+
+[题目链接][450]。
+
+[题解][450-solution]。
+
+## 703. Kth Largest Element in a Stream【Easy】
+
+[题目链接][703]。
+
+[题解][703-solution]。
+
 
 [485]: https://leetcode.com/problems/max-consecutive-ones/
 [485-solution]: array/FindMaxConsecutiveOnes.java
@@ -664,3 +676,7 @@
 [173-solution]: binarysearchtree/BinarySearchTreeIterator.java
 [701]: https://leetcode.com/problems/insert-into-a-binary-search-tree/
 [701-solution]: binarysearchtree/InsertIntoABinarySearchTree.java
+[450]: https://leetcode.com/problems/delete-node-in-a-bst/
+[450-solution]: binarysearchtree/DeleteNodeInABST.java
+[703]: https://leetcode.com/problems/kth-largest-element-in-a-stream/
+[703-solution]: binarysearchtree/KthLargestElementInAStream.java
