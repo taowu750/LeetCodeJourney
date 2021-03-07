@@ -492,6 +492,12 @@
 
 [题解][173-solution]。
 
+## 700. Search in a Binary Search Tree【Easy】
+
+[题目链接][700]。
+
+[题解][700-solution]。
+
 ## 701. Insert into a Binary Search Tree【Medium】
 
 [题目链接][701]。
@@ -688,3 +694,5 @@
 [703-solution]: binarysearchtree/KthLargestElementInAStream.java
 [235]: https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/
 [235-solution]: binarysearchtree/LowestCommonAncestorOfABinarySearchTree.java
+[700]: https://leetcode.com/problems/search-in-a-binary-search-tree/
+[700-solution]: binarysearchtree/SearchInABinarySearchTree.java
