@@ -522,6 +522,18 @@
 
 [题解][235-solution]。
 
+## 220. Contains Duplicate III【Medium】
+
+[题目链接][220]。
+
+[题解][220-solution]。
+
+## 110. Balanced Binary Tree【Easy】
+
+[题目链接][110]。
+
+[题解][110-solution]。
+
 
 [485]: https://leetcode.com/problems/max-consecutive-ones/
 [485-solution]: array/FindMaxConsecutiveOnes.java
@@ -696,3 +708,7 @@
 [235-solution]: binarysearchtree/LowestCommonAncestorOfABinarySearchTree.java
 [700]: https://leetcode.com/problems/search-in-a-binary-search-tree/
 [700-solution]: binarysearchtree/SearchInABinarySearchTree.java
+[220]: https://leetcode.com/problems/contains-duplicate-iii/
+[220-solution]: binarysearchtree/ContainsDuplicateIII.java
+[110]: https://leetcode.com/problems/balanced-binary-tree/
+[110-solution]: binarysearchtree/BalancedBinaryTree.java
