@@ -123,4 +123,26 @@ public class BinaryTreeNode<T extends BinaryTreeNode<T>> {
     public static <T extends BinaryTreeNode<T>> boolean contentEquals(T t1, T t2) {
         return new HashSet<>(preorder(t1)).equals(new HashSet<>(preorder(t2)));
     }
+
+    private static boolean balanced;
+
+    public static <T extends BinaryTreeNode<T>> boolean isBalanced(T root) {
+        balanced = true;
+        heightCheck(root);
+        return balanced;
+    }
+
+    private static <T extends BinaryTreeNode<T>> int heightCheck(T root) {
+        if (root == null)
+            return 0;
+        if (balanced) {
+            int leftHeight = heightCheck(root.left);
+            int rightHeight = heightCheck(root.right);
+            if (Math.abs(leftHeight - rightHeight) > 1)
+                balanced = false;
+            return Math.max(leftHeight, rightHeight) + 1;
+        }
+
+        return 0;
+    }
 }
