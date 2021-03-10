@@ -179,4 +179,38 @@ public class FlattenAMultilevelDoublyLinkedList {
     public void testNoStackMethod() {
         test(this::noStackMethod);
     }
+
+
+    public Node recursiveMethod(Node head) {
+        if (head == null)
+            return null;
+        return recur(head)[0];
+    }
+
+    private Node[] recur(Node head) {
+        Node p = head;
+        while (p.next != null) {
+            if (p.child != null) {
+                Node next = p.next;
+                Node[] ht = recur(p.child);
+                p.child = null;
+                p.next = ht[0];
+                p = ht[1];
+                p.next = next;
+            }
+            p = p.next;
+        }
+        if (p.child != null) {
+            Node[] ht = recur(p.child);
+            p.child = null;
+            p.next = ht[0];
+            p = ht[1];
+        }
+        return new Node[]{head, p};
+    }
+
+    @Test
+    public void testRecursiveMethod() {
+        test(this::recursiveMethod);
+    }
 }
