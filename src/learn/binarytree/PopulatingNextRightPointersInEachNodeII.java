@@ -116,6 +116,39 @@ public class PopulatingNextRightPointersInEachNodeII {
         System.out.println();
     }
 
+
+    public Node levelIterMethod(Node root) {
+        if (root == null)
+            return null;
+        Queue<Node> queue = new LinkedList<>();
+        queue.add(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            Node head = null;
+            for (int i = 0; i < size; i++) {
+                Node next = queue.remove();
+                if (head == null)
+                    head = next;
+                else {
+                    head.next = next;
+                    head = next;
+                }
+                if (next.left != null)
+                    queue.add(next.left);
+                if (next.right != null)
+                    queue.add(next.right);
+            }
+        }
+
+        return root;
+    }
+
+    @Test
+    public void testLevelIterMethod() {
+        test(this::levelIterMethod);
+    }
+
+
     public Node connect(Node root) {
         if (root == null || (root.left == null && root.right == null))
             return root;
