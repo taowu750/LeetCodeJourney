@@ -122,25 +122,22 @@ public class BinaryTreePreorderTraversal {
 
 
     public List<Integer> conciseIterate(TreeNode root) {
-        if (root == null)
-            return Collections.emptyList();
-
+        List<Integer> order = new ArrayList<>();
         Deque<TreeNode> stack = new LinkedList<>();
-        List<Integer> orderTraversal = new ArrayList<>();
-        for(;;) {
+
+        while (root != null) {
             while (root != null) {
-                orderTraversal.add(root.val);
+                order.add(root.val);
                 if (root.right != null)
                     stack.push(root.right);
                 root = root.left;
             }
-            if (!stack.isEmpty())
-                root = stack.pop();
-            else
+            if (stack.isEmpty())
                 break;
+            root = stack.pop();
         }
 
-        return orderTraversal;
+        return order;
     }
 
     @Test
