@@ -2,6 +2,8 @@ package learn.binarytree;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.BiFunction;
 
 import static learn.binarytree.TreeNode.newTree;
@@ -120,6 +122,42 @@ public class ConstructBinaryTreeFromInorderAndPostorderTraversal {
     @Test
     public void testBuildTree() {
         test(this::buildTree);
+    }
+
+
+    public TreeNode hashMapMethod(int[] inorder, int[] postorder) {
+        if (postorder.length == 0 || inorder.length != postorder.length)
+            return null;
+        Map<Integer, Integer> valToInRootIdx = new HashMap<>((int) (inorder.length / 0.75) + 1);
+        for (int i = 0; i < inorder.length; i++)
+            valToInRootIdx.put(inorder[i], i);
+        return help(0, inorder.length - 1,
+                postorder, 0, postorder.length - 1,
+                valToInRootIdx);
+    }
+
+    private TreeNode help(int inLo, int inHi,
+                          int[] postorder, int postLo, int postHi,
+                          Map<Integer, Integer> valToInRootIdx) {
+        if (inLo > inHi || postLo > postHi)
+            return null;
+        TreeNode curRoot = new TreeNode(postorder[postHi]);
+        // 找到根结点在中序序列中的下标
+        int rootInIdx = valToInRootIdx.get(curRoot.val);
+        // 左右子树继续递归
+        TreeNode left = help(inLo, rootInIdx - 1,
+                postorder, postLo, postLo + rootInIdx - inLo - 1, valToInRootIdx);
+        TreeNode right = help(rootInIdx + 1, inHi,
+                postorder, postLo + rootInIdx - inLo, postHi - 1, valToInRootIdx);
+        curRoot.left = left;
+        curRoot.right = right;
+
+        return curRoot;
+    }
+
+    @Test
+    public void testHashMapMethod() {
+        test(this::hashMapMethod);
     }
 
 
