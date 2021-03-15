@@ -90,4 +90,74 @@ public class ReverseLinkedList {
     public void testRecursiveMethod() {
         test(this::recursiveMethod);
     }
+
+
+    public ListNode betterRecursiveMethod(ListNode head) {
+        if (head == null)
+            return null;
+        return recursive(head);
+    }
+
+    /**
+     * 解析来自于：https://labuladong.gitee.io/algo/数据结构系列/递归反转链表的一部分.html
+     *
+     * 在理解这个递归方法的时候，不要试图去用脑子模拟压栈，这样没有效率且容易出错。
+     *
+     * 对于递归算法，最重要的就是<strong>明确递归函数的定义</strong>。具体来说，我们的 reverse 函数定义是这样的：
+     *      输入一个节点 head，将「以 head 为起点」的链表反转，并返回反转之后的头结点。
+     *
+     * 比如说我们想反转这个链表：
+     *      head
+     *        ↓
+     *        1->2->3->4->5->NULL
+     *
+     * 那么输入 reverse(head) 后，会在这里进行递归：
+     *      ListNode last = reverse(head.next);
+     *
+     * 不要跳进递归（你的脑袋能压几个栈呀？），而是要根据刚才的<strong>函数定义</strong>，
+     * 来弄清楚这段代码会产生什么结果：
+     *      head
+     *        ↓
+     *        1->reverse(2->3->4->5->NULL)
+     *
+     * 这个 reverse(head.next) 执行完成后，整个链表就成了这样（由定义推得）：
+     *      head         last
+     *        ↓           ↓
+     *        1->2<-3<-4<-5
+     *           ↓
+     *          NULL
+     * 并且根据函数定义，reverse 函数会返回反转之后的头结点，我们用变量 last 接收了。
+     *
+     * 现在再来看下面的代码：
+     *      head.next.next = head;
+     * 就有：
+     *      head         last
+     *        ↓           ↓
+     *        1<->2<-3<-4<-5
+     *            ×
+     *           NULL
+     *
+     * 接下来：
+     *      head.next = null;
+     *      return last;
+     * 就有：
+     *        head         last
+     *          ↓           ↓
+     *    NULL<-1<-2<-3<-4<-5
+     */
+    private ListNode recursive(ListNode head) {
+        // 基准条件
+        if (head.next == null)
+            return head;
+        ListNode last = recursive(head.next);
+        head.next.next = head;
+        head.next = null;
+
+        return last;
+    }
+
+    @Test
+    public void testBetterRecursiveMethod() {
+        test(this::betterRecursiveMethod);
+    }
 }
