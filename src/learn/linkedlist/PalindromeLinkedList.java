@@ -68,4 +68,37 @@ public class PalindromeLinkedList {
     public void testIsPalindrome() {
         test(this::isPalindrome);
     }
+
+
+    private ListNode left;
+
+    /**
+     * 使用后序遍历，模仿回文字符串的双指针算法。
+     *
+     * 这么做的核心逻辑就是把链表节点放入一个栈，然后再拿出来，这时候元素顺序就是反的，
+     * 只不过我们利用的是递归函数的堆栈而已。
+     *
+     * 参考：https://labuladong.gitee.io/algo/高频面试系列/判断回文链表.html
+     */
+    public boolean recursiveMethod(ListNode head) {
+        left = head;
+        return recur(head);
+    }
+
+    private boolean recur(ListNode right) {
+        if (right == null)
+            return true;
+        boolean res = recur(right.next);
+        if (res) {
+            res = right.val == left.val;
+            left = left.next;
+            return res;
+        }
+        return false;
+    }
+
+    @Test
+    public void testRecursiveMethod() {
+        test(this::recursiveMethod);
+    }
 }
