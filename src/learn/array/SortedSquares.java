@@ -13,11 +13,11 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  * 例子：
  * Input: nums = [-4,-1,0,3,10]
  * Output: [0,1,9,16,100]
- * Explanation: 在平方之前，数组变成 [16,1,0,9,100]。排序之后，数组变成 [0,1,9,16,100]。
+ * Explanation: 在平方之后，数组变成 [16,1,0,9,100]。排序之后，数组变成 [0,1,9,16,100]。
  *
  * 约束：
- * - 1 <= nums.length <= 104
- * - -104 <= nums[i] <= 104
+ * - 1 <= nums.length <= 10**4
+ * - -10**4 <= nums[i] <= 10**4
  * - nums 以非降序顺序排列.
  */
 public class SortedSquares {
@@ -28,6 +28,10 @@ public class SortedSquares {
 
         int[] inp2 = {-7, -3, 2, 3, 11};
         assertArrayEquals(func.apply(inp2), new int[]{4, 9, 9, 49, 121});
+
+        assertArrayEquals(func.apply(new int[]{3, 4, 6, 7}), new int[]{9, 16, 36, 49});
+
+        assertArrayEquals(func.apply(new int[]{-5, -3, -2, -1}), new int[]{1, 4, 9, 25});
     }
 
     /**
