@@ -1,178 +1,204 @@
 此包包含了 LeetCode 的 Explore 下 learn 板块的题目。
 
-# 1. Array
+# 【1】 Array
 
-## 485. Max Consecutive Ones【Easy】
+## 【1.1】 485. Max Consecutive Ones【Easy】
 
 [题目链接][485]。
 
 [题解][485-solution]。
 
-## 1295. Find Numbers with Even Number of Digits【Easy】
+## 【1.2】 1295. Find Numbers with Even Number of Digits【Easy】
 
 [题目链接][1295]。
 
 [题解][1295-solution]。
 
-## 977. Squares of a Sorted Array【Easy】
+## 【1.3】 977. Squares of a Sorted Array【Easy】
 
 [题目链接][977]。
 
 [题解][977-solution]。
 
-## 1089. Duplicate Zeros【Easy】
+需要思考一下。
+
+## 【1.4】 1089. Duplicate Zeros【Easy】
 
 [题目链接][1089]。
 
 [题解][1089-solution]。
 
-## 88. Merge Sorted Array【Easy】
+需要思考一下。
+
+## 【1.5】 88. Merge Sorted Array【Easy】
 
 [题目链接][88]。
 
 [题解][88-solution]。
 
-## 27. Remove Element【Easy】
+## 【1.6】 27. Remove Element【Easy】
 
 [题目链接][27]。
 
 [题解][27-solution]。
 
-## 26. Remove Duplicates from Sorted Array【Easy】
+## 【1.7】 26. Remove Duplicates from Sorted Array【Easy】
 
 [题目链接][26]。
 
 [题解][26-solution]。
 
-## 1346. Check If N and Its Double Exist【Easy】
+## 【1.8】 1346. Check If N and Its Double Exist【Easy】
 
 [题目链接][1346]。
 
 [题解][1346-solution]。
 
-## 941. Valid Mountain Array【Easy】
+## 【1.9】 941. Valid Mountain Array【Easy】
 
 [题目链接][941]。
 
 [题解][941-solution]。
 
-## 1299. Replace Elements with Greatest Element on Right Side【Easy】
+需要思考一下。
+
+## 【1.10】 1299. Replace Elements with Greatest Element on Right Side【Easy】
 
 [题目链接][1299]。
 
 [题解][1299-solution]。
 
-## 283. Move Zeroes【Easy】
+## 【1.11】 283. Move Zeroes【Easy】
 
 [题目链接][283]。
 
 [题解][283-solution]。
 
-## 905. Sort Array By Parity【Easy】
+## 【1.12】 905. Sort Array By Parity【Easy】
 
 [题目链接][905]。
 
 [题解][905-solution]。
 
-## 1051. Height Checker【Easy】
+## 【1.13】 1051. Height Checker【Easy】
 
 [题目链接][1051]。
 
 [题解][1051-solution]。
 
-## 414. Third Maximum Number【Easy】
+需要思考一下，有更好的做法。
+
+## 【1.14】 414. Third Maximum Number【Easy】
 
 [题目链接][414]。
 
 [题解][414-solution]。
 
-## 448. Find All Numbers Disappeared in an Array【Easy】
+## 【1.15】 448. Find All Numbers Disappeared in an Array【Easy】
 
 [题目链接][448]。
 
 [题解][448-solution]。
 
+需要思考一下，有更好的做法。
+
 # 2. Linked List
 
-## 707. Design Linked List【Medium】
+## 【2.1】 707. Design Linked List【Medium】
 
 [题目链接][707]。
 
 [题解][707-solution]。
 
-## 141. Linked List Cycle【Easy】
+## 【2.2】 141. Linked List Cycle【Easy】
 
 [题目链接][141]。
 
 [题解][141-solution]。
 
-## 142. Linked List Cycle II【Medium】
+虽然知道了，但算法很实用。
+
+## 【2.3】 142. Linked List Cycle II【Medium】
 
 [题目链接][142]。
 
 [题解][142-solution]。
 
-## 160. Intersection of Two Linked Lists【Easy】
+虽然知道了，但数学原理很巧妙。
+
+## 【2.4】 160. Intersection of Two Linked Lists【Easy】
 
 [题目链接][160]。
 
 [题解][160-solution]。
 
-## 19. Remove Nth Node From End of List【Medium】
+虽然知道了，但算法很巧妙。
+
+## 【2.5】 19. Remove Nth Node From End of List【Medium】
 
 [题目链接][19]。
 
 [题解][19-solution]。
 
-## 206. Reverse Linked List【Easy】
+虽然知道了，但算法很实用。
+
+## 【2.6】 206. Reverse Linked List【Easy】
 
 [题目链接][206]。
 
 [题解][206-solution]。
 
-## 203. Remove Linked List Elements【Easy】
+虽然知道了，但算法很实用。
+
+## 【2.7】 203. Remove Linked List Elements【Easy】
 
 [题目链接][203]。
 
 [题解][203-solution]。
 
-## 328. Odd Even Linked List【Medium】
+## 【2.8】 328. Odd Even Linked List【Medium】
 
 [题目链接][328]。
 
 [题解][328-solution]。
 
-## 234. Palindrome Linked List【Easy】
+## 【2.9】 234. Palindrome Linked List【Easy】
 
 [题目链接][234]。
 
 [题解][234-solution]。
 
-## 21. Merge Two Sorted Lists【Easy】
+需要思考一下。
+
+## 【2.10】 21. Merge Two Sorted Lists【Easy】
 
 [题目链接][21]。
 
 [题解][21-solution]。
 
-## 2. Add Two Numbers【Medium】
+## 【2.11】 2. Add Two Numbers【Medium】
 
 [题目链接][2]。
 
 [题解][2-solution]。
 
-## 430. Flatten a Multilevel Doubly Linked List【Medium】
+## 【2.12】 430. Flatten a Multilevel Doubly Linked List【Medium】
 
 [题目链接][430]。
 
 [题解][430-solution]。
 
-## 138. Copy List with Random Pointer【Medium】
+需要思考一下。
+
+## 【2.13】 138. Copy List with Random Pointer【Medium】
 
 [题目链接][138]。
 
 [题解][138-solution]。
 
-## 61. Rotate List【Medium】
+需要思考一下，有更巧妙的做法。
+
+## 【2.14】 61. Rotate List【Medium】
 
 [题目链接][61]。
 
@@ -180,177 +206,207 @@
 
 # 3. Binary Tree
 
-## 144. Binary Tree Preorder Traversal【Medium】
+## 【3.1】 144. Binary Tree Preorder Traversal【Medium】
 
 [题目链接][144]。
 
 [题解][144-solution]。
 
-## 94. Binary Tree Inorder Traversal【Medium】
+需要知道迭代方式的实现。
+
+## 【3.2】 94. Binary Tree Inorder Traversal【Medium】
 
 [题目链接][94]。
 
 [题解][94-solution]。
 
-## 145. Binary Tree Postorder Traversal【Medium】
+需要知道迭代方式的实现。
+
+## 【3.3】 145. Binary Tree Postorder Traversal【Medium】
 
 [题目链接][145]。
 
 [题解][145-solution]。
 
-## 102. Binary Tree Level Order Traversal【Medium】
+需要知道迭代方式的实现。
+
+## 【3.4】 102. Binary Tree Level Order Traversal【Medium】
 
 [题目链接][102]。
 
 [题解][102-solution]。
 
-## 104. Maximum Depth of Binary Tree【Easy】
+## 【3.5】 104. Maximum Depth of Binary Tree【Easy】
 
 [题目链接][104]。
 
 [题解][104-solution]。
 
-## 101. Symmetric Tree【Easy】
+## 【3.6】 101. Symmetric Tree【Easy】
 
 [题目链接][101]。
 
 [题解][101-solution]。
 
-## 112. Path Sum【Easy】
+需要知道迭代方式的实现。
+
+## 【3.7】 112. Path Sum【Easy】
 
 [题目链接][112]。
 
 [题解][112-solution]。
 
-## 106. Construct Binary Tree from Inorder and Postorder Traversal【Medium】
+## 【3.8】 106. Construct Binary Tree from Inorder and Postorder Traversal【Medium】
 
 [题目链接][106]。
 
 [题解][106-solution]。
 
-## 105. Construct Binary Tree from Preorder and Inorder Traversal【Medium】
+高效的实现需要避免迭代。
+
+## 【3.9】 105. Construct Binary Tree from Preorder and Inorder Traversal【Medium】
 
 [题目链接][105]。
 
 [题解][105-solution]。
 
-## 116. Populating Next Right Pointers in Each Node【Medium】
+## 【3.10】 116. Populating Next Right Pointers in Each Node【Medium】
 
 [题目链接][116]。
 
 [题解][116-solution]。
 
-## 117. Populating Next Right Pointers in Each Node II【Medium】
+## 【3.11】 117. Populating Next Right Pointers in Each Node II【Medium】
 
 [题目链接][117]。
 
 [题解][117-solution]。
 
-## 236. Lowest Common Ancestor of a Binary Tree【Medium】
+有多种方法。
+
+## 【3.12】 236. Lowest Common Ancestor of a Binary Tree【Medium】
 
 [题目链接][236]。
 
 [题解][236-solution]。
 
-## 297. Serialize and Deserialize Binary Tree【Hard】
+虽然知道了，但算法思想很巧妙。
+
+## 【3.13】 297. Serialize and Deserialize Binary Tree【Hard】
 
 [题目链接][297]。
 
 [题解][297-solution]。
 
+有巧妙的方法，可以避免耗时的切分字符串操作。
+
 # 4. Queue And Stack
 
-## 622. Design Circular Queue【Medium】
+## 【4.1】 622. Design Circular Queue【Medium】
 
 [题目链接][622]。
 
 [题解][622-solution]。
 
-## 200. Number of Islands【Medium】
+## 【4.2】 200. Number of Islands【Medium】
 
 [题目链接][200]。
 
 [题解][200-solution]。
 
-## 752. Open the Lock【Medium】
+记住图的遍历方法。
+
+## 【4.3】 752. Open the Lock【Medium】
 
 [题目链接][752]。
 
 [题解][752-solution]。
 
-## 279. Perfect Squares【Medium】
+改进版的 BFS。
+
+## 【4.4】 279. Perfect Squares【Medium】
 
 [题目链接][279]。
 
 [题解][279-solution]。
 
-## 155. Min Stack【Easy】
+BFS 中的优化技巧。
+
+## 【4.5】 155. Min Stack【Easy】
 
 [题目链接][155]。
 
 [题解][155-solution]。
 
-## 20. Valid Parentheses【Easy】
+## 【4.6】 20. Valid Parentheses【Easy】
 
 [题目链接][20]。
 
 [题解][20-solution]。
 
-## 739. Daily Temperatures【Medium】
+## 【4.7】 739. Daily Temperatures【Medium】
 
 [题目链接][739]。
 
 [题解][739-solution]。
 
-## 150. Evaluate Reverse Polish Notation【Medium】
+学会利用已有的数据。
+
+## 【4.8】 150. Evaluate Reverse Polish Notation【Medium】
 
 [题目链接][150]。
 
 [题解][150-solution]。
 
-## 133. Clone Graph【Medium】
+## 【4.9】 133. Clone Graph【Medium】
 
 [题目链接][133]。
 
 [题解][133-solution]。
 
-## 494. Target Sum【Medium】
+## 【4.10】 494. Target Sum【Medium】
 
 [题目链接][494]。
 
 [题解][494-solution]。
 
-## 232. Implement Queue using Stacks【Easy】
+动态规划的强大威力。
+
+## 【4.11】 232. Implement Queue using Stacks【Easy】
 
 [题目链接][232]。
 
 [题解][232-solution]。
 
-## 225. Implement Stack using Queues【Easy】
+## 【4.12】 225. Implement Stack using Queues【Easy】
 
 [题目链接][225]。
 
 [题解][225-solution]。
 
-## 394. Decode String【Medium】
+## 【4.13】 394. Decode String【Medium】
 
 [题目链接][394]。
 
 [题解][394-solution]。
 
-## 733. Flood Fill【Easy】
+需要思考一下。
+
+## 【4.14】 733. Flood Fill【Easy】
 
 [题目链接][733]。
 
 [题解][733-solution]。
 
-## 542. 01 Matrix【Medium】
+## 【4.15】 542. 01 Matrix【Medium】
 
 [题目链接][542]。
 
 [题解][542-solution]。
 
-## 841. Keys and Rooms【Medium】
+有时暴力破解反而更好用。
+
+## 【4.16】 841. Keys and Rooms【Medium】
 
 [题目链接][841]。
 
@@ -358,187 +414,241 @@
 
 # 5. Binary Search
 
-## 704. Binary Search【Easy】
+## 【5.1】 704. Binary Search【Easy】
 
 [题目链接][704]。
 
 [题解][704-solution]。
 
-## 69. Sqrt(x)【Easy】
+循环不变式。
+
+## 【5.2】 69. Sqrt(x)【Easy】
 
 [题目链接][69]。
 
 [题解][69-solution]。
 
-## 374. Guess Number Higher or Lower【Easy】
+## 【5.3】 374. Guess Number Higher or Lower【Easy】
 
 [题目链接][374]。
 
 [题解][374-solution]。
 
-## 33. Search in Rotated Sorted Array【Medium】
+## 【5.4】 33. Search in Rotated Sorted Array【Medium】
 
 [题目链接][33]。
 
 [题解][33-solution]。
 
-## 278. First Bad Version【Easy】
+## 【5.5】 278. First Bad Version【Easy】
 
 [题目链接][278]。
 
 [题解][278-solution]。
 
-## 162. Find Peak Element【Medium】
+## 【5.6】 162. Find Peak Element【Medium】
 
 [题目链接][162]。
 
 [题解][162-solution]。
 
-## 153. Find Minimum in Rotated Sorted Array【Medium】
+循环不变式的强大威力。
+
+## 【5.7】 153. Find Minimum in Rotated Sorted Array【Medium】
 
 [题目链接][153]。
 
 [题解][153-solution]。
 
-## 34. Find First and Last Position of Element in Sorted Array【Medium】
+循环不变式的强大威力。
+
+## 【5.8】 34. Find First and Last Position of Element in Sorted Array【Medium】
 
 [题目链接][34]。
 
 [题解][34-solution]。
 
-## 658. Find K Closest Elements【Medium】
+## 【5.9】 658. Find K Closest Elements【Medium】
 
 [题目链接][658]。
 
 [题解][658-solution]。
 
-## 50. Pow(x, n)【Medium】
+滑动窗口。
+
+## 【5.10】 50. Pow(x, n)【Medium】
 
 [题目链接][50]。
 
 [题解][50-solution]。
 
-## 367. Valid Perfect Square【Easy】
+## 【5.11】 367. Valid Perfect Square【Easy】
 
 [题目链接][367]。
 
 [题解][367-solution]。
 
-## 744. Find Smallest Letter Greater Than Target【Easy】
+牛顿迭代法。
+
+## 【5.12】 744. Find Smallest Letter Greater Than Target【Easy】
 
 [题目链接][744]。
 
 [题解][744-solution]。
 
-## 154. Find Minimum in Rotated Sorted Array II【Hard】
+## 【5.13】 154. Find Minimum in Rotated Sorted Array II【Hard】
 
 [题目链接][154]。
 
 [题解][154-solution]。
 
-## 349. Intersection of Two Arrays【Easy】
+需要好好思考。
+
+## 【5.14】 349. Intersection of Two Arrays【Easy】
 
 [题目链接][349]。
 
 [题解][349-solution]。
 
-## 350. Intersection of Two Arrays II【Easy】
+## 【5.15】 350. Intersection of Two Arrays II【Easy】
 
 [题目链接][350]。
 
 [题解][350-solution]。
 
-## 167. Two Sum II - Input array is sorted【Easy】
+## 【5.16】 167. Two Sum II - Input array is sorted【Easy】
 
 [题目链接][167]。
 
 [题解][167-solution]。
 
-## 287. Find the Duplicate Number【Medium】
+二分查找将是线性对数的，但是存在线性的实现。
+
+## 【5.17】 287. Find the Duplicate Number【Medium】
 
 [题目链接][287]。
 
 [题解][287-solution]。
 
-## 4. Median of Two Sorted Arrays【Hard】
+二分查找结合遍历的强大威力；惊人的洞察力。
+
+## 【5.18】 4. Median of Two Sorted Arrays【Hard】
 
 [题目链接][4]。
 
 [题解][4-solution]。
 
-## 719. Find K-th Smallest Pair Distance【Hard】
+背后的数学原理，控制变量法。
+
+## 【5.19】 719. Find K-th Smallest Pair Distance【Hard】
 
 [题目链接][719]。
 
 [题解][719-solution]。
 
-## 410. Split Array Largest Sum【Hard】
+二分查找结合遍历的强大威力；内循环的优化
+
+## 【5.20】 410. Split Array Largest Sum【Hard】
 
 [题目链接][410]。
 
 [题解][410-solution]。
 
+二分查找结合遍历的强大威力
+
 # 6. Binary Search Tree
 
-## 98. Validate Binary Search Tree【Medium】
+## 【6.1】 98. Validate Binary Search Tree【Medium】
 
 [题目链接][98]。
 
 [题解][98-solution]。
 
-## 173. Binary Search Tree Iterator【Medium】
+需要好好思考。
+
+## 【6.2】 173. Binary Search Tree Iterator【Medium】
 
 [题目链接][173]。
 
 [题解][173-solution]。
 
-## 700. Search in a Binary Search Tree【Easy】
+## 【6.3】 700. Search in a Binary Search Tree【Easy】
 
 [题目链接][700]。
 
 [题解][700-solution]。
 
-## 701. Insert into a Binary Search Tree【Medium】
+## 【6.4】 701. Insert into a Binary Search Tree【Medium】
 
 [题目链接][701]。
 
 [题解][701-solution]。
 
-## 450. Delete Node in a BST【Medium】
+## 【6.5】 450. Delete Node in a BST【Medium】
 
 [题目链接][450]。
 
 [题解][450-solution]。
 
-## 703. Kth Largest Element in a Stream【Easy】
+## 【6.6】 703. Kth Largest Element in a Stream【Easy】
 
 [题目链接][703]。
 
 [题解][703-solution]。
 
-## 235. Lowest Common Ancestor of a Binary Search Tree【Easy】
+## 【6.7】 235. Lowest Common Ancestor of a Binary Search Tree【Easy】
 
 [题目链接][235]。
 
 [题解][235-solution]。
 
-## 220. Contains Duplicate III【Medium】
+注意二叉搜索树的排序性质。
+
+## 【6.8】 220. Contains Duplicate III【Medium】
 
 [题目链接][220]。
 
 [题解][220-solution]。
 
-## 110. Balanced Binary Tree【Easy】
+区间桶。
+
+## 【6.9】 110. Balanced Binary Tree【Easy】
 
 [题目链接][110]。
 
 [题解][110-solution]。
 
-## 108. Convert Sorted Array to Binary Search Tree【Easy】
+## 【6.10】 108. Convert Sorted Array to Binary Search Tree【Easy】
 
 [题目链接][108]。
 
 [题解][108-solution]。
+
+# 7. Recursive I
+
+## 【7.1】 344. Reverse String【Easy】
+
+[题目链接][344]。
+
+[题解][344-solution]。
+
+## 【7.2】 24. Swap Nodes in Pairs【Medium】
+
+[题目链接][24]。
+
+[题解][24-solution]。
+
+## 【7.3】 119. Pascal's Triangle II【Easy】
+
+[题目链接][119]。
+
+[题解][119-solution]。
+
+## 【7.4】 509. Fibonacci Number【Easy】
+
+[题目链接][119]。
+
+[题解][119-solution]。
 
 
 [485]: https://leetcode.com/problems/max-consecutive-ones/
@@ -617,6 +727,8 @@
 [112-solution]: binarytree/PathSum.java
 [106]: https://leetcode.com/problems/construct-binary-tree-from-inorder-and-postorder-traversal/
 [106-solution]: binarytree/ConstructBinaryTreeFromInorderAndPostorderTraversal.java
+[105]: https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/
+[105-solution]: binarytree/ConstructBinaryTreeFromPreorderAndInorderTraversal.java
 [116]: https://leetcode.com/problems/populating-next-right-pointers-in-each-node/
 [116-solution]: binarytree/PopulatingNextRightPointersInEachNode.java
 [117]: https://leetcode.com/problems/populating-next-right-pointers-in-each-node-ii/
@@ -718,5 +830,13 @@
 [220-solution]: binarysearchtree/ContainsDuplicateIII.java
 [110]: https://leetcode.com/problems/balanced-binary-tree/
 [110-solution]: binarysearchtree/BalancedBinaryTree.java
-[110]: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/
-[110-solution]: binarysearchtree/ConvertSortedArrayToBinarySearchTree.java
+[108]: https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/
+[108-solution]: binarysearchtree/ConvertSortedArrayToBinarySearchTree.java
+[344]: https://leetcode.com/problems/reverse-string/
+[344-solution]: recusion1/ReverseString.java
+[24]: https://leetcode.com/problems/swap-nodes-in-pairs/
+[24-solution]: recusion1/SwapNodesInPairs.java
+[119]: https://leetcode.com/problems/pascals-triangle-ii/
+[119-solution]: recusion1/PascalTriangleII.java
+[509]: https://leetcode.com/problems/fibonacci-number/
+[509-solution]: recusion1/FibonacciNumber.java
