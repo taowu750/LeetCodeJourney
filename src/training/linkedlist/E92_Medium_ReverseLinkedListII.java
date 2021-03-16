@@ -101,21 +101,55 @@ public class E92_Medium_ReverseLinkedListII {
     }
 
 
+    /**
+     * 为了反转链表区域，我们可以移到待反转区域的开头，然后反转前 n=right-left+1 个结点。
+     *
+     * 因此，可以将这个算法分解为两个模块：
+     * - 一个进行递归移动操作
+     * - 一个反转前 n 个结点
+     * 这样简化我们思考的流程。
+     *
+     * 算法思想参见 https://labuladong.gitee.io/algo/数据结构系列/递归反转链表的一部分.html#二、反转链表前-n-个节点
+     */
+    public ListNode modularRecursiveMethod(ListNode head, int left, int right) {
+        if (left == 1)
+            return reverseN(head, right - left + 1);
+        head.next = modularRecursiveMethod(head.next, left - 1, right - 1);
+        return head;
+    }
+
     private ListNode successor;
 
     /**
-     * 算法思想参见 https://labuladong.gitee.io/algo/数据结构系列/递归反转链表的一部分.html#二、反转链表前-n-个节点
+     * 反转链表前 N 个节点。
      */
-    public ListNode recursiveMethod(ListNode head, int left, int right) {
+    private ListNode reverseN(ListNode head, int n) {
+        if (n == 1) {
+            successor = head.next;
+            return head;
+        }
+        ListNode last = reverseN(head.next, n - 1);
+        head.next.next = head;
+        head.next = successor;
+        return last;
+    }
+
+    @Test
+    public void testModularRecursiveMethod() {
+        test(this::modularRecursiveMethod);
+    }
+
+
+    public ListNode betterRecursiveMethod(ListNode head, int left, int right) {
         if (left > 1) {
-            head.next = recursiveMethod(head.next, left - 1, right - 1);
+            head.next = betterRecursiveMethod(head.next, left - 1, right - 1);
             return head;
         } else if (left >= right) {
             successor = head.next;
             return head;
         } else {
             // 注意，不要让 left + 1，否则下一次递归会进入 left > 1 条件中
-            ListNode last = recursiveMethod(head.next, left, right - 1);
+            ListNode last = betterRecursiveMethod(head.next, left, right - 1);
             head.next.next = head;
             head.next = successor;
             return last;
@@ -124,6 +158,6 @@ public class E92_Medium_ReverseLinkedListII {
 
     @Test
     public void testRecursiveMethod() {
-        test(this::recursiveMethod);
+        test(this::betterRecursiveMethod);
     }
 }
