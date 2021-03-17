@@ -63,6 +63,9 @@ public class E226_Easy_InvertBinaryTree {
     public TreeNode invertTree(TreeNode root) {
         if (root == null)
             return null;
+        // 以下代码放在后序也是可以的，但在中序不行。
+        // 因为先处理了左子树，再处理根结点，这样左子树被换到了右子树，
+        // 于是左子树会被处理两次，而右子树不会被处理。
         TreeNode tmp = root.left;
         root.left = root.right;
         root.right = tmp;
