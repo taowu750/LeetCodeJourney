@@ -18,6 +18,23 @@ public class TreeNode extends BinaryTreeNode<TreeNode> {
         super(val, left, right);
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == this)
+            return true;
+        if (!(obj instanceof TreeNode))
+            return false;
+        TreeNode other = (TreeNode) obj;
+        return equals(this, other);
+    }
+
+    @Override
+    public String toString() {
+        return "TreeNode(" +
+                + val +
+                ')';
+    }
+
     public static TreeNode newTree(Integer... vals) {
         return newTree(TreeNode.class, vals);
     }
