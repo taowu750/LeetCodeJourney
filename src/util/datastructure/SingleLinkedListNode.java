@@ -91,4 +91,13 @@ public class SingleLinkedListNode<T extends SingleLinkedListNode<T>> {
         }
         return head == null;
     }
+
+    public static <T extends SingleLinkedListNode<T>> boolean circularListEqual(T head, int... comparedElements) {
+        T p = head;
+        for (int i = 0; i < comparedElements.length; i++, p = p.next) {
+            if (p == null || p.val != comparedElements[i])
+                return false;
+        }
+        return head == p;
+    }
 }
