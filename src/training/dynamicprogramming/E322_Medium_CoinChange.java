@@ -130,15 +130,19 @@ public class E322_Medium_CoinChange {
      *              | -1, n < 0
      *              | min{dp(n - coin) + 1 | coin in coins}, n > 0
      *
-     * LeetCode 耗时：106ms - 8.02%
-     *          内存消耗：40 MB - 20.92%
+     * LeetCode 耗时：25ms - 31.24%
+     *          内存消耗：39.2 MB - 27.23%
      */
     public int topDownDp(int[] coins, int amount) {
-        Map<Integer, Integer> memory = new HashMap<>();
+        // 状态是金额，值是凑成这个金额所需的硬币数
+        int[] memory = new int[amount + 1];
+        // 因为凑成 amount 金额的硬币数最多只可能等于 amount（全用 1 元面值的硬币），
+        // 所以初始化为 amount + 1 就相当于初始化为正无穷，便于后续取最小值。
+        Arrays.fill(memory, amount + 1);
         return dp(coins, amount, memory);
     }
 
-    private int dp(int[] coins, int amount, Map<Integer, Integer> memory) {
+    private int dp(int[] coins, int amount, int[] memory) {
         // 基准条件
         if (amount == 0)
             return 0;
@@ -146,12 +150,12 @@ public class E322_Medium_CoinChange {
             return -1;
 
         // 保存的子问题
-        int exist = memory.getOrDefault(amount, -2);
-        if (exist != -2)
+        int exist = memory[amount];
+        if (exist != memory.length)
             return exist;
 
         // 自顶向下求解
-        int res = Integer.MAX_VALUE;
+        int res = memory.length;
         for (int coin : coins) {
             int subSolution = dp(coins, amount - coin, memory);
             // 跳过没有解的子问题
@@ -161,9 +165,9 @@ public class E322_Medium_CoinChange {
             res = Math.min(res, 1 + subSolution);
         }
         // 所有子问题都无解，则最终无解
-        res = res != Integer.MAX_VALUE ? res : -1;
+        res = res != memory.length ? res : -1;
         // 保存子问题的解
-        memory.put(amount, res);
+        memory[amount] = res;
 
         return res;
     }
