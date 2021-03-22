@@ -45,6 +45,7 @@ public class E887_Hard_SuperEggDrop {
         assertEquals(method.applyAsInt(2, 3), 2);
         assertEquals(method.applyAsInt(2, 2), 2);
         assertEquals(method.applyAsInt(2, 7), 4);
+        assertEquals(method.applyAsInt(8, 1000), 10);
     }
 
     /**
@@ -177,5 +178,59 @@ public class E887_Hard_SuperEggDrop {
     @Test
     public void testBinarySearchMethod() {
         test(this::binarySearchMethod);
+    }
+
+
+    /**
+     * LeetCode 耗时：3 ms - 81.49%
+     *          内存消耗：39.3 MB - 65.92%
+     */
+    public int reverseMethod(int k, int n) {
+        if (k == 1 || n == 1)
+            return n;
+
+        // 最坏情况下的最少扔鸡蛋次数
+        int m = 0;
+        // 这个 dp 数组的状态是 dp[鸡蛋数][最多允许的扔鸡蛋次数]，值是最多能确切测试多少层。
+        // m 不会超过 n（线性扫描）
+        int[][] dp = new int[k + 1][n + 1];
+        // 时间复杂度：O(k * n)
+        for (int i = 1; i <= k; i++) {
+            for (m = 1; m <= n; m++) {
+                dp[i][m] = dp[i][m - 1] + dp[i - 1][m - 1] + 1;
+                if (dp[i][m] >= n)
+                    break;
+            }
+        }
+
+        return m;
+    }
+
+    @Test
+    public void testReverseMethod() {
+        test(this::reverseMethod);
+    }
+
+
+    /**
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：35.7 MB - 97.40%
+     */
+    public int reverseCompressMethod(int k, int n) {
+        if (k == 1 || n == 1)
+            return n;
+
+        // 状态压缩
+        int[] dp = new int[k + 1];
+        int m;
+        for (m = 0; dp[k] < n; ++m)
+            for (int i = k; i > 0; --i)
+                dp[i] += dp[i - 1] + 1;
+        return m;
+    }
+
+    @Test
+    public void testReverseCompressMethod() {
+        test(this::reverseCompressMethod);
     }
 }
