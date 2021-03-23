@@ -42,6 +42,9 @@ public class E1143_Medium_LongestCommonSubsequence {
         assertEquals(method.applyAsInt("abcde", "ace"), 3);
         assertEquals(method.applyAsInt("abc", "abc"), 3);
         assertEquals(method.applyAsInt("abc", "def"), 0);
+        assertEquals(method.applyAsInt("abcba", "abcbcba"), 5);
+        assertEquals(method.applyAsInt("bsbininm", "jmjkbkjkv"), 1);
+        assertEquals(method.applyAsInt("bl", "yby"), 1);
     }
 
     public int longestCommonSubsequence(String text1, String text2) {
@@ -74,7 +77,8 @@ public class E1143_Medium_LongestCommonSubsequence {
         int m = text1.length(), n = text2.length();
         final int[][] dp = new int[m][n];
 
-        // 注意需要正斜着扫描。因为遍历的过程中，所需的状态必须是已经计算出来的。
+        // 最开始理解错了，以为顺序扫描下所需状态没有被计算出来的，所以用了正斜着扫描。
+        // 我还写了一个去掉循环中下标判断的方法，但是效果没有提升，应该是虚拟机做了优化。
         for (int size = 1; size <= m + n - 1; size++) {
             int iMax = Math.min(size, m);
             for (int i = (n >= size ? 0 : size - n); i < iMax; i++) {
@@ -97,18 +101,15 @@ public class E1143_Medium_LongestCommonSubsequence {
 
 
     /**
-     * 结果没有任何改进，应该是判断已经被优化掉了。
+     * LeetCode 耗时：9 ms - 83.27%
+     *          内存消耗：42.8 MB - 51.93%
      */
-    public int failedTrickDpMethod(String text1, String text2) {
-        int m = text1.length(), n = text2.length();
-        // 相较于 dpTableMethod，避免了在循环中对下标进行判断
+    public int betterMethod(String text1, String text2) {
+        final int m = text1.length(), n = text2.length();
         final int[][] dp = new int[m + 1][n + 1];
 
-        // 注意需要正斜着扫描。因为遍历的过程中，所需的状态必须是已经计算出来的。
-        for (int size = 1; size <= m + n - 1; size++) {
-            int iMax = Math.min(size, m);
-            for (int i = (n >= size ? 1 : size - n + 1); i <= iMax; i++) {
-                int j = size - i + 1;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
                 if (text1.charAt(i - 1) == text2.charAt(j - 1))
                     dp[i][j] = dp[i - 1][j - 1] + 1;
                 else
@@ -120,7 +121,48 @@ public class E1143_Medium_LongestCommonSubsequence {
     }
 
     @Test
-    public void testTrickDpMethod() {
-        test(this::failedTrickDpMethod);
+    public void testBetterMethod() {
+        test(this::betterMethod);
+    }
+
+
+    /**
+     * LeetCode 耗时：8 ms - 93.60%
+     *          内存消耗：37 MB - 96.94%
+     */
+    public int compressedMethod(String text1, String text2) {
+        // 我们只需要前一列和当前列的信息就可以更新当前行。
+        // 结果实验，发现其实压缩行或压缩列都可以。
+
+        // 保证列的长度大于等于行
+        if (text1.length() < text2.length()) {
+            String tmp = text1;
+            text1 = text2;
+            text2 = tmp;
+        }
+
+        final int m = text1.length(), n = text2.length();
+        final int[] dp = new int[n + 1];
+
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1, prevRow = 0, prevRowPrevCol; j <= n; j++) {
+                // 因为可能用到 [i - 1][j - 1]、[i - 1][j]、[i][j - 1] 的值，为了不让值被覆盖，需要进行记录。
+                // prevRow 保存 dp[i - 1][j] 的值；prevRowPrevCol 保存 dp[i - 1][j - 1] 的值
+
+                prevRowPrevCol = prevRow;
+                prevRow = dp[j];
+                if (text1.charAt(i - 1) == text2.charAt(j - 1))
+                    dp[j] = prevRowPrevCol + 1;
+                else
+                    dp[j] = Math.max(prevRow, dp[j - 1]);
+            }
+        }
+
+        return dp[n];
+    }
+
+    @Test
+    public void testCompressedMethod() {
+        test(this::compressedMethod);
     }
 }
