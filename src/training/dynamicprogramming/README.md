@@ -857,19 +857,15 @@ public int superEggDrop(int k, int n) {
     // 这个 dp 数组的状态是 dp[鸡蛋数][最多允许的扔鸡蛋次数]，值是最多能确切测试多少层。
     // m 不会超过 n（线性扫描）
     int[][] dp = new int[k + 1][n + 1];
-    for (int i = 1; i <= k; i++) {
-        dp[i][1] = 1;
-    }
-
     // 时间复杂度：O(k * n)
     for (int i = 1; i <= k; i++) {
-        for (m = 2; m <= n; m++) {
+        for (m = 1; m <= n; m++) {
             dp[i][m] = dp[i][m - 1] + dp[i - 1][m - 1] + 1;
             if (dp[i][m] >= n)
                 break;
         }
     }
-
+    
     return m;
 }
 ```
@@ -892,6 +888,347 @@ public int superEggDrop(int k, int n) {
 }
 ```
 
+# 4. 子序列动态规划
+
+子序列类型的问题，穷举出所有可能的结果都不容易，而动态规划算法做的就是穷举 + 剪枝，它俩天生一对儿。所以可以说只要涉及子序列问题，
+十有八九都需要动态规划来解决，往这方面考虑就对了。
+
+## 4.1 例 1：最长公共子序列
+
+最长公共子序列（Longest Common Subsequence，简称 LCS）是一道非常经典的面试题目，因为它的解法是典型的二维动态规划，
+大部分比较困难的字符串问题都和这个问题一个套路，比如下一个例题“编辑距离”。而且，这个算法稍加改造就可以用于解决其他问题，
+所以说 LCS 算法是值得掌握的。下面是题目：
+
+![最长公共子序列][lcs]
+
+### 4.1.1 明确 dp 数组的含义
+
+**第一步，一定要明确 `dp` 数组的含义**。对于两个字符串的动态规划问题，套路是通用的。
+对于两个字符串求子序列的问题，都是用两个指针 `i` 和 `j` 分别在两个字符串上移动，大概率是动态规划思路。
+
+比如说对于字符串 `s1 = "babcde"` 和 `s2 = "ace"`，一般来说都要构造一个这样的 DP table：
+
+![LCS DP table][lcs-table]
+
+为了方便理解此表，我们暂时认为索引是从 1 开始的，待会的代码中只要稍作调整即可。其中，`dp[i][j]` 的含义是：
+对于 `s1[1..i]` 和 `s2[1..j]`，它们的 LCS 长度是 `dp[i][j]`。
+
+### 4.1.2 定义 base case
+
+我们专门让索引为 0 的行和列表示空串，`dp[0][..]` 和 `dp[..][0]` 都应该初始化为 0，这就是 base case。
+
+比如说，按照刚才 dp 数组的定义，`dp[0][3]=0` 的含义是：对于字符串 `""` 和 `"bab"`，其 LCS 的长度为 0。
+因为有一个字符串是空串，它们的最长公共子序列的长度显然应该是 0。
+
+### 4.1.3 找状态转移方程
+
+这是动态规划最难的一步，不过好在这种字符串问题的套路都差不多，权且借这道题来聊聊处理这类问题的思路。
+
+**状态转移说简单些就是做选择**，比如说这个问题，是求 `s1` 和 `s2` 的最长公共子序列，不妨称这个子序列为 `lcs`。
+那么对于 `s1` 和 `s2` 中的每个字符，有什么选择？很简单，**两种选择，要么在 `lcs` 中，要么不在**。
+
+![lcs][lcs-sub]
+
+这个「在」和「不在」就是选择，关键是，应该如何选择呢？这个需要动点脑筋：如果某个字符应该在 `lcs` 中，
+那么这个字符肯定同时存在于 `s1` 和 `s2` 中，因为 `lcs` 是最长公共子序列嘛。
+
+所以本题的思路是这样：用两个指针 `i` 和 `j` 从后往前遍历 `s1` 和 `s2`，如果 `s1[i]==s2[j]`，那么这个字符一定在 `lcs` 中；
+否则的话，`s1[i]` 和 `s2[j]` 这两个字符至少有一个不在 `lcs` 中，需要丢弃一个——因为 `i`、`j` 之前的 `lcs` 都已被计算出（根据递归的定义）。
+这也是从后往前遍历 `s1` 和 `s2` 的原因。4.1.3.4 节的 dp 数组解法更能看出这一点。
+
+你可能会问：当 `s1[i]` 和 `s2[j]` 不相等时，为什么不考虑它们都不在 `lcs` 中的情况呢？因为我们在求最大值，
+`s1[i+1..]` 和 `s2[j+1..]` 的 `lcs` 长度，这个长度肯定是小于等于 `s1[i..]` 和 `s2[j+1..]` 中的 `lcs` 长度的，
+因为 `s1[i+1..]` 比 `s1[i..]` 短，那从这里面算出的 `lcs` 当然也不可能更长。
+
+先看一下递归解法，比较容易理解：
+```java
+public int longestCommonSubsequence(String text1, String text2) {
+    return dp(text1, text1.length() - 1, text2, text2.length() - 1);
+}
+
+private int dp(String text1, int i, String text2, int j) {
+    // 其中一个是空串
+    if (i == -1 || j == -1)
+        return 0;
+    if (text1.charAt(i) == text2.charAt(j))
+        // 找到一个 lcs 的元素，继续往前找
+        return dp(text1, i - 1, text2, j - 1) + 1;
+    else
+        // 从两个里面选最长的
+        return Math.max(dp(text1, i - 1, text2, j), dp(text1, i, text2, j - 1));
+}
+```
+
+对于第一种情况，找到一个 `lcs` 中的字符，同时将 `i, j` 向前移动一位，并给 `lcs` 的长度加一；
+对于后者，则尝试两种情况，取更大的结果。
+
+### 4.1.4 dp 数组的迭代解法
+
+我们也很容易写出迭代解法。如下所示：
+```java
+public int longestCommonSubsequence(String text1, String text2) {
+    final int m = text1.length(), n = text2.length();
+    final int[][] dp = new int[m + 1][n + 1];
+    
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (text1.charAt(i - 1) == text2.charAt(j - 1))
+                dp[i][j] = dp[i - 1][j - 1] + 1;
+            else
+                dp[i][j] = Math.max(dp[i - 1][j], dp[i][j - 1]);
+        }
+    }
+    
+    return dp[m][n];
+}
+```
+
+### 4.1.5 状态压缩
+
+我们也可以进行状态压缩，使得空间复杂度减少为 O(n)：
+```java
+public int longestCommonSubsequence(String text1, String text2) {
+    // 我们只需要前一列和当前列的信息就可以更新当前行。
+    // 结果实验，发现其实压缩行或压缩列都可以。
+
+    // 保证列的长度大于等于行
+    if (text1.length() < text2.length()) {
+        String tmp = text1;
+        text1 = text2;
+        text2 = tmp;
+    }
+
+    final int m = text1.length(), n = text2.length();
+    final int[] dp = new int[n + 1];
+
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1, prevRow = 0, prevRowPrevCol; j <= n; j++) {
+            // 因为可能用到 [i - 1][j - 1]、[i - 1][j]、[i][j - 1] 的值，为了不让值被覆盖，需要进行记录。
+            // prevRow 保存 dp[i - 1][j] 的值；prevRowPrevCol 保存 dp[i - 1][j - 1] 的值
+
+            prevRowPrevCol = prevRow;
+            prevRow = dp[j];
+            if (text1.charAt(i - 1) == text2.charAt(j - 1))
+                dp[j] = prevRowPrevCol + 1;
+            else
+                dp[j] = Math.max(prevRow, dp[j - 1]);
+        }
+    }
+
+    return dp[n];
+}
+```
+需要注意的是，因为可能会用到左上、左边和上边的数据，为了防止数据被覆盖，我们需要跟踪并保存数据。
+
+## 4.2 例 2：编辑距离
+
+下面是题目：
+
+![编辑距离][edit-distance]
+
+为什么说这个问题难呢，因为显而易见，它就是难，让人手足无措，望而生畏。
+
+为什么说它实用呢，因为前几天我就在日常生活中用到了这个算法。之前有一篇公众号文章由于疏忽，写错位了一段内容，
+我决定修改这部分内容让逻辑通顺。但是公众号文章最多只能修改 20 个字，且只支持增、删、替换操作（跟编辑距离问题一模一样），
+于是我就用算法求出了一个最优方案，只用了 16 步就完成了修改。
+
+再比如高大上一点的应用，DNA 序列是由 A,G,C,T 组成的序列，可以类比成字符串。编辑距离可以衡量两个 DNA 序列的相似度，编辑距离越小，
+说明这两段 DNA 越相似，说不定这俩 DNA 的主人是远古近亲啥的。
+
+### 4.2.1 思路
+
+编辑距离问题就是给我们两个字符串 `s1` 和 `s2`，只能用三种操作，让我们**把 `s1` 变成 `s2`**，求最少的操作数。需要明确的是，
+不管是把 `s1` 变成 `s2` 还是反过来，结果都是一样的，所以后文就以 `s1` 变成 `s2` 举例。
+
+![替换过程][edit-distance-procedure]
+
+![步骤][edit-distance-static]
+
+根据上面的 GIF，可以发现操作不只有三个，其实还有第四个操作，就是当两个字符相等时，什么都不要做（skip）。
+
+还有一个很容易处理的情况，就是 `j` 走完 `s2` 时，如果 `i` 还没走完 `s1`，那么只能用删除操作把 `s1` 缩短为 `s2`。
+
+类似的，如果 `i` 走完 `s1` 时 `j` 还没走完了 `s2`，那就只能用插入操作把 `s2` 剩下的字符全部插入 `s1`。等会会看到，
+这两种情况就是算法的 **base case**。
+
+### 4.2.2 代码详解
+
+先梳理一下之前的思路：base case 是 `i` 走完 `s1` 或 `j` 走完 `s2`，可以直接返回另一个字符串剩下的长度。
+
+对于每对儿字符 `s1[i]` 和 `s2[j]`，可以有四种操作：
+```python
+if s1[i] == s2[j]:
+    啥都别做（skip）
+    i, j 同时向前移动
+else:
+    三选一：
+        插入（insert）
+        删除（delete）
+        替换（replace）
+```
+
+有这个框架，问题就已经解决了。读者也许会问，这个「三选一」到底该怎么选择呢？很简单，全试一遍，哪个操作最后得到的编辑距离最小，
+就选谁。这里需要递归技巧，理解需要点技巧，先看下代码：
+```java
+public int minDistance(String word1, String word2) {
+    IntBinaryOperator[] dp = new IntBinaryOperator[1];
+    dp[0] = (i, j) -> {
+        // base case
+        if (i == -1)
+            return j + 1;
+        if (j == -1)
+            return i + 1;
+
+        if (word1.charAt(i) == word2.charAt(j))
+            return dp[0].applyAsInt(i - 1, j - 1);            // 什么都不用做
+        else
+            return Math.min(dp[0].applyAsInt(i, j - 1),       // 插入
+                    Math.min(dp[0].applyAsInt(i - 1, j),      // 删除
+                            dp[0].applyAsInt(i - 1, j - 1)))  // 替换
+                    + 1;                                      // 本次操作
+    };
+
+    return dp[0].applyAsInt(word1.length() - 1, word2.length() - 1);
+}
+```
+
+我们这里 `dp(i, j)` 函数的定义是这样的：
+```
+返回 s1[0..i] 和 s2[0..j] 的最小编辑距离
+```
+
+记住这个定义之后，先来看这段代码：
+```
+if s1[i] == s2[j]:
+    return dp(i - 1, j - 1)  # 啥都不做
+# 解释：
+# 本来就相等，不需要任何操作
+# s1[0..i] 和 s2[0..j] 的最小编辑距离等于
+# s1[0..i-1] 和 s2[0..j-1] 的最小编辑距离
+# 也就是说 dp(i, j) 等于 dp(i-1, j-1)
+```
+
+如果 `s1[i] != s2[j]`，就要对三个操作递归了，稍微需要点思考：
+```
+dp(i, j - 1) + 1,    # 插入
+# 解释：
+# 我直接在 s1[i] 插入一个和 s2[j] 一样的字符
+# 那么 s2[j] 就被匹配了，前移 j，继续跟 i 对比
+# 别忘了操作数加一
+
+dp(i - 1, j) + 1,    # 删除
+# 解释：
+# 我直接把 s[i] 这个字符删掉
+# 前移 i，继续跟 j 对比
+# 操作数加一
+
+dp(i - 1, j - 1) + 1 # 替换
+# 解释：
+# 我直接把 s1[i] 替换成 s2[j]，这样它俩就匹配了
+# 同时前移 i，j 继续对比
+# 操作数加一
+```
+
+### 4.2.3 dp 数组的迭代解法
+
+下面是 DP table 的解法：
+```java
+public int minDistance(String word1, String word2) {
+    if (word1.length() == 0)
+        return word2.length();
+    if (word2.length() == 0)
+        return word1.length();
+
+    final int m = word1.length(), n = word2.length();
+    // dp[i][j] 表示要使得 word1[0..i] == word2[0..j]，所需要的最小操作次数。
+    final int[][] dp = new int[m + 1][n + 1];
+
+    // base case
+    for (int k = 1; k <= m; k++)
+        dp[k][0] = k;
+    for (int k = 1; k <= n; k++)
+        dp[0][k] = k;
+
+    for (int i = 1; i <= m; i++) {
+        for (int j = 1; j <= n; j++) {
+            if (word1.charAt(i - 1) == word2.charAt(j - 1))
+                dp[i][j] = dp[i - 1][j - 1];            // 相等就不需要操作
+            else
+                dp[i][j] = Math.min(dp[i - 1][j - 1],   // 替换
+                        Math.min(dp[i - 1][j],          // 删除
+                                dp[i][j - 1]))          // 插入
+                        + 1;                            // 加上这一次操作
+        }
+    }
+
+    return dp[m][n];
+}
+```
+
+### 4.2.4 扩展延伸
+
+一般来说，处理两个字符串的动态规划问题，都是按本文的思路处理，建立 DP table。为什么呢，因为易于找出状态转移的关系，
+比如编辑距离的 DP table：
+
+![DP table][edit-distance-table]
+
+你可能还会问，这里只求出了最小的编辑距离，那具体的操作是什么？之前举的修改公众号文章的例子，只有一个最小编辑距离肯定不够，
+还得知道具体怎么修改才行。这个其实很简单，代码稍加修改，给 `dp` 数组增加额外的信息即可：
+```java
+// int[][] dp;
+Node[][] dp;
+
+class Node {
+    int val;
+    int choice;
+    // 0 代表啥都不做
+    // 1 代表插入
+    // 2 代表删除
+    // 3 代表替换
+}
+```
+
+我们的最终结果不是 `dp[m][n]` 吗，这里的 `val` 存着最小编辑距离，`choice` 存着最后一个操作，比如说是插入操作，
+那么就可以左移一格：
+
+![回溯操作][edit-distance-choice]
+
+重复此过程，可以一步步回到起点 `dp[0][0]`，形成一条路径，按这条路径上的操作编辑对应索引的字符，就是最佳方案：
+
+![完整操作路径][edit-distance-path]
+
+# 5. dp 数组的遍历方向
+
+我相信读者做动态规划问题时，肯定会对 `dp` 数组的遍历顺序有些头疼。我们拿二维 `dp` 数组来举例，有时候我们是正向遍历：
+```java
+int[][] dp = new int[m][n];
+for (int i = 0; i < m; i++)
+    for (int j = 0; j < n; j++)
+        // 计算 dp[i][j]
+```
+
+有时候我们反向遍历：
+```java
+for (int i = m - 1; i >= 0; i--)
+    for (int j = n - 1; j >= 0; j--)
+        // 计算 dp[i][j]
+```
+
+有时候可能会斜向遍历：
+```java
+// 正斜遍历数组
+for (int l = 2; l <= n; l++) {
+    for (int i = 0; i <= n - l; i++) {
+        int j = l + i - 1;
+        // 计算 dp[i][j]
+    }
+}
+```
+
+甚至更让人迷惑的是，有时候发现正向反向遍历都可以得到正确答案。那么，如果仔细观察的话可以发现其中的原因的。你只要把住两点就行了：
+1. 遍历的过程中，所需的状态必须是已经计算出来的。
+2. 遍历的终点必须是存储结果的那个位置。
+
 
 [fib]: ../../../res/img/dp-fib.jpg
 [fib-reduce]: ../../../res/img/dp-fib-reduce.jpg
@@ -904,5 +1241,14 @@ public int superEggDrop(int k, int n) {
 [four-procedure]: ../../../res/img/dp-four-procedure.jpg
 [egg-function]: ../../../res/img/dp-egg-function.jpg
 [egg-func-graph]: ../../../res/img/dp-egg-func-graph.jpg
+[lcs]: ../../../res/img/dp-lcs.png
+[lcs-table]: ../../../res/img/dp-lcs-table.jpg
+[lcs-sub]: ../../../res/img/dp-lcs-sub.jpg
+[edit-distance]: ../../../res/img/dp-edit-distance.jpg
+[edit-distance-procedure]: ../../../res/img/dp-edit-distance-procedure.gif
+[edit-distance-static]: ../../../res/img/dp-edit-distance-static.jpg
+[edit-distance-table]: ../../../res/img/dp-edit-distance-table.jpg
+[edit-distance-choice]: ../../../res/img/dp-edit-distance-choice.jpg
+[edit-distance-path]: ../../../res/img/dp-edit-distance-path.jpg
 
 <b id="f1">\[1\]</b> https://labuladong.gitee.io/algo/动态规划系列/动态规划详解进阶.html [↩](#a1)  
