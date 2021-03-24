@@ -1165,7 +1165,50 @@ public int minDistance(String word1, String word2) {
 }
 ```
 
-### 4.2.4 扩展延伸
+### 4.2.4 状态压缩
+
+下面是状态压缩后的代码：
+```java
+public int minDistance(String word1, String word2) {
+    if (word1.length() == 0)
+        return word2.length();
+    if (word2.length() == 0)
+        return word1.length();
+
+    final int m = word1.length(), n = word2.length();
+    final int[] dp = new int[n + 1];
+
+    // 初始化 word1 长度为 0 的情况
+    for (int k = 1; k <= n; k++)
+        dp[k] = k;
+
+    for (int i = 1; i <= m; i++) {
+        // prevCol 保存当前行前一列的数据。
+        // 我们压缩行，因此当前行前一列的数据需要保存，防止被覆盖
+        int prevCol = i;
+        for (int j = 1; j <= n; j++) {
+            int cur;
+            // dp[j - 1] 表示左上的数据： dp[i - 1][j - 1]
+            // dp[j] 表示上一行的数据： dp[i - 1][j]
+            if (word1.charAt(i - 1) == word2.charAt(j - 1))
+                cur = dp[j - 1];
+            else
+                cur = Math.min(dp[j],       // 删除
+                        Math.min(dp[j - 1], // 替换
+                                prevCol))   // 插入
+                        + 1;
+            dp[j - 1] = prevCol;
+            prevCol = cur;
+        }
+        // 注意循环中只更新了 dp[j - 1]，因此不要忘了更新最后的 dp[n]
+        dp[n] = prevCol;
+    }
+
+    return dp[n];
+}
+```
+
+### 4.2.5 扩展延伸
 
 一般来说，处理两个字符串的动态规划问题，都是按本文的思路处理，建立 DP table。为什么呢，因为易于找出状态转移的关系，
 比如编辑距离的 DP table：
