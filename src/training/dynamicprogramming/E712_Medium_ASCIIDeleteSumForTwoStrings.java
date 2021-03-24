@@ -73,4 +73,42 @@ public class E712_Medium_ASCIIDeleteSumForTwoStrings {
     public void testMinimumDeleteSum() {
         test(this::minimumDeleteSum);
     }
+
+
+    /**
+     * 压缩思路和{@link E72_Hard_EditDistance}一样。
+     *
+     * LeetCode 耗时：15 ms - 87.45%
+     *          内存消耗：37.3 MB - 98.56%
+     */
+    public int compressMethod(String s1, String s2) {
+        final int m = s1.length(), n = s2.length();
+        final int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++)
+            dp[i] = dp[i - 1] + s2.charAt(i - 1);
+
+        int s1Sum = 0;
+        for (int i = 1; i <= m; i++) {
+            s1Sum += s1.charAt(i - 1);
+            int prevCol = s1Sum;
+            for (int j = 1; j <= n; j++) {
+                int cur;
+                if (s1.charAt(i - 1) == s2.charAt(j - 1))
+                    cur = dp[j - 1];
+                else
+                    cur = Math.min(dp[j] + s1.charAt(i - 1),
+                            prevCol + s2.charAt(j - 1));
+                dp[j - 1] = prevCol;
+                prevCol = cur;
+            }
+            dp[n] = prevCol;
+        }
+
+        return dp[n];
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
+    }
 }
