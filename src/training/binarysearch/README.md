@@ -277,7 +277,7 @@ return nums[left-1] == target ? (left-1) : -1;
 
 [b1]: ../../learn/binarysearch/BinarySearch.java
 [b2]: ../../learn/binarysearch/BinarySearchII.java
-[b1]: ../../learn/binarysearch/BinarySearchIII.java
+[b3]: ../../learn/binarysearch/BinarySearchIII.java
 
 [left-bound]: ../../../res/img/binarysearch-left-bound.png
 [right-bound]: ../../../res/img/binarysearch-right-bound.png
