@@ -1383,6 +1383,85 @@ public int lengthOfLIS(int[] nums) {
 }
 ```
 
+## 4.4 例 4：信封嵌套
+
+很多算法问题都需要排序技巧，其难点不在于排序本身，而是需要巧妙地排序进行预处理，将算法问题进行转换，为之后的操作打下基础。
+
+信封嵌套问题就需要先按特定的规则排序，之后就转换为一个最长递增子序列问题，可以用例 3 的技巧来解决了。
+
+### 4.4.1 题目概述
+
+![信封嵌套][nest-question]
+
+这道题目其实是最长递增子序列（Longes Increasing Subsequence，简写为 LIS）的一个变种，因为很显然，每次合法的嵌套是大的套小的，
+相当于找一个最长递增的子序列，其长度就是最多能嵌套的信封个数。
+
+但是难点在于，标准的 LIS 算法只能在数组中寻找最长子序列，而我们的信封是由 `(w,h)` 这样的二维数对形式表示的，如何把 LIS 算法运用过来呢？
+
+### 4.4.2 解法
+
+这道题的解法是比较巧妙的：
+先对宽度 `w` 进行升序排序，如果遇到 `w` 相同的情况，则按照高度 `h` 降序排序。之后把所有的 `h` 作为一个数组，
+在这个数组上计算 LIS 的长度就是答案。
+
+![排序][nest-sort]
+
+然后在 `h` 上寻找最长递增子序列：
+
+![LIS][nest-lis]
+
+这个解法的关键在于，对于宽度 `w` 相同的数对，要对其高度 `h` 进行降序排序。
+**因为两个宽度相同的信封不能相互包含的，而逆序排序保证在 `w` 相同的数对中最多只选取一个计入 LIS**。
+
+下面看代码：
+```java
+public int maxEnvelopes(int[][] envelopes) {
+    // 将信封先按照宽度升序排序，再按照高度降序排序。
+    // 之所以按照高度降序排序，是因为相同宽度的信封是不能包含的。
+    Arrays.sort(envelopes, (ei, ej) -> {
+        int cmp;
+        return (cmp = Integer.compare(ei[0], ej[0])) != 0
+                ? cmp
+                : -Integer.compare(ei[1], ej[1]);
+    });
+
+    // 最后求高度的最长递增子序列
+    return lengthOfLIS(envelopes);
+}
+
+private int lengthOfLIS(int[][] nums) {
+    int[] top = new int[nums.length];
+    int piles = 0;
+
+    for (int i = 0; i < nums.length; i++) {
+        int lo = 0, hi = piles;
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (nums[i][1] > top[mid])
+                lo = mid + 1;
+            else
+                hi = mid;
+        }
+        if (lo == piles)
+            piles++;
+        top[lo] = nums[i][1];
+    }
+
+    return piles;
+}
+```
+
+### 4.4.3 拓展
+
+其实这种问题还可以拓展到三维，比如说现在不是让你嵌套信封，而是嵌套箱子，每个箱子有长宽高三个维度，
+请你算算最多能嵌套几个箱子？
+
+我们可能会这样想，先把前两个维度（长和宽）按信封嵌套的思路求一个嵌套序列，最后在这个序列的第三个维度（高度）找一下 LIS，
+应该能算出答案。
+
+实际上，这个思路是错误的。这类问题叫做**偏序问题**，上升到三维会使难度巨幅提升，需要借助一种高级数据结构**树状数组**，
+有兴趣的读者可以自行搜索了解一下。
+
 # 5. dp 数组的遍历方向
 
 我相信读者做动态规划问题时，肯定会对 `dp` 数组的遍历顺序有些头疼。我们拿二维 `dp` 数组来举例，有时候我们是正向遍历：
@@ -1444,5 +1523,8 @@ for (int l = 2; l <= n; l++) {
 [lis-bs]: ../../../res/img/dp-lis-bs.jpg
 [lis-poker]: ../../../res/img/dp-lis-poker.jpg
 [lis-result]: ../../../res/img/dp-lis-result.jpg
+[nest-question]: ../../../res/img/dp-nest-question.PNG
+[nest-sort]: ../../../res/img/dp-nest-sort.jpg
+[nest-lis]: ../../../res/img/dp-nest-lis.jpg
 
 <b id="f1">\[1\]</b> https://labuladong.gitee.io/algo/动态规划系列/动态规划详解进阶.html [↩](#a1)  
