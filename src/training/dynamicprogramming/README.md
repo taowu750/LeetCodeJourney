@@ -1462,6 +1462,112 @@ private int lengthOfLIS(int[][] nums) {
 实际上，这个思路是错误的。这类问题叫做**偏序问题**，上升到三维会使难度巨幅提升，需要借助一种高级数据结构**树状数组**，
 有兴趣的读者可以自行搜索了解一下。
 
+## 4.5 例 5：最长回文子序列
+
+![最长回文子序列][lps-question]
+
+这个题目有两种思路，时间复杂度大致相同。这也印证了不同的状态定义会导致不同的解题思路。
+
+### 4.5.1 第一种方法
+
+这种方法是利用了这样的性质：字符串 `s` 和它的反序字符串 `rs` 的最长公共子序列长度也就是最长回文子序列的长度。
+
+这样的话，解题思路就和「最长公共子序列」几乎一样：
+```java
+public int longestPalindromeSubseq(String s) {
+    final int n = s.length();
+    // 定义 dp[i][j] 是 s 中前 i 个字符和 rs（s 的相反串）中相等的最长子序列长度。
+    // 这样问题就转化为了“最长公共子序列”问题。
+    // 注意下面是压缩了行的 dp 数组
+    final int[] dp = new int[n + 1];
+
+    for (int i = 1; i <= n; i++) {
+        // prevCol 保存当前行前一列的数据。
+        int preCol = 0;
+        for (int j = 1; j <= n; j++) {
+            int cur;
+            if (s.charAt(i - 1) == s.charAt(n - j))
+                cur = dp[j - 1] + 1;
+            else
+                cur = Math.max(preCol, dp[j]);
+            dp[j - 1] = preCol;
+            preCol = cur;
+        }
+        dp[n] = preCol;
+    }
+
+    return dp[n];
+}
+```
+
+### 4.5.2 第二种方法
+
+这个方法对 `dp` 数组的定义是：在子串 `s[i..j]` 中，最长回文子序列的长度为 `dp[i][j]`。
+
+具体来说，如果我们想求 `dp[i][j]`，假设你知道了子问题 `dp[i+1][j-1]` 的结果（`s[i+1..j-1]` 中最长回文子序列的长度），
+你是否能想办法算出 `dp[i][j]` 的值（`s[i..j]` 中，最长回文子序列的长度）呢？可以！这取决于 `s[i]` 和 `s[j]` 的字符。
+
+**如果它俩相等**，那么它俩加上 `s[i+1..j-1]` 中的最长回文子序列就是 `s[i..j]` 的最长回文子序列：
+
+![相等][lps-eq]
+
+**如果它俩不相等**，说明它俩不可能同时出现在 `s[i..j]` 的最长回文子序列中，那么把它俩分别加入 `s[i+1..j-1]` 中，
+看看哪个子串产生的回文子序列更长即可：
+
+![不相等][lps-ne]
+
+以上两种情况写成代码就是这样：
+```java
+if (s[i] == s[j])
+    // 它俩一定在最长回文子序列中
+    dp[i][j] = dp[i + 1][j - 1] + 2;
+else
+    // s[i+1..j] 和 s[i..j-1] 谁的回文子序列更长？
+    dp[i][j] = max(dp[i + 1][j], dp[i][j - 1]);
+```
+
+至此，状态转移方程就写出来了，根据 `dp` 数组的定义，我们要求的就是 `dp[0][n - 1]`，也就是整个 `s` 的最长回文子序列的长度。
+
+首先明确一下 base case，如果只有一个字符，显然最长回文子序列长度是 1，也就是 `dp[i][j] = 1,(i == j)`。
+因为 `i` 肯定小于等于 `j`，所以对于那些 `i > j` 的位置，根本不存在什么子序列，应该初始化为 0。
+
+另外，看看刚才写的状态转移方程，想求 `dp[i][j]` 需要知道 `dp[i+1][j-1]`，`dp[i+1][j]`，`dp[i][j-1]` 这三个位置；
+再看看我们确定的 base case，填入 `dp` 数组之后是这样：
+
+![DP table][lps-table]
+
+为了保证每次计算 `dp[i][j]`，左、下、左下三个方向的位置已经被计算出来，只能斜着遍历或者反着遍历：
+
+![遍历顺序][lps-scan]
+
+我选择反着遍历，代码如下：
+```java
+public int longestPalindromeSubseq(String s) {
+    int n = s.length();
+    // 在子串 s[i..j] 中，最长回文子序列的长度为 dp[i][j]
+    int[][] dp = new int[n][n];
+    // base case
+    for (int i = 0; i < n; i++)
+        dp[i][i] = 1;
+
+    // 反着遍历保证正确的状态转移
+    for (int i = n - 1; i >= 0; i--) {
+        for (int j = i + 1; j < n; j++) {
+            // 状态转移方程
+            if (s.charAt(i) == s.charAt(j))
+                dp[i][j] = dp[i + 1][j - 1] + 2;
+            else
+                dp[i][j] = Math.max(dp[i + 1][j], dp[i][j - 1]);
+        }
+    }
+
+    // 整个 s 的最长回文子串长度
+    return dp[0][n - 1];
+}
+```
+
+可以看到，这种方法定义的 `dp` 数组遍历方向也不一样。
+
 # 5. dp 数组的遍历方向
 
 我相信读者做动态规划问题时，肯定会对 `dp` 数组的遍历顺序有些头疼。我们拿二维 `dp` 数组来举例，有时候我们是正向遍历：
@@ -1526,5 +1632,10 @@ for (int l = 2; l <= n; l++) {
 [nest-question]: ../../../res/img/dp-nest-question.PNG
 [nest-sort]: ../../../res/img/dp-nest-sort.jpg
 [nest-lis]: ../../../res/img/dp-nest-lis.jpg
+[lps-question]: ../../../res/img/dp-lps-question.png
+[lps-eq]: ../../../res/img/dp-lps-eq.jpg
+[lps-ne]: ../../../res/img/dp-lps-ne.jpg
+[lps-table]: ../../../res/img/dp-lps-table.jpg
+[lps-scan]: ../../../res/img/dp-lps-scan.jpg
 
 <b id="f1">\[1\]</b> https://labuladong.gitee.io/algo/动态规划系列/动态规划详解进阶.html [↩](#a1)  
