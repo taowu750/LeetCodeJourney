@@ -1834,6 +1834,126 @@ public boolean betterMethod(int[] nums) {
 }
 ```
 
+## 6.3 完全背包问题
+
+本次主题聊的是 LeetCode 第 518 题 Coin Change 2，题目如下：
+
+![Coin Change II][bag-coin]
+
+至于 Coin Change 1，在 2.2 节中讲过。
+
+我们可以把这个问题转化为背包问题的描述形式：
+有一个背包，最大容量为 `amount`，有一系列物品 `coins`，每个物品的重量为 `coins[i]`，每个物品的数量无限。
+请问有多少种方法，能够把背包恰好装满？
+
+这个问题和我们前面讲过的两个背包问题，有一个最大的区别就是，**每个物品的数量是无限的，这也就是传说中的「完全背包问题」**，
+没啥高大上的，无非就是状态转移方程有一点变化而已。
+
+### 6.3.1 解题思路
+
+**第一步要明确两点，「状态」和「选择」**。
+
+这部分都是背包问题的老套路了，我还是啰嗦一下吧：
+ - 状态有两个，就是「背包的容量」和「可选择的物品」
+ - 选择就是「装进背包」或者「不装进背包」。
+
+**第二步要明确 `dp` 数组的定义**。
+
+首先看看刚才找到的「状态」，有两个，也就是说我们需要一个二维 `dp` 数组。`dp[i][j]` 的定义如下：
+若只使用前 `i` 个物品，当背包容量为 `j` 时，有 `dp[i][j]` 种方法可以装满背包。
+
+换句话说，翻译回我们题目的意思就是：若只使用 `coins` 中的前 `i` 个硬币的面值，若想凑出金额 `j`，
+有 `dp[i][j]` 种凑法。
+
+经过以上的定义，可以得到：base case 为 `dp[0][..] = 0`，`dp[..][0] = 1`。因为如果不使用任何硬币面值，
+就无法凑出任何金额；如果凑出的目标金额为 0，那么“无为而治”就是唯一的一种凑法。
+我们最终想得到的答案就是 `dp[N][amount]`，其中 `N` 为 `coins` 数组的大小。
+
+**第三步，根据「选择」，思考状态转移的逻辑**。
+
+注意，我们这个问题的特殊点在于物品的数量是无限的，所以这里和之前写的背包问题文章有所不同。
+ - 如果你不把这第 `i` 个物品装入背包，也就是说你不使用 `coins[i]` 这个面值的硬币，
+ 那么凑出面额 `j` 的方法数 `dp[i][j]` 应该等于 `dp[i-1][j]`，继承之前的结果。
+ - 如果你把这第 `i` 个物品装入了背包，也就是说你使用 `coins[i]` 这个面值的硬币，
+ 那么 `dp[i][j]` 应该等于 `dp[i][j-coins[i-1]]`。
+
+综上就是两种选择，而我们想求的 `dp[i][j]` 是「共有多少种凑法」，所以 `dp[i][j]` 的值应该是以上两种选择的结果之和：
+`dp[i][j] = dp[i-1][j] + dp[i][j-coins[i-1]]`。
+
+你可能有疑问，为什么只选了一次 `coins[i-1]` 呢？不应该选择多次直到大于 `j` 吗？
+其实，这是通过数学方法推导的公式（下面的公式假设 `coins` 从 1 开始，简化公式）：
+
+![公式（1）][bag-coin-e1]
+
+这里 `j - k * coins[i] >= 0`。将 `j` 用 `coins[i]` 替换，得：
+
+![公式（2）][bag-coin-e2]
+
+这里 `j - coins[i] - k * coins[i] >= 0`。整理得：
+
+![公式（3）][bag-coin-e3]
+
+这里 `j - k * coins[i] >= 0`。
+
+![公式（4）][bag-coin-e4]
+
+**所以其实每一行单元的值的填写只要看它的左边的值**。如果没有左边，它至少是上一行单元格的值。
+
+### 6.3.2 代码
+
+最后写出来的 Java 代码如下所示：
+```java
+public int change(int amount, int[] coins) {
+    if (amount == 0)
+        return 1;
+
+    final int n = coins.length;
+    // dp[i][a] 表示使用前 i 个硬币凑出 a 的方法次数
+    final int[][] dp = new int[n + 1][amount + 1];
+    // amount 等于 0，则可以不使用硬币就凑出，因此有一种方法
+    for (int i = 0; i <= n; i++)
+        dp[i][0] = 1;
+
+    for (int i = 1; i <= n; i++) {
+        for (int a = 1; a <= amount; a++) {
+            // 继承上一次的结果
+            dp[i][a] += dp[i - 1][a];
+            // 硬币面额小于容量，尝试将其添加进去。
+            if (coins[i - 1] <= a)
+                dp[i][a] += dp[i][a - coins[i - 1]];
+        }
+    }
+
+    return dp[n][amount];
+}
+```
+
+### 6.3.3 状态压缩
+
+由状态转移方程 (5) 知道，当前状态值参考了当前行前面的值，因此将空间优化到一维 `dp` 的时候，正序遍历是合理的。
+你也可以这样想：正序会重复选择物品，相当于物品数量无限，倒序不会重复拿物品，相当于每个物品只有一个。
+
+代码如下：
+```java
+public int compressMethod(int amount, int[] coins) {
+    if (amount == 0)
+        return 1;
+
+    final int n = coins.length;
+    // 压缩行
+    final int[] dp = new int[amount + 1];
+    dp[0] = 1;
+
+    for (int i = 1; i <= n; i++) {
+        for (int a = 1; a <= amount; a++) {
+            if (coins[i - 1] <= a)
+                dp[a] += dp[a - coins[i - 1]];
+        }
+    }
+
+    return dp[amount];
+}
+```
 
 [bs]: ../binarysearch/README.md
 
@@ -1873,5 +1993,10 @@ public boolean betterMethod(int[] nums) {
 [lps-scan]: ../../../res/img/dp-lps-scan.jpg
 [scan-edit]: ../../../res/img/dp-scan-edit.jpg
 [bag-subset]: ../../../res/img/dp-bag-subset.PNG
+[bag-coin]: ../../../res/img/dp-bag-coin.PNG
+[bag-coin-e1]: ../../../res/img/dp-bag-coin-e1.png
+[bag-coin-e2]: ../../../res/img/dp-bag-coin-e2.png
+[bag-coin-e3]: ../../../res/img/dp-bag-coin-e3.png
+[bag-coin-e4]: ../../../res/img/dp-bag-coin-e4.PNG
 
 <b id="f1">\[1\]</b> https://labuladong.gitee.io/algo/动态规划系列/动态规划详解进阶.html [↩](#a1)  
