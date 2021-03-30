@@ -27,4 +27,11 @@ public class CollectionUtil {
             Collections.sort(ts);
         return new HashSet<>(c1).equals(new HashSet<>(c2));
     }
+
+    public static <T extends Comparable<T>> boolean deepEqualsIgnoreOutOrder(List<List<T>> c1, List<List<T>> c2) {
+        if (c1.size() != c2.size())
+            return false;
+
+        return new HashSet<>(c1).equals(new HashSet<>(c2));
+    }
 }
