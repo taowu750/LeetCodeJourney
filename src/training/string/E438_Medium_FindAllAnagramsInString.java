@@ -1,7 +1,7 @@
 package training.string;
 
 import org.junit.jupiter.api.Test;
-import util.datastructure.CollectionUtil;
+import util.CollectionUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
