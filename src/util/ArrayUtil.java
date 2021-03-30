@@ -37,4 +37,13 @@ public class ArrayUtil {
 
         return true;
     }
+
+    public static boolean isAscending(int[] array) {
+        for (int i = 1; i < array.length; i++) {
+            if (array[i] < array[i - 1])
+                return false;
+        }
+
+        return true;
+    }
 }
