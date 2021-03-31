@@ -3,7 +3,6 @@ package training.greedy;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
-import java.util.Comparator;
 import java.util.function.ToIntFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,15 +39,16 @@ public class E435_Medium_NonOverlappingIntervals {
     /**
      * 算法思想参见 https://labuladong.gitee.io/algo/动态规划系列/贪心算法之区间调度问题.html
      *
-     * LeetCode 耗时：5 ms - 26.65%
+     * LeetCode 耗时：4 ms - 44.46%
      *          内存消耗：38.5 MB - 35.96%
      */
     public int eraseOverlapIntervals(int[][] intervals) {
         if (intervals.length < 2)
             return 0;
 
-        // 按照 end 进行排序
-        Arrays.sort(intervals, Comparator.comparingInt(a -> a[1]));
+        // 按照 end 进行排序。
+        // 比较器可以使用 Comparator.comparingInt(a -> a[1])，但这会略微影响速度
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[1], b[1]));
 
         // 不相交区间数量，至少有一个
         int count = 1;
