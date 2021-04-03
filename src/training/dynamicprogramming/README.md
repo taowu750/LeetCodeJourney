@@ -2473,8 +2473,8 @@ public int maxProfit(int[] prices) {
 
 直接套上面的框架，把这个约束 `k` 加进去即可：
 ```java
-public int maxProfit(int[] prices) {
-    return maxProfit(prices, 0, 2, new HashMap<>((int) (prices.length / 0.75) * 2));
+public int maxProfit(int k, int[] prices) {
+    return maxProfit(prices, 0, k, new HashMap<>((int) (prices.length / 0.75) * 2));
 }
 
 // 加上约束 k
@@ -2561,8 +2561,223 @@ private int maxProfit(int[] prices, int fee, int lo, Map<Integer, Integer> memor
 ```
 最后一个测试用例超出时间限制。
 
-本文终。总结一下，我们通过最简单的两个问题，形成了一套算法模板，快速解决了剩下的困难问题。通过备忘录技巧，
+总结一下，我们通过最简单的两个问题，形成了一套算法模板，快速解决了剩下的困难问题。通过备忘录技巧，
 保持时间复杂度在 O(N^2) 级别，虽不是最优的，但也是可行的。
+
+## 8.7 使用状态机改进算法
+
+之前我们用动态规划和递归的方法实现了一套简单易懂的可行解，但是时间复杂度略高，不能通过全部测试用例。
+这篇文章用「状态机」的技巧给出最优解，可以全部提交通过。
+
+这 6 道题目是有共性的，本文通过对第四道题（买卖股票的最佳时机 IV）的分析，逐步解决所有问题。因为第四题是一个最泛化的形式，
+其他的问题都是这个形式的简化。
+
+### 8.7.1 穷举框架
+
+这里，我们不用递归思想进行穷举，而是利用「状态」进行穷举。看看总共有几种「状态」，再找出每个「状态」对应的「选择」。
+我们要穷举所有「状态」，穷举的目的是根据对应的「选择」更新状态。看图，就是这个意思：
+
+![状态穷举][stock-state-machine]
+
+具体到当前问题，**每天都有三种「选择」：买入、卖出、无操作**，我们用 `buy, sell, rest` 表示这三种选择。
+
+但问题是，并不是每天都可以任意选择这三种选择的，因为 `sell` 必须在 `buy` 之后，`buy` 必须在 `sell` 之后（第一次除外）。
+那么 `rest` 操作还应该分两种状态，一种是 `buy` 之后的 `rest`（持有了股票），一种是 `sell` 之后的 `rest`（没有持有股票）。
+而且别忘了，我们还有交易次数 `k` 的限制，就是说你 `buy` 还只能在 `k > 0` 的前提下操作。
+
+很复杂对吧，不要怕，我们现在的目的只是穷举，你有再多的状态，老夫要做的就是一把梭全部列举出来。**这个问题的「状态」有三个**，
+第一个是天数，第二个是当天允许交易的最大次数，第三个是当前的持有状态（即之前说的 rest 的状态，我们不妨用 1 表示持有，
+0 表示没有持有）。
+
+我们用一个三维数组 `dp` 就可以装下这几种状态的全部组合，用 `for` 循环就能完成穷举：
+
+![穷举][stock-state-machine-for]
+
+而且我们可以用自然语言描述出每一个状态的含义，比如说 `dp[3][2][1]` 的含义就是：今天是第三天，我现在手上持有着股票，
+至今最多进行 2 次交易。再比如 `dp[2][3][0]` 的含义：今天是第二天，我现在手上没有持有股票，至今最多进行 3 次交易。
+很容易理解，对吧？
+
+我们想求的最终答案是 `dp[n - 1][K][0]`，即最后一天，最多允许 `K` 次交易，所能获取的最大利润。
+读者可能问为什么不是 `dp[n - 1][K][1]`？因为 `[1]` 代表手上还持有股票，`[0]` 表示手上的股票已经卖出去了，
+很显然后者得到的利润一定大于前者。
+
+记住如何解释「状态」，一旦你觉得哪里不好理解，把它翻译成自然语言就容易理解了。
+
+### 8.7.2 状态转移框架
+
+现在，我们完成了「状态」的穷举，我们开始思考每种「状态」有哪些「选择」，应该如何更新「状态」。
+
+因为我们的选择是 `buy, sell, rest`，而这些选择是和「持有状态」相关的，所以只看「持有状态」，可以画个状态转移图。
+
+![状态转移图][stock-state-machine-transfer]
+
+通过这个图可以很清楚地看到，每种状态（0 和 1）是如何转移而来的。根据这个图，我们来写一下状态转移方程：
+
+![状态转移方程][stock-state-machine-func]
+
+这个解释应该很清楚了，如果 `buy`，就要从利润中减去 `prices[i]`，如果 `sell`，就要给利润增加 `prices[i]`。
+今天的最大利润就是这两种可能选择中较大的那个。而且注意 `k` 的限制，我们在选择 `buy` 的时候，把最大交易数 `k` 减小了 1，
+很好理解吧，当然你也可以在 `sell` 的时候减 1，一样的。
+
+现在，我们已经完成了动态规划中最困难的一步：状态转移方程。如果之前的内容你都可以理解，那么你已经可以秒杀所有问题了，
+只要套这个框架就行了。不过还差最后一点点，就是定义 base case，即最简单的情况。
+
+![base case][stock-state-machine-base]
+
+### 8.7.3 编码和状态压缩
+
+经过上面的分析，写出代码也就是信手拈来了：
+```java
+public int maxProfit(int k, int[] prices) {
+    final int days = prices.length;
+    // 三个状态：天数、当天允许交易的最大次数、当前的持有状态。存的是最大利润
+    final int[][][] dp = new int[days + 1][k + 1][2];
+
+    // base case
+    for (int i = 0; i <= k; i++) {
+        dp[0][i][1] = Integer.MIN_VALUE;
+    }
+    for (int i = 0; i <= days; i++) {
+        dp[i][0][1] = Integer.MIN_VALUE;
+    }
+
+    for (int i = 1; i <= days; i++) {
+        for (int j = 1; j <= k; j++) {
+            // 从（昨天没有持有，今天不操作，还是没有持有）和（昨天持有，今天卖出了，所以今天没有持有了）中选择最大的
+            dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i - 1]);
+            // 从（昨天持有，今天不操作，继续持有）和（昨天没有持有，今天买了，所以今天持有了）中选择最大的
+            dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i - 1]);
+        }
+    }
+
+    return dp[days][k][0];
+}
+```
+
+可以看到，当前状态只用到了上边和左上两个状态，因此可以进行状态压缩：
+```java
+public int maxProfit(int k, int[] prices) {
+    final int days = prices.length;
+    // 压缩行
+    final int[][] dp = new int[k + 1][2];
+    for (int i = 0; i <= k; i++) {
+        dp[i][1] = Integer.MIN_VALUE;
+    }
+
+    for (int i = 1; i <= days; i++) {
+        // 注意从右到左，因为后一状态依赖前面的状态
+        for (int j = k; j >= 1; j--) {
+            dp[j][0] = Math.max(dp[j][0], dp[j][1] + prices[i - 1]);
+            dp[j][1] = Math.max(dp[j][1], dp[j - 1][0] - prices[i - 1]);
+        }
+    }
+
+    return dp[k][0];
+}
+```
+
+### 8.7.4 解决其他题目
+
+#### 8.7.4.1 买卖股票的最佳时机
+
+```java
+public int maxProfit(int[] prices) {
+    final int days = prices.length;
+    int noHold = 0, hold = Integer.MIN_VALUE;
+
+    for (int i = 0; i < days; i++) {
+        noHold = Math.max(noHold, hold + prices[i]);
+        // 注意，k == 1，所以已经不需要任何 k 了，或者说 dp[j-1][0] 恒等于 0，因此这里直接就是 -prices[i]
+        hold = Math.max(hold, -prices[i]);
+    }
+
+    return noHold;
+}
+```
+
+#### 8.7.4.2 买卖股票的最佳时机 II
+
+```java
+public int maxProfit(int[] prices) {
+    final int days = prices.length;
+    int noHold = 0, hold = Integer.MIN_VALUE;
+
+    for (int i = 0; i < days; i++) {
+        // k 无穷，则 k 和 k - 1 是一样的。
+        // 注意先保存 noHold，防止值被改变
+        int tmp = noHold;
+        noHold = Math.max(noHold, hold + prices[i]);
+        hold = Math.max(hold, tmp - prices[i]);
+    }
+
+    return noHold;
+}
+```
+
+#### 8.7.4.3 买卖股票的最佳时机 III
+
+```java
+public int maxProfit(int[] prices) {
+    final int days = prices.length;
+    // 压缩行
+    final int[][] dp = new int[2 + 1][2];
+    for (int i = 0; i <= 2; i++) {
+        dp[i][1] = Integer.MIN_VALUE;
+    }
+
+    for (int i = 1; i <= days; i++) {
+        // 注意从右到左，因为后一状态依赖前面的状态
+        for (int j = 2; j >= 1; j--) {
+            dp[j][0] = Math.max(dp[j][0], dp[j][1] + prices[i - 1]);
+            dp[j][1] = Math.max(dp[j][1], dp[j - 1][0] - prices[i - 1]);
+        }
+    }
+
+    return dp[2][0];
+}
+```
+
+#### 8.7.4.4 最佳买卖股票时机含冷冻期
+
+```java
+public int maxProfit(int[] prices) {
+    final int days = prices.length;
+    // 使用 lastNoHold 表示上上次没有持有的状态
+    int noHold = 0, hold = Integer.MIN_VALUE, lastNoHold = 0;
+    for (int i = 0; i < days; i++) {
+        // k 无穷，则 k 和 k - 1 是一样的。
+        // 注意先保存 noHold，防止值被改变
+        int tmp = noHold;
+        noHold = Math.max(noHold, hold + prices[i]);
+        // 等一天：dp[i][1] = max(dp[i-1][1], dp[i-2][0] - prices[i])
+        // 第 i 天选择买入时，要从 i - 2 的状态转移（因为只有卖出才能买入，而卖出后需要等一天）
+        hold = Math.max(hold, lastNoHold - prices[i]);
+        lastNoHold = tmp;
+    }
+
+    return noHold;
+}
+```
+
+#### 8.7.4.5 买卖股票的最佳时机含手续费
+
+```java
+public int maxProfit(int[] prices, int fee) {
+    final int days = prices.length;
+    int noHold = 0, hold = Integer.MIN_VALUE;
+
+    for (int i = 0; i < days; i++) {
+        // k 无穷，则 k 和 k - 1 是一样的。
+        // 注意先保存 noHold，防止值被改变
+        int tmp = noHold;
+        noHold = Math.max(noHold, hold + prices[i]);
+        // 买入减去手续费。之所以在这里减，是因为 hold 可能为 MIN_VALUE 导致负溢出
+        hold = Math.max(hold, tmp - prices[i] - fee);
+    }
+
+    return noHold;
+}
+```
 
 
 [bs]: ../binarysearch/README.md
@@ -2623,5 +2838,10 @@ private int maxProfit(int[] prices, int fee, int lo, Map<Integer, Integer> memor
 [stock-4]: ../../../res/img/dp-stock-4.jpg
 [stock-cooldown]: ../../../res/img/dp-stock-cooldown.jpg
 [stock-fee]: ../../../res/img/dp-stock-fee.webp
+[stock-state-machine]: ../../../res/img/dp-stock-state-machine.png
+[stock-state-machine-for]: ../../../res/img/dp-stock-state-machine-for.jpg
+[stock-state-machine-transfer]: ../../../res/img/dp-stock-state-machine-transfer.jpg
+[stock-state-machine-func]: ../../../res/img/dp-stock-state-machine-func.jpg
+[stock-state-machine-base]: ../../../res/img/dp-stock-state-machine-base.jpg
 
 <b id="f1">\[1\]</b> https://labuladong.gitee.io/algo/动态规划系列/动态规划详解进阶.html [↩](#a1)  
