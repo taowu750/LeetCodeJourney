@@ -1,7 +1,6 @@
 package training.dynamicprogramming;
 
 import org.junit.jupiter.api.Test;
-import training.greedy.E122_Easy_BestTimeToBuyAndSellStockII;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +25,7 @@ public class E309_Medium_BestTimeToBuyAndSellStockWithCooldown {
 
     static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{1,2,3,0,2}), 3);
+        assertEquals(method.applyAsInt(new int[]{1,2,4}), 3);
     }
 
     /**
@@ -58,5 +58,35 @@ public class E309_Medium_BestTimeToBuyAndSellStockWithCooldown {
     @Test
     public void testMaxProfit() {
         test(this::maxProfit);
+    }
+
+
+    /**
+     * 参见 {@link E188_Hard_BestTimeToBuyAndSellStockIV#compressMethod(int, int[])}。
+     *
+     * LeetCode 耗时：1 ms - 99.48%
+     *          内存消耗：36.3 MB - 86.23%
+     */
+    public int compressMethod(int[] prices) {
+        final int days = prices.length;
+        // 使用 lastNoHold 表示上上次没有持有的状态
+        int noHold = 0, hold = Integer.MIN_VALUE, lastNoHold = 0;
+        for (int i = 0; i < days; i++) {
+            // k 无穷，则 k 和 k - 1 是一样的。
+            // 注意先保存 noHold，防止值被改变
+            int tmp = noHold;
+            noHold = Math.max(noHold, hold + prices[i]);
+            // 等一天：dp[i][1] = max(dp[i-1][1], dp[i-2][0] - prices[i])
+            // 第 i 天选择买入时，要从 i - 2 的状态转移（因为只有卖出才能买入，而卖出后需要等一天）
+            hold = Math.max(hold, lastNoHold - prices[i]);
+            lastNoHold = tmp;
+        }
+
+        return noHold;
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
     }
 }

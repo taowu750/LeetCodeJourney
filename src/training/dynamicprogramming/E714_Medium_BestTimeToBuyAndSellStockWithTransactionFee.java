@@ -1,7 +1,6 @@
 package training.dynamicprogramming;
 
 import org.junit.jupiter.api.Test;
-import training.greedy.E122_Easy_BestTimeToBuyAndSellStockII;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -71,5 +70,33 @@ public class E714_Medium_BestTimeToBuyAndSellStockWithTransactionFee {
     @Test
     public void testMaxProfit() {
         test(this::maxProfit);
+    }
+
+
+    /**
+     * 参见 {@link E188_Hard_BestTimeToBuyAndSellStockIV#compressMethod(int, int[])}。
+     *
+     * LeetCode 耗时：4 ms - 99.95%
+     *          内存消耗：47.6 MB - 71.78%
+     */
+    public int compressMethod(int[] prices, int fee) {
+        final int days = prices.length;
+        int noHold = 0, hold = Integer.MIN_VALUE;
+
+        for (int i = 0; i < days; i++) {
+            // k 无穷，则 k 和 k - 1 是一样的。
+            // 注意先保存 noHold，防止值被改变
+            int tmp = noHold;
+            noHold = Math.max(noHold, hold + prices[i]);
+            // 买入减去手续费。之所以在这里减，是因为 hold 可能为 MIN_VALUE 导致负溢出
+            hold = Math.max(hold, tmp - prices[i] - fee);
+        }
+
+        return noHold;
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
     }
 }

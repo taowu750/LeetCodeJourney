@@ -70,4 +70,72 @@ public class E188_Hard_BestTimeToBuyAndSellStockIV {
     public void testMaxProfit() {
         test(this::maxProfit);
     }
+
+
+    /**
+     * 参见 README 8.7 节。
+     *
+     * LeetCode 耗时：9 ms - 38.56%
+     *          内存消耗：40.9 MB - 20.82%
+     */
+    public int dpMethod(int k, int[] prices) {
+        final int days = prices.length;
+        // 三个状态：天数、当天允许交易的最大次数、当前的持有状态。存的是最大利润
+        final int[][][] dp = new int[days + 1][k + 1][2];
+
+        // base case
+        for (int i = 0; i <= k; i++) {
+            dp[0][i][1] = Integer.MIN_VALUE;
+        }
+        for (int i = 0; i <= days; i++) {
+            dp[i][0][1] = Integer.MIN_VALUE;
+        }
+
+        for (int i = 1; i <= days; i++) {
+            for (int j = 1; j <= k; j++) {
+                // 从（昨天没有持有，今天不操作，还是没有持有）和（昨天持有，今天卖出了，所以今天没有持有了）中选择最大的
+                dp[i][j][0] = Math.max(dp[i - 1][j][0], dp[i - 1][j][1] + prices[i - 1]);
+                // 从（昨天持有，今天不操作，继续持有）和（昨天没有持有，今天买了，所以今天持有了）中选择最大的
+                dp[i][j][1] = Math.max(dp[i - 1][j][1], dp[i - 1][j - 1][0] - prices[i - 1]);
+            }
+        }
+
+        return dp[days][k][0];
+    }
+
+    @Test
+    public void testDpMethod() {
+        test(this::dpMethod);
+    }
+
+
+    /**
+     * 状态压缩。
+     *
+     * LeetCode 耗时：5 ms - 85.32%
+     *          内存消耗：36.3 MB - 65.68%
+     */
+    public int compressMethod(int k, int[] prices) {
+        final int days = prices.length;
+        // 压缩行
+        final int[][] dp = new int[k + 1][2];
+        for (int i = 0; i <= k; i++) {
+            dp[i][1] = Integer.MIN_VALUE;
+        }
+
+        for (int i = 1; i <= days; i++) {
+            // 注意从右到左，因为后一状态依赖前面的状态
+            for (int j = k; j >= 1; j--) {
+                dp[j][0] = Math.max(dp[j][0], dp[j][1] + prices[i - 1]);
+                dp[j][1] = Math.max(dp[j][1], dp[j - 1][0] - prices[i - 1]);
+            }
+        }
+
+        return dp[k][0];
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
+    }
 }

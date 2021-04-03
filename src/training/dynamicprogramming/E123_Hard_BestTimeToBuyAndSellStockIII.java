@@ -2,7 +2,6 @@ package training.dynamicprogramming;
 
 import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
-import training.greedy.E122_Easy_BestTimeToBuyAndSellStockII;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -82,5 +81,36 @@ public class E123_Hard_BestTimeToBuyAndSellStockIII {
     @Test
     public void testMaxProfit() {
         test(this::maxProfit);
+    }
+
+
+    /**
+     * 参见 {@link E188_Hard_BestTimeToBuyAndSellStockIV#compressMethod(int, int[])}。
+     *
+     * LeetCode 耗时：5 ms - 81.07%
+     *          内存消耗：54.3 MB - 58.33%
+     */
+    public int compressMethod(int[] prices) {
+        final int days = prices.length;
+        // 压缩行
+        final int[][] dp = new int[2 + 1][2];
+        for (int i = 0; i <= 2; i++) {
+            dp[i][1] = Integer.MIN_VALUE;
+        }
+
+        for (int i = 1; i <= days; i++) {
+            // 注意从右到左，因为后一状态依赖前面的状态
+            for (int j = 2; j >= 1; j--) {
+                dp[j][0] = Math.max(dp[j][0], dp[j][1] + prices[i - 1]);
+                dp[j][1] = Math.max(dp[j][1], dp[j - 1][0] - prices[i - 1]);
+            }
+        }
+
+        return dp[2][0];
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
     }
 }

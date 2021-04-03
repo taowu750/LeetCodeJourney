@@ -1,4 +1,4 @@
-package training.array;
+package training.dynamicprogramming;
 
 import org.junit.jupiter.api.Test;
 
@@ -33,6 +33,7 @@ public class E121_Easy_BestTimeToBuyAndSellStock {
         assertEquals(method.applyAsInt(new int[]{7,1,5,3,6,4}), 5);
         assertEquals(method.applyAsInt(new int[]{7,6,4,3,1}), 0);
         assertEquals(method.applyAsInt(new int[]{7,3,5,1,6,4}), 5);
+        assertEquals(method.applyAsInt(new int[]{1,2,3,0,2}), 2);
     }
 
     /**
@@ -55,5 +56,30 @@ public class E121_Easy_BestTimeToBuyAndSellStock {
     @Test
     public void testMaxProfit() {
         test(this::maxProfit);
+    }
+
+
+    /**
+     * 参见 {@link E188_Hard_BestTimeToBuyAndSellStockIV#compressMethod(int, int[])}。
+     *
+     * LeetCode 耗时：1 ms - 99.71%
+     *          内存消耗：51.4 MB - 54.85%
+     */
+    public int compressMethod(int[] prices) {
+        final int days = prices.length;
+        int noHold = 0, hold = Integer.MIN_VALUE;
+
+        for (int i = 0; i < days; i++) {
+            noHold = Math.max(noHold, hold + prices[i]);
+            // 注意，k == 1，所以已经不需要任何 k 了，或者说 dp[j-1][0] 恒等于 0，因此这里直接就是 -prices[i]
+            hold = Math.max(hold, -prices[i]);
+        }
+
+        return noHold;
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
     }
 }

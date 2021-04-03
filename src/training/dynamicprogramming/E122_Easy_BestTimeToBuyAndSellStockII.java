@@ -1,7 +1,6 @@
-package training.greedy;
+package training.dynamicprogramming;
 
 import org.junit.jupiter.api.Test;
-import training.array.E121_Easy_BestTimeToBuyAndSellStock;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -155,5 +154,32 @@ public class E122_Easy_BestTimeToBuyAndSellStockII {
     @Test
     public void testGreedyMethod() {
         test(this::greedyMethod);
+    }
+
+
+    /**
+     * 参见 {@link E188_Hard_BestTimeToBuyAndSellStockIV#compressMethod(int, int[])}。
+     *
+     * LeetCode 耗时：1ms - 99.60%
+     *          内存消耗：37.9 MB - 97.18%
+     */
+    public int compressMethod(int[] prices) {
+        final int days = prices.length;
+        int noHold = 0, hold = Integer.MIN_VALUE;
+
+        for (int i = 0; i < days; i++) {
+            // k 无穷，则 k 和 k - 1 是一样的。
+            // 注意先保存 noHold，防止值被改变
+            int tmp = noHold;
+            noHold = Math.max(noHold, hold + prices[i]);
+            hold = Math.max(hold, tmp - prices[i]);
+        }
+
+        return noHold;
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
     }
 }
