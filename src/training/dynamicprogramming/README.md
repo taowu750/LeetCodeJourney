@@ -2311,6 +2311,259 @@ int stoneGame(int[] piles) {
 之所以这样设计，是因为先手在做出选择之后，就成了后手，后手在对方做完选择后，就变成了先手。
 **这种角色转换使得我们可以重用之前的结果**，典型的动态规划标志。
 
+# 8. 股票问题
+
+LeetCode 上有 6 道关于股票买卖的问题，难度较大。本文给大家分析出一套框架，只要通过简单的变形，就能解决所有问题。
+
+## 8.1 说明
+
+首先申明，开始的动态规划方法的只是一个种可行方案，不是最优的。这几道股票买卖题目测试数据的规模非常大，
+所以有几道题目按照开始的动态规划方法进行提交是无法通过的，会在最后一个测试用例得到超时或超内存的错误。
+
+虽然不能通过，我还是写了这篇文章，说明一下用意：学习的过程分为两个阶段，先是「从 0 到 1」，然后「从 1 到 N」。
+你看懂一道题，只能算「从 0 到 1」，如果不能复现这种设计思路解决一类问题，那么过两天你就忘了。但是如果你能掌握一个框架，
+就能无限复制，举一反三，解决一大类问题。显然后者的价值更大。
+
+本文给出的动态规划思路复杂度是 O(N^2)，经过简单变形就能处理所有问题，层层递进，可读性好。最优解法复杂度 O(N)，涉及状态机，比较难以理解。
+
+## 8.2 例 1：买卖股票的最佳时机——穷举，然后尝试消除循环
+
+![买卖股票的最佳时机][stock-1]
+
+遇到一个问题，如果想不到什么奇技淫巧，那么首先请读者自问：**如何穷举这个问题的所有可能性**？
+
+这个问题的穷举很简单，我们可以这样写：
+```java
+public int maxProfit(int[] prices) {
+    int res = 0;
+    for (int buy = 0; buy < prices.length - 1; buy++) {
+        for (int sell = buy + 1; sell < prices.length; sell++)
+            res = Math.max(res, prices[sell] - prices[buy]);
+    }
+    return res;
+}
+```
+
+实际上，这个解法就是可行的，能够得到正确答案。但是我们分析一下这个算法在干嘛，就能发现一些冗余计算。
+
+![冗余计算][stock-1-map]
+
+如上图，可以看到大量的重复操作。我们相当于固定了买入时间 `buy`，然后将 `buy` 后面的每一天作为 `sell` 进行穷举，
+只为寻找 `prices[sell]` 最大的那天，因为这样 `prices[sell] - prices[buy]` 的差价才会最大。
+
+如果反过来想，固定卖出时间 `sell`，向前穷举买入时间 `buy`，寻找 `prices[buy]` 最小的那天，是不是也能达到相同的效果？
+是的，而且这种思路可以减少一个 `for` 循环：
+```java
+public int maxProfit(int[] prices) {
+    int res = 0;
+    int curMin = prices[0];
+    for (int sell = 1; sell < prices.length; sell++) {
+        curMin = Math.min(curMin, prices[sell]);
+        res = Math.max(res, prices[sell] - curMin);
+    }
+
+    return res;
+}
+```
+
+为什么可以减少一个 `for` 循环呢？我举个例子你就很容易理解了。
+
+假设你有一堆数字，你知道其中最大的数，现在从中取走一个数，你还知道最大的那个数是多少吗？不一定，
+如果拿走的这个数不是那个最大数，那么最大数不变；如果拿走的恰好是那个最大的数，你就得重新遍历这堆数字以寻找之前第二大的那个数，
+作为新的最大数。这就是我们的原始算法，每向后移动一位，就要重新遍历寻找最大值。
+
+但是，假设你知道一堆数字中最小的那个，再添加一个新的数字，你现在是否知道最小的数字是那个？知道，只要比较一下新数和当前最小的数字，
+就能得到新的最小数。这就是优化算法的情况，所以可以消除嵌套循环的计算冗余。
+
+关键不在于最大值还是最小值，而是**数字的添加和减少能否推导出新的最值**。添加新数时，可以根据已有最值，推导出新的最值；而减少数字时，
+不一定能直接推出新的最值，不得不重新遍历。
+
+很多人认为这道题不是动态规划，但是我认为最值的更新就是旧状态向新状态的转移，所以这个问题还是含有动态规划的技巧的。
+**不要觉得此题简单，这里完成了最困难的一步：穷举。后面所有的题目都可以基于此框架扩展出来**。
+
+## 8.3 例 2：买卖股票的最佳时机 II
+
+![题目][stock-2]
+
+这道题允许多次交易，看起来比刚才的问题复杂了很多，怎么办？没有思路第一步，想想如何穷举所有可能结果。来尝试一下吧，
+如果用 `for` 循环来穷举，会出现什么情况？
+```java
+for (int buy = 0; buy < prices.length - 1; buy++) {
+    for (int sell = buy + 1; sell < prices.length; sell++) {
+        if (prices[sell] > prices[buy]) { for for ...}
+        else { for for ...}
+    }
+}
+```
+
+**遇到这种无穷 `for` 循环的情况，就是使用递归的强烈暗示**。我们上一题的框架只能解决一次买卖的最大收益，
+现在的问题是，进行一次股票卖出后，下一次应该在什么时候交易呢？这个问题和原问题具有相同结构，规模减小，典型的递归场景。
+只要给原框架稍加改动即可：
+```java
+int maxProfit(int[] prices, int lo, int hi) {
+    int res = 0;
+    for (int buy = lo; buy <= hi - 1; buy++) {
+        for (int sell = buy + 1; sell <= hi; sell++) {
+            if (prices[sell] > prices[buy])
+                res = Math.max(res, prices[sell] - prices[buy] + recur(prices, sell + 1, hi));
+            else
+                res = Math.max(res, recur(prices, sell + 1, hi));
+        }
+    }
+
+    return res;
+}
+```
+
+这道题已经做出来了，**优化两步：先根据上一题消除一层循环，然后加个备忘录**。优化就属于走流程，没啥可说的。
+之后问题的解法，都是在此代码上的简单改造：
+```java
+public int maxProfit(int[] prices) {
+    return maxProfit(prices, 0, new HashMap<>((int) (prices.length / 0.75)));
+}
+
+private int maxProfit(int[] prices, int lo, Map<Integer, Integer> memory) {
+    if (lo >= prices.length - 1)
+        return 0;
+    int res = memory.getOrDefault(lo, -1);
+    if (res != -1)
+        return res;
+
+    int curMin = prices[lo];
+    for (int sell = lo + 1; sell <= prices.length - 1; sell++) {
+        curMin = Math.min(curMin, prices[sell]);
+        res = Math.max(res, prices[sell] - curMin + maxProfit(prices, sell + 1, memory));
+    }
+    memory.put(lo, res);
+
+    return res;
+}
+```
+
+但是，这样提交会得到一个内存超过限制的错误。原来有一个测试用例特别长，我们的 `memory` 备忘录太大了。怎么办呢，
+是否可以想办法减小备忘录占用的空间？答案是不可以。我们抽象出当前算法的框架：
+```java
+def dp(start):
+    for sell in range(start + 1, len(prices)):
+        dp(sell)
+```
+
+显然，如果求解原问题 `dp(0)`，要依赖子问题 `dp(1), dp(2) ... dp(len(prices) - 1)`，反正数量不是个定值，
+所以备忘录必须开那么大，否则装不下这些依赖子问题呀！说明这就是动态规划的极限了，真的不能再优化了。
+
+这个问题的最优解法是「贪心算法」。贪心算法是基于动态规划之上的一种特殊方法，对于某些特定问题可以比动态规划更高效。
+这道题用贪心算法的核心思想就是：既然可以预知未来，那么能赚一点就赚一点：
+```java
+public int maxProfit(int[] prices) {
+    int maxProfit = 0;
+    for (int i = 1; i < prices.length; i++) {
+        if (prices[i] > prices[i - 1])
+            maxProfit += prices[i] - prices[i - 1];
+    }
+
+    return maxProfit;
+}
+```
+
+## 8.4 例 3：买卖股票的最佳时机 III/IV
+
+第三题和第四题类似，就是限定了你的最大交易次数，只要解决第四题就行了，看题目：
+
+![题目][stock-4]
+
+直接套上面的框架，把这个约束 `k` 加进去即可：
+```java
+public int maxProfit(int[] prices) {
+    return maxProfit(prices, 0, 2, new HashMap<>((int) (prices.length / 0.75) * 2));
+}
+
+// 加上约束 k
+public int maxProfit(int[] prices, int lo, int k, Map<Pair<Integer, Integer>, Integer> memory) {
+    if (lo >= prices.length - 1 || k == 0)
+        return 0;
+    Pair<Integer, Integer> cur = new Pair<>(lo, k);
+    int res = memory.getOrDefault(cur, -1);
+    if (res != -1)
+        return res;
+
+    int curMin = prices[lo];
+    for (int sell = lo + 1; sell < prices.length; sell++) {
+        curMin = Math.min(curMin, prices[sell]);
+        res = Math.max(res, prices[sell] - curMin + maxProfit(prices, sell + 1, k - 1, memory));
+    }
+    memory.put(cur, res);
+
+    return res;
+}
+```
+
+时间复杂度 O(kN^2)，会在最后一个测试用例超时，不过好歹做出来一个可行答案，起码有 90 分吧。
+
+## 8.5 例 4：最佳买卖股票时机含冷冻期
+
+![冷冻期][stock-cooldown]
+
+没啥好说的，套框架：
+```java
+public int maxProfit(int[] prices) {
+    return maxProfit(prices, 0, new HashMap<>((int) (prices.length / 0.75)));
+}
+
+private int maxProfit(int[] prices, int lo, Map<Integer, Integer> memory) {
+    if (lo >= prices.length - 1)
+        return 0;
+    int res = memory.getOrDefault(lo, -1);
+    if (res != -1)
+        return res;
+
+    int curMin = prices[lo];
+    for (int sell = lo + 1; sell < prices.length; sell++) {
+        curMin = Math.min(curMin, prices[sell]);
+        // sell + 2，冷静一天
+        res = Math.max(res, prices[sell] - curMin + maxProfit(prices, sell + 2, memory));
+    }
+    memory.put(lo, res);
+
+    return res;
+}
+```
+此解法通过了全部的测试样例，只是有些低效。
+
+## 8.6 例 5：买卖股票的最佳时机含手续费
+
+![题目][stock-fee]
+
+每次卖出需要手续费，套进框架，把手续费从利润中减掉即可：
+```java
+public int maxProfit(int[] prices, int fee) {
+    return maxProfit(prices, fee, 0, new HashMap<>((int) (prices.length / 0.75)));
+}
+
+private int maxProfit(int[] prices, int fee, int lo, Map<Integer, Integer> memory) {
+    if (lo >= prices.length - 1)
+        return 0;
+    int res = memory.getOrDefault(lo, -1);
+    if (res != -1)
+        return res;
+    // 注意置 0，因为减去手续费后费用可能为负
+    res = 0;
+
+    int curMin = prices[lo];
+    for (int sell = lo + 1; sell < prices.length; sell++) {
+        curMin = Math.min(curMin, prices[sell]);
+        // 减去手续费
+        res = Math.max(res, prices[sell] - curMin - fee + maxProfit(prices, fee, sell + 1, memory));
+    }
+    memory.put(lo, res);
+
+    return res;
+}
+```
+最后一个测试用例超出时间限制。
+
+本文终。总结一下，我们通过最简单的两个问题，形成了一套算法模板，快速解决了剩下的困难问题。通过备忘录技巧，
+保持时间复杂度在 O(N^2) 级别，虽不是最优的，但也是可行的。
+
 
 [bs]: ../binarysearch/README.md
 
@@ -2364,5 +2617,11 @@ int stoneGame(int[] piles) {
 [gt-stone2-table]: ../../../res/img/dp-gt-stone2-table.jpg
 [gt-stone2-func]: ../../../res/img/dp-gt-stone2-func.jpg
 [gt-stone2-base]: ../../../res/img/dp-gt-stone2-base.jpg
+[stock-1]: ../../../res/img/dp-stock-1.jpg
+[stock-1-map]: ../../../res/img/dp-stock-1-map.jpg
+[stock-2]: ../../../res/img/dp-stock-2.jpg
+[stock-4]: ../../../res/img/dp-stock-4.jpg
+[stock-cooldown]: ../../../res/img/dp-stock-cooldown.jpg
+[stock-fee]: ../../../res/img/dp-stock-fee.webp
 
 <b id="f1">\[1\]</b> https://labuladong.gitee.io/algo/动态规划系列/动态规划详解进阶.html [↩](#a1)  
