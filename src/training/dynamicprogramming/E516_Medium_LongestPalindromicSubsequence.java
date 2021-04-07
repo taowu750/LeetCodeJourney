@@ -100,4 +100,33 @@ public class E516_Medium_LongestPalindromicSubsequence {
     public void testOtherDpMethod() {
         test(this::otherDpMethod);
     }
+
+
+    int compressMethod(String s) {
+        int n = s.length();
+        // base case：一维 dp 数组全部初始化为 1
+        final int[] dp = new int[n];
+        for (int i = 0; i < n; i++)
+            dp[i] = 1;
+
+        for (int i = n - 2; i >= 0; i--) {
+            int pre = 0;
+            for (int j = i + 1; j < n; j++) {
+                int temp = dp[j];
+                // 状态转移方程
+                if (s.charAt(i) == s.charAt(j))
+                    dp[j] = pre + 2;
+                else
+                    dp[j] = Math.max(dp[j], dp[j - 1]);
+                pre = temp;
+            }
+        }
+
+        return dp[n - 1];
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
+    }
 }
