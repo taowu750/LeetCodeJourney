@@ -1573,6 +1573,118 @@ public int longestPalindromeSubseq(String s) {
 
 可以看到，这种方法定义的 `dp` 数组遍历方向也不一样。
 
+### 4.5.3 第二种方法的状态压缩——斜向遍历的压缩
+
+你看我们对 `dp[i][j]` 的更新，其实只依赖于 `dp[i+1][j-1], dp[i][j-1], dp[i+1][j]` 这三个状态：
+
+![依赖状态][lps-state]
+
+**状态压缩的核心思路就是，将二维数组「投影」到一维数组**：
+
+![投影][lps-projection]
+
+思路很直观，但是也有一个明显的问题，图中 `dp[i][j-1]` 和 `dp[i+1][j-1]` 这两个状态处在同一列，而一维数组中只能容下一个，
+那么当我计算 `dp[i][j]` 时，他俩必然有一个会被另一个覆盖掉，怎么办？
+
+想把二维 `dp` 数组压缩成一维，一般来说是把第一个维度，也就是 `i` 这个维度去掉，只剩下 `j` 这个维度。
+压缩后的一维 `dp` 数组就是之前二维 `dp` 数组的 `dp[i][..]` 那一行。
+我们先将上述代码进行改造，直接无脑去掉 `i` 这个维度，把 `dp` 数组变成一维：
+```java
+for (int i = n - 1; i >= 0; i--) {
+    for (int j = i + 1; j < n; j++) {
+        if (s.charAt(i) == s.charAt(j))
+            dp[j] = dp[j - 1] + 2;
+        else
+            dp[j] = Math.max(dp[j], dp[j - 1]);
+    }
+}
+```
+
+在代码中注释的位置，将要进行状态转移，更新 `dp[j]`，那么我们要来思考两个问题：
+1. 在对 `dp[j]` 赋新值之前，`dp[j]` 对应着二维 `dp` 数组中的什么位置？
+2. `dp[j-1]` 对应着二维 `dp` 数组中的什么位置？
+
+对于问题 1，在对 `dp[j]` 赋新值之前，`dp[j]` 的值就是外层 `for` 循环上一次迭代算出来的值，
+也就是对应二维 `dp` 数组中 `dp[i+1][j]` 的位置。
+
+对于问题 2，`dp[j-1]` 的值就是内层 `for` 循环上一次迭代算出来的值，也就是对应二维 `dp` 数组中 `dp[i][j-1]` 的位置。
+
+那么问题已经解决了一大半了，只剩下二维 `dp` 数组中的 `dp[i+1][j-1]` 这个状态我们不能直接从一维 `dp` 数组中得到：
+```java
+for (int i = n - 2; i >= 0; i--) {
+    for (int j = i + 1; j < n; j++) {
+        if (s[i] == s[j])
+            // dp[i][j] = dp[i+1][j-1] + 2;
+            dp[j] = ?? + 2;
+        else
+            // dp[i][j] = max(dp[i+1][j], dp[i][j-1]);
+            dp[j] = max(dp[j], dp[j - 1]);
+    }
+}
+```
+
+那么如果我们想得到 `dp[i+1][j-1]`，就必须在它被覆盖之前用一个临时变量 `temp` 把它存起来，
+并把这个变量的值保留到计算 `dp[i][j]` 的时候。为了达到这个目的，结合上图，我们可以这样写代码：
+```java
+for (int i = n - 2; i >= 0; i--) {
+    // 存储 dp[i+1][j-1] 的变量
+    int pre = 0;
+    for (int j = i + 1; j < n; j++) {
+        int temp = dp[j];
+        if (s[i] == s[j])
+            // dp[i][j] = dp[i+1][j-1] + 2;
+            dp[j] = pre + 2;
+        else
+            dp[j] = max(dp[j], dp[j - 1]);
+        // 到下一轮循环，pre 就是 dp[i+1][j-1] 了
+        pre = temp;
+    }
+}
+```
+
+那么现在我们成功对状态转移方程进行了降维打击，算是最硬的的骨头啃掉了，但注意到我们还有 base case 要处理呀：
+```java
+// base case
+for (int i = 0; i < n; i++)
+    dp[i][i] = 1;
+```
+
+如何把 base case 也打成一维呢？很简单，**记住，状态压缩就是投影**，我们把 base case 投影到一维看看：
+
+![base case][lps-base]
+
+二维 `dp` 数组中的 base case 全都落入了一维 `dp` 数组，不存在冲突和覆盖，所以说我们直接这样写代码就行了：
+```java
+for (int i = 0; i < n; i++)
+    dp[i] = 1;
+```
+
+至此，我们把 base case 和状态转移方程都进行了降维，实际上已经写出完整代码了：
+```java
+int longestPalindromeSubseq(String s) {
+    int n = s.length();
+    // base case：一维 dp 数组全部初始化为 1
+    final int[] dp = new int[n];
+    for (int i = 0; i < n; i++)
+        dp[i] = 1;
+
+    for (int i = n - 2; i >= 0; i--) {
+        int pre = 0;
+        for (int j = i + 1; j < n; j++) {
+            int temp = dp[j];
+            // 状态转移方程
+            if (s.charAt(i) == s.charAt(j))
+                dp[j] = pre + 2;
+            else
+                dp[j] = Math.max(dp[j], dp[j - 1]);
+            pre = temp;
+        }
+    }
+
+    return dp[n - 1];
+}
+```
+
 # 5. dp 数组的遍历方向
 
 我相信读者做动态规划问题时，肯定会对 `dp` 数组的遍历顺序有些头疼。我们拿二维 `dp` 数组来举例，有时候我们是正向遍历：
@@ -2818,6 +2930,9 @@ public int maxProfit(int[] prices, int fee) {
 [lps-ne]: ../../../res/img/dp-lps-ne.jpg
 [lps-table]: ../../../res/img/dp-lps-table.jpg
 [lps-scan]: ../../../res/img/dp-lps-scan.jpg
+[lps-state]: ../../../res/img/dp-lps-state.jpg
+[lps-projection]: ../../../res/img/dp-lps-projection.jpg
+[lps-base]: ../../../res/img/dp-lps-base.jpg
 [scan-edit]: ../../../res/img/dp-scan-edit.jpg
 [bag-subset]: ../../../res/img/dp-bag-subset.PNG
 [bag-coin]: ../../../res/img/dp-bag-coin.PNG
