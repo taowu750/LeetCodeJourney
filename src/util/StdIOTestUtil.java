@@ -23,11 +23,14 @@ public class StdIOTestUtil {
              BufferedReader actualReader = new BufferedReader(new InputStreamReader(
                      new ByteArrayInputStream(out.toByteArray())))) {
             String expect, actual;
+            int lineCnt = 1;
             while ((expect = expectReader.readLine()) != null
                     && (actual = actualReader.readLine()) != null) {
                 if (!expect.equals(actual)) {
-                    throw new AssertionError("expect=" + expect + ", but actual=" + actual);
+                    throw new AssertionError("line " + lineCnt +
+                            " => expect=" + expect + ", but actual=" + actual);
                 }
+                lineCnt++;
             }
             if (expect != null)
                 throw new AssertionError("The actual is already null");
