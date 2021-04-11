@@ -27,8 +27,8 @@ public class StdIOTestUtil {
             while ((expect = expectReader.readLine()) != null
                     && (actual = actualReader.readLine()) != null) {
                 if (!expect.equals(actual)) {
-                    throw new AssertionError("line " + lineCnt +
-                            " => expect=" + expect + ", but actual=" + actual);
+                    throw new AssertionError(expectPath + " => line " + lineCnt +
+                            ": expect=" + expect + ", but actual=" + actual);
                 }
                 lineCnt++;
             }
