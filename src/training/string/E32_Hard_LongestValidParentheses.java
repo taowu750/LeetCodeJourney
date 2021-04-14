@@ -178,4 +178,44 @@ public class E32_Hard_LongestValidParentheses {
     public void testStackMethod() {
         test(this::stackMethod);
     }
+
+
+    /**
+     * LeetCode 耗时：1 ms - 100.00%
+     *          内存消耗：38.7 MB - 9.42%
+     */
+    public int betterDpMethod(String s) {
+        // 可以利用 dp 数组中以前的信息
+        final int n = s.length();
+        // dp[i] 表示以 i 结尾的最长子序列长度
+        final int[] dp = new int[n];
+
+        int maxLen = 0;
+        for (int i = 1; i < n; i++) {
+            char c = s.charAt(i);
+            // 等于 )，就可能和之前的 ( 配对
+            if (c == ')') {
+                // 前一个字符是 (，则可以配对
+                if (s.charAt(i - 1) == '(')
+                    // 除了配对这对括号，还要看看再前面是不是也是个有效序列
+                    dp[i] = 2 + (i >= 2 ? dp[i - 2] : 0);
+                // 如果前面是一个合法序列，并且这个合法序列之前有个 (，则也可以配对
+                else if (dp[i - 1] > 0 && dp[i - 1] <= i - 1 && s.charAt(i - 1 - dp[i - 1]) == '(') {
+                    dp[i] = 2 + dp[i - 1];
+                    // 除了配对这对括号，还要看看再前面是不是也是个有效序列
+                    int prev = i - 1 - dp[i - 1] - 1;
+                    if (prev >= 0)
+                        dp[i] += dp[prev];
+                }
+            }
+            maxLen = Math.max(maxLen, dp[i]);
+        }
+
+        return maxLen;
+    }
+
+    @Test
+    public void testBetterDpMethod() {
+        test(this::betterDpMethod);
+    }
 }
