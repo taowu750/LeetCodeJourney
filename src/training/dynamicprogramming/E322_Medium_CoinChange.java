@@ -210,4 +210,42 @@ public class E322_Medium_CoinChange {
     public void testDownTopDp() {
         test(this::downTopDp);
     }
+
+
+    public int dpMethod(int[] coins, int amount) {
+        final int n = coins.length;
+        // dp[i][j] 表示用前 i 枚硬币凑出金额 j 所需的最小硬币数
+        final int[][] dp = new int[n + 1][amount + 1];
+
+        // 注意初始化，amount + 1 表示不能凑出金额 j。
+        // 当金额为 0 时，只需要 0 枚硬币就可以凑出
+        for (int i = 0; i <= n; i++) {
+            for (int j = 1; j <= amount; j++) {
+                dp[i][j] = amount + 1;
+            }
+        }
+
+        for (int i = 1; i <= n; i++) {
+            int coin = coins[i - 1];
+            for (int j = 1; j <= amount; j++) {
+                if (coin > j)
+                    // coin 大于金额 j，只能不使用这枚硬币
+                    dp[i][j] = dp[i - 1][j];
+                else
+                    /*
+                    否则在使用这枚硬币和不使用这枚硬币的选择中找最小值
+                    需要注意的是，是 dp[i][j - coin] + 1，而不是 dp[i - 1][j - coin] + 1，
+                    因为硬币数目无限，coin 可以重复使用
+                     */
+                    dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - coin] + 1);
+            }
+        }
+
+        return dp[n][amount] != amount + 1 ? dp[n][amount] : -1;
+    }
+
+    @Test
+    public void testDpMethod() {
+        test(this::dpMethod);
+    }
 }

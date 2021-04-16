@@ -378,6 +378,8 @@ public int coinChange(int[] coins, int amount) {
 }
 ```
 
+上面其实是状态压缩后的代码，为了第 6 节背包问题保持一致，可以看看 [E322_Medium_CoinChange][coin-java] 中未压缩的代码。
+
 # 3. 最优子结构详解
 
 ## 3.1 定义
@@ -2894,6 +2896,7 @@ public int maxProfit(int[] prices, int fee) {
 
 [bs]: ../binarysearch/README.md
 
+[coin-java]: E322_Medium_CoinChange.java
 [stone]: ../gametheory/E877_Medium_StoneGame.java
 
 [fib]: ../../../res/img/dp-fib.jpg
