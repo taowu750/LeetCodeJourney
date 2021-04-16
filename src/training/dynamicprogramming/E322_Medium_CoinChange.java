@@ -248,4 +248,34 @@ public class E322_Medium_CoinChange {
     public void testDpMethod() {
         test(this::dpMethod);
     }
+
+
+    public int compressMethod(int[] coins, int amount) {
+        final int n = coins.length;
+        // dp[i][j] 表示用前 i 枚硬币凑出金额 j 所需的最小硬币数
+        final int[] dp = new int[amount + 1];
+
+        for (int j = 1; j <= amount; j++) {
+            dp[j] = amount + 1;
+        }
+
+        for (int coin : coins) {
+            /*
+            这里状态压缩后，遍历顺序还是和未压缩时一样，这看起来有些奇怪？
+            看看之前的公式：dp[i][j] = Math.min(dp[i - 1][j], dp[i][j - coin] + 1)，
+            注意 dp[i - 1][j] 和它在同一列，不用管；而 dp[i][j - coin] + 1 和它在同一行，所以遍历还是从左到右。
+             */
+            for (int j = 1; j <= amount; j++) {
+                if (coin <= j)
+                    dp[j] = Math.min(dp[j], dp[j - coin] + 1);
+            }
+        }
+
+        return dp[amount] != amount + 1 ? dp[amount] : -1;
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
+    }
 }

@@ -273,7 +273,7 @@ private int dp(int[] coins, int amount) {
     // 自顶向下求解
     int res = Integer.MAX_VALUE;
     for (int coin : coins) {
-        int subSolution = dp(coins, amount - coin, memory);
+        int subSolution = dp(coins, amount - coin);
         // 跳过没有解的子问题
         if (subSolution == -1)
             continue;
@@ -378,7 +378,7 @@ public int coinChange(int[] coins, int amount) {
 }
 ```
 
-上面其实是状态压缩后的代码，为了第 6 节背包问题保持一致，可以看看 [E322_Medium_CoinChange][coin-java] 中未压缩的代码。
+上面其实是状态压缩后的代码，为了第 6 节背包问题保持一致，可以看看 [E322_Medium_CoinChange][coin-java] 中的解法。
 
 # 3. 最优子结构详解
 
