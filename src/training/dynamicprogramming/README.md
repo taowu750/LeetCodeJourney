@@ -1008,16 +1008,17 @@ public int longestCommonSubsequence(String text1, String text2) {
     final int[] dp = new int[n + 1];
 
     for (int i = 1; i <= m; i++) {
-        for (int j = 1, prevRow = 0, prevRowPrevCol; j <= n; j++) {
-            // 因为可能用到 [i - 1][j - 1]、[i - 1][j]、[i][j - 1] 的值，为了不让值被覆盖，需要进行记录。
-            // prevRow 保存 dp[i - 1][j] 的值；prevRowPrevCol 保存 dp[i - 1][j - 1] 的值
-
-            prevRowPrevCol = prevRow;
-            prevRow = dp[j];
+        // 结果压缩后，[i - 1][j] 被压缩到 [j]，[i][j - 1] 被压缩到 [j - 1]，
+        // 所以我们需要保存 [i - 1][j - 1] 的值。
+        // 因为 [i][j - 1] 还是同一行的值，所以可以和二维一样遍历
+        int prevRowCol = 0;
+        for (int j = 1; j <= n; j++) {
+            int tmp = dp[j];
             if (text1.charAt(i - 1) == text2.charAt(j - 1))
-                dp[j] = prevRowPrevCol + 1;
+                dp[j] = prevRowCol + 1;
             else
-                dp[j] = Math.max(prevRow, dp[j - 1]);
+                dp[j] = Math.max(dp[j], dp[j - 1]);
+            prevRowCol = tmp;
         }
     }
 
@@ -1025,6 +1026,10 @@ public int longestCommonSubsequence(String text1, String text2) {
 }
 ```
 需要注意的是，因为可能会用到左上、左边和上边的数据，为了防止数据被覆盖，我们需要跟踪并保存数据。
+
+### 4.1.6 延伸：最长公共子数组
+
+[最长公共子数组][lcsa]
 
 ## 4.2 例 2：编辑距离
 
@@ -1213,6 +1218,26 @@ public int minDistance(String word1, String word2) {
     }
 
     return dp[n];
+}
+```
+
+其实压缩方法也可以和上一节最长公共子序列一样：
+```java
+for (int i = 1; i <= m; i++) {
+    // prevRowCol == dp[i-1][j-1]
+    int prevRowCol = i - 1;
+    // 注意，不要忘记这里的 base case！！！
+    dp[0] = i;
+    for (int j = 1; j <= n; j++) {
+        int tmp = dp[j];
+        if (word1.charAt(i - 1) == word2.charAt(j - 1))
+            dp[j] = prevRowCol;
+        else
+            dp[j] = Math.min(prevRowCol,
+                    Math.min(dp[j],
+                            dp[j - 1])) + 1;
+        prevRowCol = tmp;
+    }
 }
 ```
 
@@ -1687,6 +1712,10 @@ int longestPalindromeSubseq(String s) {
 }
 ```
 
+### 4.5.4 延伸：最长回文子字符串
+
+[最长回文子字符串][lpss]
+
 # 5. dp 数组的遍历方向
 
 我相信读者做动态规划问题时，肯定会对 `dp` 数组的遍历顺序有些头疼。我们拿二维 `dp` 数组来举例，有时候我们是正向遍历：
@@ -2093,6 +2122,8 @@ public int climbStairs(int n) {
     int[] dp = new int[n + 1];
     dp[0] = dp[1] = 1;
 
+    // 对于阶梯数 i，最后一次可以选择爬 1 阶或 2 阶，因此它的方法数 dp[i] 是爬 i-1 阶楼梯方法数
+    // 和 i-2 阶楼梯方法数之和
     for (int i = 2; i <= n; i++) {
         dp[i] = dp[i - 1] + dp[i - 2];
     }
@@ -2127,7 +2158,9 @@ public int climbStairs(int n) {
     int[] dp = new int[n + 1], steps = {1, 2, 5};
     dp[0] = 1;
     
+    // 对于阶梯数 i
     for (int i = 1; i <= n; i++){
+        // 使用每种步数，因此它的方法数 dp[i] 是 dp[i-steps[0]]...dp[i-steps[end]] 之和
         for (int j = 0; j < steps.length; j++){
             int step = steps[j];
             if (i < step) continue; // 台阶少于跨越的步数
@@ -2156,8 +2189,17 @@ for (int j = 0; j < steps.length; j++){
 
 在硬币交换II题目中，它的一维 `dp` 循环是下面这样：
 ```java
-for (int j = 1; j <= coins.length; j++) {
-    int coin = coins[i - 1];
+// 使用第 j 枚硬币 coin 时
+for (int j = 0; j < coins.length; j++) {
+    int coin = coins[j];
+    /*
+    对于凑出每种金额 i，它的方法数 dp[i]=dp[i]+dp[i-coin]。其中：
+    - 等号右边的 dp[i] 是使用前 coins[0..j-1] 枚硬币凑出金额 i 的方法数，
+      因为此时 dp[i] 没有被改变，还是上一次(外)循环中的状态。
+      这种选择也就是不使用硬币 coins[j]；
+    - dp[i-coin] 是使用 coins[0..j] 凑出金额 i-coin 的方法数，
+      因为在内循环中从左到右进行，它已经使用了硬币 coins[j]，已经被改变了。
+     */
     for (int i = 1; i <= amount; i++) {
         if (i < coin) continue;
         dp[i] += dp[i - coin];
@@ -2166,14 +2208,16 @@ for (int j = 1; j <= coins.length; j++) {
 ```
 我们惊奇的发现，它竟然就是上面交换了内外循环的爬楼梯代码！
 
-先不考虑上面的循环（也就是硬币交换II的原解）。我们尝试定义它的子问题：`problem(i) = sum(problem(i-j)), j=1,2,5,...`。
+先不考虑上面的循环（也就是硬币交换II的原解）。我们尝试像爬楼梯那样定义它的子问题：`problem(i) = sum(problem(i-j)), j=1,2,5,...`。
 含义为凑成总金额 `i` 的硬币组合数等于凑成总金额硬币 `i-1, i-2, i-5,...` 的子问题之和。
 
 利用这个子问题的定义，我们可以写出下面的代码：
 ```java
+// 对每个金额 i
 for (int i = 1; i <= amount; i++){
+    // 凑出金额 i 的方法数 dp[i] 等于选择每一种硬币 coins[0..n]，所有子金额 i-coins[0..n] 的方法数之和
     for (int j = 0; j < coins.length; j++){
-        int coin = coins[j - 1];
+        int coin = coins[j];
         if (j < coin) continue;
         dp[i] += dp[i - coin];
     }
@@ -2182,23 +2226,60 @@ for (int i = 1; i <= amount; i++){
 我们发现，这个子问题定义下的循环嵌套顺序和爬楼梯是一样的，和我们之前的硬币交换II题解是相反的。
 如果试着运行，却发现这个代码并不正确，得到的结果比预期的大。这是为什么呢？为什么交换了循环结果就不一样了呢？
 
-**我们再来看一下这个子问题定义：`problem(i) = sum(problem(i-j))`，注意到它要求最后一个硬币必须是 `j`**。
+**我们再来看一下这个子问题定义：`problem(i) = sum(problem(i-j))`，注意到它最后一次使用了每一种硬币 `coins[j]`**。
 这个定义导致了 `...,j,other` 和 `...,other,j` 是两种不同的情况。也就是说，该代码计算的结果是**排列数**，而不是**组合数**。
 它是先变化总金额，再变化硬币。最根本的原因是**我们子问题定义出现了错误**。
 
 对于硬币数放在外边，金额数放在里面的情况，它的子问题定义就被改变了。此时的子问题是：对于硬币从 0 到 `j`，
-我们必须使用第 `j` 个硬币的时候，当前金额的组合数。因此此时状态数组 `dp[i]` 表示的是对于前 `j` 个硬币凑出金额 `i` 的组合数。
+我们最后使用(或不用)第 `j` 个硬币的时候，凑齐每种金额的方法数，也就是 `problem(j,i) = problem(j-1, i) + problem(j, i-j)`。
+注意到每种金额选择硬币的次序是一致的，因此此时状态数组 `dp[i]` 表示的是对于前 `j` 个硬币凑出金额 `i` 的组合数。
 
 可以这样理解：如果硬币数放在外层，金额数放里层相当于规定了先使用小的硬币，再使用大的硬币，硬币使用的顺序是规定好的，
 因此求的是组合数；金额数放外层则是可以改变使用硬币的顺序，而所凑的金额数的顺序是规定好的，因此求的是排列数。
-一个必须顺序选择第 `j` 个硬币时，凑成金额 `i` 的方案；一个是对于金额 `i`, 我们选择硬币的方案。
+一个是必须顺序选择第 `j` 个硬币时，凑齐金额 `i` 的方案；一个是对于金额 `i`, 我们选择硬币的方案。
+
+我把两种模式的代码写成递归，就能看的更加清晰了：
+```java
+// 求排列
+public int change(int amount, int[] coins) {
+    if (amount <= 0)
+        return 1;
+
+    int sum = 0;
+    // 每一轮：为了凑齐金额 amount，对所有硬币都试一遍，并合并子问题
+    for (int coin : coins) {
+        if (coin > amount)
+            continue;
+        sum += change(amount - coin, coins);
+    }
+
+    return sum;
+}
+
+// 求组合
+public int change(int amount, int[] coins) {
+    return change(amount, coins, coins.length - 1);
+}
+private int change(int amount, int[] coins, int j) {
+    if (j < 0)
+        return 0;
+    if (amount <= 0)
+        return 1;
+
+    // 每一轮：为了凑齐金额 amount，选择硬币 coin[j] 或者不选
+    int sum = change(amount, coins, j - 1);
+    if (coins[j] <= amount)
+        sum += change(amount - coins[j], coins, j);
+
+    return sum;
+}
+```
 
 ### 6.4.4 二维和一维的不同
 
-对于求硬币的组合数，正确的子问题定义应该是，`problem(j,i) = problem(j-1, i) + problem(j, i-j)`。
-即前 `j` 个硬币凑齐金额 `i` 的组合数等于前 `j-1` 个硬币凑齐金额 `i` 的组合数加上在原来 `i-j` 的基础上使用硬币的组合数。
-说的更加直白一点，那就是用前 `j` 的硬币凑齐金额 `i`。要分为两种情况考虑：一种是没有用 `coins[j-1]`，前 `j-1` 个硬币就凑齐了；
-一种是前面已经凑到了 `i-coins[j-1]`，现在就差第 `j` 个硬币了。
+对于求硬币的组合数，正确的子问题定义应该是：`problem(j,i) = problem(j-1, i) + problem(j, i-j)`。
+即前 `j` 个硬币凑齐金额 `i` 的组合数等于前 `j-1` 个硬币凑齐金额 `i` 的组合数， 再加上使用前 `j` 个硬币凑齐金额 `i-coins[j]` 的组合数。
+这分为两种情况考虑：一种是没有用 `coins[j-1]`，前 `j-1` 个硬币就凑齐了；一种是前面已经凑到了 `i-coins[j-1]`，现在就差第 `j` 个硬币了。
 
 这和我们二维 `dp` 数组的 `dp[i][j] = dp[i-1][j] + dp[i][j-coins[i-1]]` 形式是一致的。
 
@@ -2225,11 +2306,12 @@ public int change(int amount, int[] coins) {
     return dp[n][amount];
 }
 ```
-因为这是个组合问题，我们不关心硬币使用的顺序，而是硬币有没有被用到。是否使用第 `k` 个硬币受到之前情况的影响。
+因为每个 `dp[i][j]` 都只是记录 `dp[i - 1][j]` 和 `dp[i][j - coins[i - 1]]`， 它在所有循环中都只会被写入一次，
+因此它就表示使用前 `j` 个硬币凑出金额 `i` 的组合数。
 
 这里交换了内外循环后，数组的扫描顺序从行扫描（从左到右，再从上到下）变成了列扫描（从上到下，再从左到右）。
 因为 `dp[i][j]` 依赖于 `dp[i - 1][j]` 和 `dp[i][j - coins[i - 1]]`，也就是上面和左边的状态，所以行扫描和列扫描都没问题。
-**状态转移没有发生改变，因此子问题的定义（同上面的 `problem(k,i)`）并没有变**，所以不会影响最终的结果。
+**状态转移没有发生改变，因此子问题的定义（同上面的 `problem(j,i)`）并没有变**，所以不会影响最终的结果。
 
 ### 6.4.5 小结
 
@@ -2897,6 +2979,8 @@ public int maxProfit(int[] prices, int fee) {
 [bs]: ../binarysearch/README.md
 
 [coin-java]: E322_Medium_CoinChange.java
+[lcsa]: E718_Medium_MaximumLengthOfRepeatedSubarray.java
+[lpss]: ../string/E5_Medium_LongestPalindromicSubstring.java
 [stone]: ../gametheory/E877_Medium_StoneGame.java
 
 [fib]: ../../../res/img/dp-fib.jpg
