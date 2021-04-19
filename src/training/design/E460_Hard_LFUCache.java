@@ -4,7 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.TreeMap;
 import java.util.function.IntFunction;
 
@@ -78,6 +77,123 @@ public class E460_Hard_LFUCache {
                                                         // cache=[3,4], cnt(4)=1, cnt(3)=3
         assertEquals(4, lFUCache.get(4));      // 返回 4
                                                         // cache=[3,4], cnt(4)=2, cnt(3)=3
+
+        lFUCache = factory.apply(0);
+        lFUCache.put(1, 1);
+        assertEquals(-1, lFUCache.get(1));
+
+        lFUCache = factory.apply(10);
+        lFUCache.put(10,13);
+        lFUCache.put(3,17);
+        lFUCache.put(6,11);
+        lFUCache.put(10,5);
+        lFUCache.put(9,10);
+        assertEquals(-1, lFUCache.get(13));
+        lFUCache.put(2,19);
+        // [2:(10,5), 1:(2,19)(9,10)(6,11)(3,17)]
+        assertEquals(19, lFUCache.get(2));
+        assertEquals(17, lFUCache.get(3));
+        // [2:(3,17)(2,19)(10,5), 1:(9,10)(6,11)]
+        lFUCache.put(5,25);
+        assertEquals(-1, lFUCache.get(8));
+        lFUCache.put(9,22);
+        lFUCache.put(5,5);
+        lFUCache.put(1,30);
+        assertEquals(-1, lFUCache.get(11));
+        lFUCache.put(9,12);
+        assertEquals(-1, lFUCache.get(7));
+        assertEquals(5, lFUCache.get(5));
+        assertEquals(-1, lFUCache.get(8));
+        assertEquals(12, lFUCache.get(9));
+        lFUCache.put(4,30);
+        lFUCache.put(9,3);
+        assertEquals(3, lFUCache.get(9));
+        assertEquals(5, lFUCache.get(10));
+        assertEquals(5, lFUCache.get(10));
+        lFUCache.put(6,14);
+        lFUCache.put(3,1);
+        assertEquals(1, lFUCache.get(3));
+        lFUCache.put(10,11);
+        assertEquals(-1, lFUCache.get(8));
+        lFUCache.put(2,14);
+        assertEquals(30, lFUCache.get(1));
+        assertEquals(5, lFUCache.get(5));
+        assertEquals(30, lFUCache.get(4));
+        lFUCache.put(11,4);
+        lFUCache.put(12,24);
+        lFUCache.put(5,18);
+        assertEquals(-1, lFUCache.get(13));
+        lFUCache.put(7,23);
+        assertEquals(-1, lFUCache.get(8));
+        assertEquals(24, lFUCache.get(12));
+        lFUCache.put(3,27);
+        lFUCache.put(2,12);
+        assertEquals(18, lFUCache.get(5));
+        lFUCache.put(2,9);
+        lFUCache.put(13,4);
+        lFUCache.put(8,18);
+        lFUCache.put(1,7);
+        assertEquals(14, lFUCache.get(6));
+        lFUCache.put(9,29);
+        lFUCache.put(8,21);
+        assertEquals(18, lFUCache.get(5));
+        lFUCache.put(6,30);
+        lFUCache.put(1,12);
+        assertEquals(11, lFUCache.get(10));
+        lFUCache.put(4,15);
+        lFUCache.put(7,22);
+        lFUCache.put(11,26);
+        lFUCache.put(8,17);
+        lFUCache.put(9,29);
+        assertEquals(18, lFUCache.get(5));
+        lFUCache.put(3,4);
+        lFUCache.put(11,30);
+        assertEquals(-1, lFUCache.get(12));
+        lFUCache.put(4,29);
+        assertEquals(4, lFUCache.get(3));
+        assertEquals(29, lFUCache.get(9));
+        assertEquals(30, lFUCache.get(6));
+        lFUCache.put(3,4);
+        assertEquals(12, lFUCache.get(1));
+        assertEquals(11, lFUCache.get(10));
+        lFUCache.put(3,29);
+        lFUCache.put(10,28);
+        lFUCache.put(1,20);
+        lFUCache.put(11,13);
+        assertEquals(29, lFUCache.get(3));
+        lFUCache.put(3,12);
+        lFUCache.put(3,8);
+        lFUCache.put(10,9);
+        lFUCache.put(3,26);
+        assertEquals(17, lFUCache.get(8));
+        assertEquals(-1, lFUCache.get(7));
+        assertEquals(18, lFUCache.get(5));
+        lFUCache.put(13,17);
+        lFUCache.put(2,27);
+        lFUCache.put(11,15);
+        assertEquals(-1, lFUCache.get(12));
+        lFUCache.put(9,19);
+        lFUCache.put(2,15);
+        lFUCache.put(3,16);
+        assertEquals(20, lFUCache.get(1));
+        lFUCache.put(12,17);
+        lFUCache.put(9,1);
+        lFUCache.put(6,19);
+        assertEquals(29, lFUCache.get(4));
+        assertEquals(18, lFUCache.get(5));
+        assertEquals(18, lFUCache.get(5));
+        lFUCache.put(8,1);
+        lFUCache.put(11,7);
+        lFUCache.put(5,2);
+        lFUCache.put(9,28);
+        assertEquals(20, lFUCache.get(1));
+        lFUCache.put(2,2);
+        lFUCache.put(7,4);
+        lFUCache.put(4,22);
+        lFUCache.put(7,24);
+        lFUCache.put(9,26);
+        lFUCache.put(13,28);
+        lFUCache.put(11,2);
     }
 
     @Test
@@ -93,6 +209,15 @@ interface ILFUCache {
     void put(int key, int value);
 }
 
+/**
+ * 更好的做法是使用彼此相连的频次双向链表。结构如下：
+ * head                                                     tail
+ *  ↓                                                        ↓
+ * [freq 3: (1,3)⇆(2,4)⇆...] ⇆ [freq 2: (4,7)⇆(3,3)⇆...] ⇆ [freq 1: (11,3)⇆(29,0)⇆...]
+ *
+ * LeetCode 耗时：24 ms - 79.35%
+ *          内存消耗：46.3 MB - 90.69%
+ */
 class LFUCache implements ILFUCache {
 
     private static class Node {
@@ -143,6 +268,7 @@ class LFUCache implements ILFUCache {
                 result = tail;
                 tail = tail.prev;
                 tail.next = null;
+                result.prev = null;
             }
             return result;
         }
@@ -154,17 +280,32 @@ class LFUCache implements ILFUCache {
             else if (prev == null) {
                 head = head.next;
                 head.prev = null;
+                node.next = null;
             } else if (next == null) {
                 tail = tail.prev;
                 tail.next = null;
+                node.prev = null;
             } else {
                 prev.next = next;
                 next.prev = prev;
+                node.prev = node.next = null;
             }
         }
 
         boolean isEmpty() {
             return head == null;
+        }
+
+        @Override
+        public String toString() {
+            if (head == null)
+                return "null";
+            else {
+                StringBuilder sb = new StringBuilder();
+                for (Node p = head; p != null; p = p.next)
+                    sb.append('(').append(p.key).append(',').append(p.val).append(')');
+                return sb.toString();
+            }
         }
     }
 
@@ -190,20 +331,25 @@ class LFUCache implements ILFUCache {
 
     @Override
     public void put(int key, int value) {
+        if (capacity == 0)
+            return;
+
         Node node = searchMap.get(key);
         if (node == null) {
             // 容量已满，删除计数最小的队列中最久未使用的节点
             if (searchMap.size() == capacity) {
-                Entry<Integer, NodeBin> entry = cntMap.firstEntry();
+                Map.Entry<Integer, NodeBin> entry = cntMap.firstEntry();
                 //noinspection ConstantConditions
                 searchMap.remove(entry.getValue().poll().key);
+                if (entry.getValue().isEmpty())
+                    cntMap.remove(entry.getKey());
             }
 
             node = new Node(key, value);
             searchMap.put(key, node);
             NodeBin bin = cntMap.get(1);
             if (bin == null)
-                cntMap.put(key, bin = new NodeBin());
+                cntMap.put(1, bin = new NodeBin());
             bin.push(node);
         } else {
             node.val = value;
@@ -223,5 +369,17 @@ class LFUCache implements ILFUCache {
         if (dstBin == null)
             cntMap.put(node.cnt, dstBin = new NodeBin());
         dstBin.push(node);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append('[');
+        for (Integer cnt : cntMap.descendingKeySet())
+            sb.append(cnt).append(':').append(cntMap.get(cnt)).append(", ");
+        sb.delete(sb.length() - 2, sb.length());
+        sb.append(']');
+
+        return sb.toString();
     }
 }
