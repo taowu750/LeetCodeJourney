@@ -63,12 +63,12 @@ public class E496_Easy_NextGreaterElementI {
                 nextGreater.put(stack[top--], nums2[i]);
             stack[++top] = nums2[i];
         }
-        // 还在栈中的元素没有下一个数字
-        while (top >= 0)
-            nextGreater.put(stack[top--], -1);
+//        // 还在栈中的元素没有下一个数字
+//        while (top >= 0)
+//            nextGreater.put(stack[top--], -1);
 
         for (int i = 0; i < nums1.length; i++)
-            nums1[i] = nextGreater.get(nums1[i]);
+            nums1[i] = nextGreater.getOrDefault(nums1[i], -1);
 
         return nums1;
     }
