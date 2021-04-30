@@ -1,5 +1,7 @@
 package util;
 
+import org.junit.jupiter.api.Assertions;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,10 +13,10 @@ public class CollectionUtil {
         return new HashSet<>(c1).equals(new HashSet<>(c2));
     }
 
-    public static <T extends Comparable<T>> boolean equalsIgnoreOrder(List<T> c1, List<T> c2) {
+    public static <T extends Comparable<T>> void equalsIgnoreOrder(List<T> c1, List<T> c2) {
         Collections.sort(c1);
         Collections.sort(c2);
-        return c1.equals(c2);
+        Assertions.assertEquals(c1, c2);
     }
 
     public static <T extends Comparable<T>> boolean deepEqualsIgnoreOrder(List<List<T>> c1, List<List<T>> c2) {
