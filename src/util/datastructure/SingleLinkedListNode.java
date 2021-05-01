@@ -84,12 +84,20 @@ public class SingleLinkedListNode<T extends SingleLinkedListNode<T>> {
         printList(head, 0);
     }
 
+    /**
+     * 直接在内部进行判断，不再返回 boolean 值。这里还返回 boolean 值是为了兼容性。
+     */
     public static <T extends SingleLinkedListNode<T>> boolean listEqual(T head, int... comparedElements) {
         for (int i = 0; i < comparedElements.length; i++, head = head.next) {
-            if (head == null || head.val != comparedElements[i])
-                return false;
+            if (head == null || head.val != comparedElements[i]) {
+                throw new AssertionError("diff at [" + i + "]: expected=" + comparedElements[i] +
+                        ", actual=" + (head == null ? "null" : head.val));
+            }
         }
-        return head == null;
+        if (head != null)
+            throw new AssertionError("The actual list length exceeds the expected list length: " +
+                    "expected length=" + comparedElements.length);
+        return true;
     }
 
     public static <T extends SingleLinkedListNode<T>> boolean circularListEqual(T head, int... comparedElements) {
