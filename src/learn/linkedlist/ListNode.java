@@ -17,6 +17,11 @@ public class ListNode extends SingleLinkedListNode<ListNode> {
         super(val, next);
     }
 
+    @Override
+    public String toString() {
+        return Integer.toString(val);
+    }
+
     public static ListNode newList(int pos, int... vals) {
         return newList(ListNode.class, pos, vals);
     }
