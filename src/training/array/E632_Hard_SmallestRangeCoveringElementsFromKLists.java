@@ -2,9 +2,7 @@ package training.array;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.TreeSet;
+import java.util.*;
 import java.util.function.Function;
 
 import static java.util.Arrays.asList;
@@ -148,5 +146,79 @@ public class E632_Hard_SmallestRangeCoveringElementsFromKLists {
     @Test
     public void testSmallestRange() {
         test(this::smallestRange);
+    }
+
+
+    /**
+     * 滑动窗口方法。
+     *
+     * LeetCode 耗时：90ms - 25%
+     *          内存消耗：46.4MB - 26%
+     */
+    public int[] slidingWindowMethod(List<List<Integer>> nums) {
+        int k = nums.size();
+        if (k == 1) {
+            int b = nums.get(0).get(0);
+            return new int[]{b,b};
+        }
+
+        // 遍历所有数字。键是 nums 中的数字，值是包含此数字的列表的下标。滑动窗口将在 indices 上移动
+        Map<Integer, List<Integer>> indices = new HashMap<>();
+        Function<Integer, List<Integer>> compute = new Function<Integer, List<Integer>>() {
+            @Override
+            public List<Integer> apply(Integer integer) {
+                return new LinkedList<>();
+            }
+        };
+        // 记录最大最小值
+        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+        for (int i = 0; i < k; i++) {
+            for (int num: nums.get(i)) {
+                if (num < min)
+                    min = num;
+                if (num > max)
+                    max = num;
+                indices.computeIfAbsent(num, compute).add(i);
+            }
+        }
+
+        int[] freq = new int[k];
+        // 滑动窗口指针
+        int left = min, right = min - 1, count = 0;
+        int bestLeft = min, bestRight = max;
+        outer: while (right < max) {
+            right++;
+            if (indices.containsKey(right)) {
+                // right 存在于 nums 中。将对应列表添加到滑动窗口计数中
+                for (int idx: indices.get(right)) {
+                    if (++freq[idx] == 1)
+                        count++;
+                }
+                // count 等于 k，说明滑动窗口已经包含了所有列表
+                while (count == k) {
+                    if (right - left < bestRight - bestLeft) {
+                        bestLeft = left;
+                        bestRight = right;
+                    }
+                    // 如果 left == right，则直接跳出，因为不会有比 0 更小的范围了
+                    if (left == right)
+                        break outer;
+                    // 开始收缩滑动窗口，缩减 left
+                    for (int idx: indices.get(left)) {
+                        if (--freq[idx] == 0)
+                            count--;
+                    }
+                    // 找到下一个存在于 indices 中的 left
+                    while (++left < right && !indices.containsKey(left));
+                }
+            }
+        }
+
+        return new int[]{bestLeft, bestRight};
+    }
+
+    @Test
+    public void testSlidingWindowMethod() {
+        test(this::slidingWindowMethod);
     }
 }
