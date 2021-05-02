@@ -69,11 +69,13 @@ public class E148_Medium_SortList {
         ListNode left = head, right = head.next,
                 nextLeft = head.next.next, nextRight = nextLeft, nextEnd = nextLeft;
         ListNode newList = new ListNode(), p = newList;
-        for (int mergeSize = 1; mergeSize < len;) {
+        for (int mergeSize = 1; mergeSize < len; mergeSize *= 2) {
             // nextEpochRight 和 nextEpochNextLeft 分别记录下一轮归并的 right 和 nextLeft。
-            // 它们可以在下面的第一次归并过程中取得。
-//            ListNode nextEpochRight = null, nextEpochNextLeft = null;
+            ListNode nextEpochRight = null, nextEpochNextLeft = null;
+            int mergeCount = 0;
             do {
+                mergeCount++;
+                // 归并相邻两块。每次将节点放到 p 的末尾
                 for (int i = 0, j = 0, k = 0; i < mergeSize || (j < mergeSize && right != null);) {
                     if (i < mergeSize && (j == mergeSize || right == null || left.val <= right.val)) {
                         p.next = left;
@@ -85,31 +87,43 @@ public class E148_Medium_SortList {
                         j++;
                     }
                     p = p.next;
+                    if (k == 0) {
+                        // 在第二、三次归并开始时更新 nextEpoch 指针
+                        if (mergeCount == 2) {
+                            nextEpochRight = p;
+                        } else if (mergeCount == 3) {
+                            nextEpochNextLeft = p;
+                        }
+                    }
+
+                    // 移动 nextRight，找到下次归并中右边块的开始位置
                     if (k < mergeSize && nextRight != null)
                         nextRight = nextRight.next;
+                    // 这里的 k++ 不要写在上面的 if 判断里面，会导致上面的 if(k==0) 出错
                     k++;
+                    // 移动 nextEnd，找到下次归并的结束位置+1，也就是下下次归并的开始位置
                     if (nextEnd != null)
                         nextEnd = nextEnd.next;
                 }
                 p.next = nextLeft;
                 left = nextLeft;
                 right = nextRight;
+                // 第一次归并结束后记录下一轮归并的 right 和 nextLeft。
+                // 但需要注意的是，这里的记录只是防止下一轮归并块数仅有 2 的情况，
+                // 因为第二次归并过程中会改变节点顺序，所以还需要在第二、三次归并到第一个节点的时候更新这两个指针的值。
+                if (mergeCount == 1) {
+                    nextEpochRight = nextLeft;
+                    nextEpochNextLeft = nextEnd;
+                }
                 nextLeft = nextRight = nextEnd;
+
+                // 当下次归并的右边一块开头是 null 时，本轮归并结束
             } while (right != null);
 
             p = newList;
-            left = right = nextLeft = newList.next;
-            mergeSize *= 2;
-            // 查找下一轮的 right、nextLeft
-            for (int i = 0; i < mergeSize && right != null; i++) {
-                right = right.next;
-                if (nextLeft != null) {
-                    nextLeft = nextLeft.next;
-                    if (nextLeft != null)
-                        nextLeft = nextLeft.next;
-                }
-            }
-            nextRight = nextEnd = nextLeft;
+            left = newList.next;
+            right = nextEpochRight;
+            nextLeft = nextRight = nextEnd = nextEpochNextLeft;
         }
 
         return newList.next;
