@@ -1,4 +1,4 @@
-package training.math;
+package training.array;
 
 import learn.array.FindAllNumbersDisappearedInAnArray;
 import org.junit.jupiter.api.Test;
