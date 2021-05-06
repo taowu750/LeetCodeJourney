@@ -19,15 +19,27 @@ public class CollectionUtil {
         Assertions.assertEquals(c1, c2);
     }
 
-    public static <T extends Comparable<T>> boolean deepEqualsIgnoreOrder(List<List<T>> c1, List<List<T>> c2) {
-        if (c1.size() != c2.size())
-            return false;
+    public static <T extends Comparable<T>> boolean deepEqualsIgnoreOrder(List<List<T>> expected,
+                                                                          List<List<T>> actual) {
+        if (expected.size() != actual.size())
+            throw new AssertionError("expected and actual do not match in size");
 
-        for (List<T> ts : c1)
+        for (List<T> ts : expected)
             Collections.sort(ts);
-        for (List<T> ts : c2)
+        for (List<T> ts : actual)
             Collections.sort(ts);
-        return new HashSet<>(c1).equals(new HashSet<>(c2));
+
+        HashSet<List<T>> s1 = new HashSet<>(expected), s2 = new HashSet<>(actual);
+        if (s1.size() != s2.size())
+            throw new AssertionError("expected and actual do not match in size");
+
+        for (List<T> ts : s2) {
+            if (!s1.contains(ts))
+                throw new AssertionError("The list in actual is not in expected: "
+                        + ts);
+        }
+
+        return true;
     }
 
     public static <T extends Comparable<T>> boolean deepEqualsIgnoreOutOrder(List<List<T>> c1, List<List<T>> c2) {
