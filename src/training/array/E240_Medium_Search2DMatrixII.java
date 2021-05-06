@@ -57,6 +57,13 @@ public class E240_Medium_Search2DMatrixII {
                 {3, 6, 9, 16, 22},
                 {10, 13, 14, 17, 24},
                 {18, 21, 23, 26, 30}}, 20));
+
+        assertTrue(method.test(new int[][]{
+                {2, 5},
+                {2, 8},
+                {7, 9},
+                {7, 11},
+                {9, 11}}, 7));
     }
 
     /**
@@ -65,10 +72,10 @@ public class E240_Medium_Search2DMatrixII {
      */
     public boolean searchMatrix(int[][] matrix, int target) {
         int m = matrix.length, n = matrix[0].length;
-        int row = 0, col = 0;
+        int row = 0, col = n;
          for (;;) {
-             // 先在横向上二分查找
-             int lo = 0, hi = n - 1;
+             // 先在行上二分查找
+             int lo = 0, hi = col - 1;
              while (lo <= hi) {
                  int mid = (lo + hi) >>> 1;
                  if (matrix[row][mid] == target)
@@ -81,10 +88,10 @@ public class E240_Medium_Search2DMatrixII {
              // 没有找到，从小于 target 的那一列再开始
              col = hi;
              // 如果都大于 target，则不存在
-             if (col < row)
+             if (col < 0)
                  return false;
 
-             // 再在纵向上二分查找
+             // 再在列上二分查找
              lo = row + 1;
              hi = m - 1;
              while (lo <= hi) {
@@ -102,8 +109,16 @@ public class E240_Medium_Search2DMatrixII {
              if (row >= m)
                  return false;
 
-             // 这个算法不能都选小于 target 的，因为可能 [i][j] 在行列上都刚好小于 target，这样会导致无限循环。
-             // 而横向上查找不能选大于 target 的，因为可能一行都小于 target 或者
+             /*
+             这个算法不能都选小于(大于) target 的，因为可能 [i][j] 在行列上都刚好小于(大于) target，
+             这样会导致无限循环。
+
+             在行上如果某个值大于 target，那么这个值及右方、下方的值都大于 target，也就没有必要看了。
+             所以行上选择小于的下标。
+
+             列上如果某个值小于 target，那么它的左边、上边就不看了。并且由于之前在行上的查找结果，右边的也不用看了。
+             所以列上选择大于的下标。
+              */
          }
     }
 
