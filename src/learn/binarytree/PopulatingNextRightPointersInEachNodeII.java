@@ -190,6 +190,37 @@ public class PopulatingNextRightPointersInEachNodeII {
     }
 
 
+    public Node betterIterMethod(Node root) {
+        if (root == null)
+            return null;
+
+        for (Node p = root, next, last; p != null; p = next) {
+            next = null;
+            last = null;
+            do {
+                Node left = p.left != null ? p.left : p.right;
+                Node right = p.right != null ? p.right : p.left;
+                if (p.left != null)
+                    p.left.next = p.right;
+                if (last != null)
+                    last.next = left;
+                if (right != null)
+                    last = right;
+                if (next == null)
+                    next = left;
+                p = p.next;
+            } while (p != null);
+        }
+
+        return root;
+    }
+
+    @Test
+    public void testBetterIterMethod() {
+        test(this::betterIterMethod);
+    }
+
+
     public Node recursiveMethod(Node root) {
         if (root == null)
             return null;
