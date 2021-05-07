@@ -3,6 +3,7 @@ package training.backtracking;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
@@ -86,5 +87,50 @@ public class E39_Medium_CombinationSum {
     @Test
     public void testCombinationSum() {
         test(this::combinationSum);
+    }
+
+
+    /**
+     * 回溯算法。
+     *
+     * LeetCode 耗时：2 ms - 99.95%
+     *          内存消耗：38.6 MB - 65.60%
+     */
+    public List<List<Integer>> backtrackingMethod(int[] candidates, int target) {
+        // 先排序，为了以后剪纸
+        Arrays.sort(candidates);
+        ArrayList<Integer> path = new ArrayList<>(target / candidates[0] + candidates.length);
+        List<List<Integer>> result = new ArrayList<>(candidates.length);
+        dfs(candidates, target, 0, path, result);
+
+        return result;
+    }
+
+    private void dfs(int[] candidates, int target, int idx,
+                     ArrayList<Integer> path, List<List<Integer>> result) {
+        if (target == 0) {
+            //noinspection unchecked
+            result.add((List<Integer>) path.clone());
+            return;
+        }
+        if (idx >= candidates.length || candidates[idx] > target)
+            return;
+
+        int cnt = target / candidates[idx];
+        for (int i = 0; i < cnt; i++) {
+            path.add(candidates[idx]);
+        }
+        target -= cnt * candidates[idx];
+        for (int i = cnt; i > 0; i--) {
+            dfs(candidates, target, idx + 1, path, result);
+            path.remove(path.size() - 1);
+            target += candidates[idx];
+        }
+        dfs(candidates, target, idx + 1, path, result);
+    }
+
+    @Test
+    public void testBacktrackingMethod() {
+        test(this::backtrackingMethod);
     }
 }
