@@ -73,17 +73,13 @@ public class PerfectSquares {
                     break LABEL_OUTER;
                 else {
                     insertion = -insertion - 1;
-                    if (insertion == 0)
-                        queue.add(n - 1);
-                    else {
-                        for (int j = insertion - 1; j >= 0; j--) {
-                            int m = n - perfectSquareList.get(j);
-                            // 不要无脑添加，先做个判断。不做这个判断之前，耗时为 32ms，
-                            // 做了之后耗时为 6ms，大大减少了时间消耗。
-                            if (Collections.binarySearch(perfectSquareList, m) >= 0)
-                                return level + 1;
-                            queue.add(m);
-                        }
+                    for (int j = insertion - 1; j >= 0; j--) {
+                        int m = n - perfectSquareList.get(j);
+                        // 不要无脑添加，先做个判断。不做这个判断之前，耗时为 32ms，
+                        // 做了之后耗时为 6ms，大大减少了时间消耗。
+                        if (Collections.binarySearch(perfectSquareList, m) >= 0)
+                            return level + 1;
+                        queue.add(m);
                     }
                 }
             }
@@ -95,5 +91,43 @@ public class PerfectSquares {
     @Test
     public void testNumSquares() {
         test(this::numSquares);
+    }
+
+
+    /**
+     * 动态规划方法。类似于 {@link training.dynamicprogramming.E322_Medium_CoinChange}。
+     *
+     * LeetCode 耗时：161 ms - 14.65%
+     *          内存消耗：38 MB - 23.27%
+     */
+    public int dpMethod(int n) {
+        int sqr;
+        if ((sqr = (int) Math.sqrt(n)) * sqr == n && n % sqr == 0)
+            return 1;
+
+        // 计算所有小于 n 的完美平方数
+        List<Integer> perfectSquares = new ArrayList<>(sqr + 1);
+        for (int i = 2; i * i < n; i++) {
+            perfectSquares.add(i * i);
+        }
+
+        int[] dp = new int[n + 1];
+        dp[1] = 1;
+
+        for (int i = 2; i <= n; i++) {
+            dp[i] = dp[i - 1] + 1;
+            for (int perfectSquare : perfectSquares) {
+                if (perfectSquare > i)
+                    break;
+                dp[i] = Math.min(dp[i], dp[i - perfectSquare] + 1);
+            }
+        }
+
+        return dp[n];
+    }
+
+    @Test
+    public void testDpMethod() {
+        test(this::dpMethod);
     }
 }
