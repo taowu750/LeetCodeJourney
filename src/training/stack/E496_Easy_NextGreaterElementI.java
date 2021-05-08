@@ -48,7 +48,7 @@ public class E496_Easy_NextGreaterElementI {
 
     /**
      * 单调栈算法。
-     * 此解法类似于 {@link learn.queue_stack.DailyTemperatures#stackMethod(int[])}。
+     * 此解法类似于 {@link Review_E739_Medium_DailyTemperatures#stackMethod(int[])}。
      *
      * LeetCode 耗时：3 ms - 98.32%
      *          内存消耗：38.6 MB - 65.56%

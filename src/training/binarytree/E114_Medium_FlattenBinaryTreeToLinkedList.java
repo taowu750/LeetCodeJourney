@@ -1,6 +1,5 @@
 package training.binarytree;
 
-import learn.binarytree.TreeNode;
 import org.junit.jupiter.api.Test;
 import util.datastructure.BinaryTreeNode;
 
@@ -8,7 +7,7 @@ import java.util.Deque;
 import java.util.LinkedList;
 import java.util.function.Consumer;
 
-import static learn.binarytree.TreeNode.newTree;
+import static training.binarytree.TreeNode.newTree;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static util.datastructure.BinaryTreeNode.preorder;
 

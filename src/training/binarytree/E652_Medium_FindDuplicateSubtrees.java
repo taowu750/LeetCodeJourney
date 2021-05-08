@@ -1,6 +1,5 @@
 package training.binarytree;
 
-import learn.binarytree.TreeNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
@@ -10,7 +9,7 @@ import java.util.function.Function;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static learn.binarytree.TreeNode.newTree;
+import static training.binarytree.TreeNode.newTree;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**

@@ -1,11 +1,10 @@
 package training.linkedlist;
 
 
-import learn.linkedlist.ListNode;
 import org.junit.jupiter.api.Test;
 import util.datastructure.function.TriFunction;
 
-import static learn.linkedlist.ListNode.newList;
+import static training.linkedlist.ListNode.newList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static util.datastructure.SingleLinkedListNode.listEqual;
 import static util.datastructure.SingleLinkedListNode.printList;
@@ -58,7 +57,7 @@ public class E92_Medium_ReverseLinkedListII {
     }
 
     /**
-     * 参见 {@link learn.linkedlist.ReverseLinkedList#betterIterateMethod(ListNode)}。
+     * 参见 {@link Review_E206_Easy_ReverseLinkedList#betterIterateMethod(ListNode)}。
      *
      * LeetCode 耗时：0ms - 100%
      */

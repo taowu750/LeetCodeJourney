@@ -1,6 +1,6 @@
 package training.partition;
 
-import learn.binarytree.TreeNode;
+import training.binarytree.TreeNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.function.IntFunction;
 
 import static java.util.Arrays.asList;
-import static learn.binarytree.TreeNode.newTree;
+import static training.binarytree.TreeNode.newTree;
 import static util.CollectionUtil.equalsIgnoreOrder;
 
 /**

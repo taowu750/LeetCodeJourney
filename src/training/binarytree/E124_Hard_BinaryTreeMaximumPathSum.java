@@ -1,13 +1,12 @@
 package training.binarytree;
 
-import learn.binarytree.TreeNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
-import static learn.binarytree.TreeNode.newTree;
+import static training.binarytree.TreeNode.newTree;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**

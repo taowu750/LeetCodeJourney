@@ -1,13 +1,13 @@
 package training.binarysearchtree;
 
-import learn.binarytree.TreeNode;
+import training.binarytree.TreeNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.function.ToIntBiFunction;
 
-import static learn.binarytree.TreeNode.newTree;
+import static training.binarytree.TreeNode.newTree;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**

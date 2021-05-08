@@ -1,7 +1,6 @@
 package training.binarytree;
 
 import javafx.util.Pair;
-import learn.binarytree.TreeNode;
 import org.junit.jupiter.api.Test;
 import training.dynamicprogramming.E213_Medium_HouseRobberII;
 
@@ -9,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
-import static learn.binarytree.TreeNode.newTree;
+import static training.binarytree.TreeNode.newTree;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**

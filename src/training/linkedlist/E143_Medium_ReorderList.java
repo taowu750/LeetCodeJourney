@@ -1,11 +1,10 @@
 package training.linkedlist;
 
-import learn.linkedlist.ListNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Consumer;
 
-import static learn.linkedlist.ListNode.newList;
+import static training.linkedlist.ListNode.newList;
 import static util.datastructure.SingleLinkedListNode.listEqual;
 
 /**

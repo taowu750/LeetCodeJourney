@@ -1,12 +1,12 @@
 package training.math;
 
-import learn.linkedlist.ListNode;
+import training.linkedlist.ListNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 import java.util.function.Function;
 
-import static learn.linkedlist.ListNode.newList;
+import static training.linkedlist.ListNode.newList;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**

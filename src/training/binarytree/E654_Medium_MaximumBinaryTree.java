@@ -1,11 +1,10 @@
 package training.binarytree;
 
-import learn.binarytree.TreeNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 
-import static learn.binarytree.TreeNode.newTree;
+import static training.binarytree.TreeNode.newTree;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**

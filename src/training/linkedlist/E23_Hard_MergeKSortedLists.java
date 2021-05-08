@@ -1,13 +1,12 @@
 package training.linkedlist;
 
-import learn.linkedlist.ListNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.Comparator;
 import java.util.PriorityQueue;
 import java.util.function.Function;
 
-import static learn.linkedlist.ListNode.newList;
+import static training.linkedlist.ListNode.newList;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static util.datastructure.SingleLinkedListNode.listEqual;

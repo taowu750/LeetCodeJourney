@@ -1,11 +1,11 @@
 package training.binarysearchtree;
 
-import learn.binarytree.TreeNode;
+import training.binarytree.TreeNode;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.UnaryOperator;
 
-import static learn.binarytree.TreeNode.newTree;
+import static training.binarytree.TreeNode.newTree;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static util.datastructure.BinaryTreeNode.preorder;
