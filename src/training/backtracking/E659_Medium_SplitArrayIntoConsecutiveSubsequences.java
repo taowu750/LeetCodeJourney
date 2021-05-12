@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.function.Predicate;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -44,7 +45,7 @@ public class E659_Medium_SplitArrayIntoConsecutiveSubsequences {
     static void test(Predicate<int[]> method) {
         assertTrue(method.test(new int[]{1,2,3,3,4,5}));
         assertTrue(method.test(new int[]{1,2,3,3,4,4,5,5}));
-        assertFalse(method.test(new int[]{1,2,3,4,4,55}));
+        assertFalse(method.test(new int[]{1,2,3,4,4,5}));
     }
 
     /**
@@ -126,5 +127,64 @@ public class E659_Medium_SplitArrayIntoConsecutiveSubsequences {
     @Test
     public void testIsPossible() {
         test(this::isPossible);
+    }
+
+
+    /**
+     * 使用 HashMap 和最小堆的算法。来自：
+     * https://leetcode-cn.com/problems/split-array-into-consecutive-subsequences/solution/fen-ge-shu-zu-wei-lian-xu-zi-xu-lie-by-l-lbs5/
+     *
+     * 当 v 在数组中时，如果存在一个子序列以 v-1 结尾，长度为 k，则可以将 v 加入该子序列中，
+     * 得到长度为 k+1 的子序列。
+     * 如果不存在以 v-1 结尾的子序列，则必须新建一个只包含 v 的子序列，长度为 1。
+     *
+     * 当 v 在数组中时，如果存在多个子序列以 v-1 结尾，应该将 v 加入其中的哪一个子序列？
+     * 由于题目要求每个子序列的长度至少为 3，显然应该让最短的子序列尽可能长，因此应该将 v 加入其中最短的子序列。
+     *
+     * 基于上述分析，可以使用哈希表和最小堆进行实现。
+     * 哈希表的键为子序列的最后一个数字，值为最小堆，用于存储所有的子序列长度，最小堆满足堆顶的元素是最小的，
+     * 因此堆顶的元素即为最小的子序列长度。
+     *
+     * LeetCode 耗时：77 ms - 34.15%
+     *          内存消耗：39.7 MB - 61.64%
+     */
+    public boolean hashHeapMethod(int[] nums) {
+        Map<Integer, PriorityQueue<Integer>> hashHeap = new HashMap<>((int) (nums.length / 2.25) + 1);
+
+        for (int v : nums) {
+            // 添加 v
+            if (!hashHeap.containsKey(v)) {
+                hashHeap.put(v, new PriorityQueue<>());
+            }
+            // 如果存在以 v - 1 结尾的序列
+            if (hashHeap.containsKey(v - 1)) {
+                PriorityQueue<Integer> heap = hashHeap.get(v - 1);
+                // 从中移除长度最小的序列
+                int minSize = heap.remove();
+                // 如果 heap 为空，则移除它
+                if (heap.isEmpty()) {
+                    hashHeap.remove(v - 1);
+                }
+                // 将它添加到以 v - 1 结尾的序列中
+                hashHeap.get(v).add(minSize + 1);
+            }
+            // 不存在则单独以 v 开头
+            else {
+                hashHeap.get(v).add(1);
+            }
+        }
+        // 最后检查所有序列长度都要大于等于 3
+        for (PriorityQueue<Integer> heap : hashHeap.values()) {
+            //noinspection ConstantConditions
+            if (heap.peek() < 3)
+                return false;
+        }
+
+        return true;
+    }
+
+    @Test
+    public void testHashHeapMethod() {
+        test(this::hashHeapMethod);
     }
 }
