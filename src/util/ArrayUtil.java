@@ -42,7 +42,8 @@ public class ArrayUtil {
     public static boolean isAscending(int[] array) {
         for (int i = 1; i < array.length; i++) {
             if (array[i] < array[i - 1])
-                return false;
+                throw new AssertionError(String.format("arr[%d] is %d, arr[%d] is %d",
+                        i - 1, array[i - 1], i, array[i]));
         }
 
         return true;
