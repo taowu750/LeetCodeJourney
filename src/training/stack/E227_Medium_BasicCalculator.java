@@ -41,6 +41,10 @@ public class E227_Medium_BasicCalculator {
         assertEquals(5, method.applyAsInt(" 3+5 / 2 "));
     }
 
+    /**
+     * LeetCode 耗时：21 ms - 23.50%
+     *          内存消耗：38.3 MB - 98.04%
+     */
     public int calculate(String s) {
         return evaluateSuffix(infixToSuffix(s));
     }
