@@ -44,8 +44,8 @@ public class E224_Hard_BasicCalculator {
     }
 
     /**
-     * LeetCode 耗时：34 ms - 13.29%
-     *          内存消耗：47.5 MB - 5.26%
+     * LeetCode 耗时：26 ms - 18.88%
+     *          内存消耗：39.6 MB - 23.48%
      */
     public int calculate(String s) {
         return evaluateSuffix(infixToSuffix(s));
@@ -60,11 +60,11 @@ public class E224_Hard_BasicCalculator {
         OPERATOR_PRIORITY.put('/', 2);
     }
 
-    public static List<String> infixToSuffix(String infix) {
+    public static List<Object> infixToSuffix(String infix) {
         int n = infix.length();
         char[] operatorStack = new char[n];
         int top = -1;
-        List<String> suffix = new ArrayList<>(n);
+        List<Object> suffix = new ArrayList<>(n);
 
         /*
         lastTokenType 表示上一个 token 的类型：
@@ -86,7 +86,7 @@ public class E224_Hard_BasicCalculator {
                         break;
                     c = infix.charAt(i);
                 } while (c >= '0' && c <= '9');
-                suffix.add(Integer.toString(num));
+                suffix.add(num);
                 i--;
 
                 lastSignType = 1;
@@ -94,7 +94,7 @@ public class E224_Hard_BasicCalculator {
             // 如果 token 是 )，将操作符栈中直到 ( 的符号都弹出
             else if (c == ')') {
                 while (operatorStack[top] != '(') {
-                    suffix.add(String.valueOf(operatorStack[top--]));
+                    suffix.add(operatorStack[top--]);
                 }
                 // 不要忘记把 ( 也给弹出来
                 top--;
@@ -104,13 +104,13 @@ public class E224_Hard_BasicCalculator {
             else {
                 // 当上个 token 表示符号，则加一个 0
                 if ((c == '+' || c == '-') && lastSignType < 1) {
-                    suffix.add(Integer.toString(0));
+                    suffix.add(0);
                 }
                 // 否则如果 token 不是 (，则尝试从操作符栈中弹出优先级大于等于 c 的
                 else if (c != '(') {
                     while (top > -1 && OPERATOR_PRIORITY.get(operatorStack[top]) >=
                             OPERATOR_PRIORITY.get(c)) {
-                        suffix.add(String.valueOf(operatorStack[top--]));
+                        suffix.add(operatorStack[top--]);
                     }
                 }
                 operatorStack[++top] = c;
@@ -118,45 +118,46 @@ public class E224_Hard_BasicCalculator {
             }
         }
         while (top > -1) {
-            suffix.add(String.valueOf(operatorStack[top--]));
+            suffix.add(operatorStack[top--]);
         }
 //        System.out.println(suffix);
 
         return suffix;
     }
 
-    public static int evaluateSuffix(List<String> suffix) {
+    public static int evaluateSuffix(List<Object> suffix) {
         int top = -1;
         int[] stack = new int[suffix.size() / 2 + 1];
 
-        for (String token : suffix) {
-            switch (token) {
-                case "+":
-                    int rightOperand = stack[top--], leftOperand = stack[top--];
-                    stack[++top] = leftOperand + rightOperand;
-                    break;
+        for (Object token : suffix) {
+            if (token instanceof Character) {
+                char c = (char) token;
+                switch (c) {
+                    case '+':
+                        int rightOperand = stack[top--], leftOperand = stack[top--];
+                        stack[++top] = leftOperand + rightOperand;
+                        break;
 
-                case "-":
-                    rightOperand = stack[top--];
-                    leftOperand = stack[top--];
-                    stack[++top] = leftOperand - rightOperand;
-                    break;
+                    case '-':
+                        rightOperand = stack[top--];
+                        leftOperand = stack[top--];
+                        stack[++top] = leftOperand - rightOperand;
+                        break;
 
-                case "*":
-                    rightOperand = stack[top--];
-                    leftOperand = stack[top--];
-                    stack[++top] = leftOperand * rightOperand;
-                    break;
+                    case '*':
+                        rightOperand = stack[top--];
+                        leftOperand = stack[top--];
+                        stack[++top] = leftOperand * rightOperand;
+                        break;
 
-                case "/":
-                    rightOperand = stack[top--];
-                    leftOperand = stack[top--];
-                    stack[++top] = leftOperand / rightOperand;
-                    break;
-
-                default:
-                    stack[++top] = Integer.parseInt(token);
-                    break;
+                    case '/':
+                        rightOperand = stack[top--];
+                        leftOperand = stack[top--];
+                        stack[++top] = leftOperand / rightOperand;
+                        break;
+                }
+            } else {
+                stack[++top] = (int) token;
             }
         }
 
