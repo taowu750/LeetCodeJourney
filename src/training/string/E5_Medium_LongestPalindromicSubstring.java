@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 5. 最长回文子串: https://leetcode-cn.com/problems/longest-palindromic-substring/
+ *
  * 给你一个字符串 s，找到 s 中最长的回文子串。
  *
  * 例 1：
@@ -39,6 +41,7 @@ public class E5_Medium_LongestPalindromicSubstring {
         assertEquals(method.apply("cbbd"), "bb");
         assertEquals(method.apply("a"), "a");
         assertTrue(Util.in(method.apply("ac"), "a", "c"));
+        assertTrue(Util.in(method.apply("aacabdkacaa"), "aca"));
     }
 
     /**
@@ -76,7 +79,70 @@ public class E5_Medium_LongestPalindromicSubstring {
     }
 
     @Test
-    public void test() {
+    public void testLongestPalindrome() {
         test(this::longestPalindrome);
+    }
+
+
+    public String intArrayMethod(String s) {
+        int n = s.length();
+        int[][] dp = new int[n][n];
+        for (int i = 0; i < n; i++) {
+            dp[i][i] = 1;
+        }
+
+        int start = 0, len = 1;
+        for (int i = n - 2; i >= 0; i--) {
+            for (int j = i + 1; j < n; j++) {
+                // 不能仅仅只看是否相等，还要看是否连在一起
+                if (s.charAt(i) == s.charAt(j) && (j - i < 3 || dp[i + 1][j - 1] > 0)) {
+                    dp[i][j] = dp[i + 1][j - 1] + 2;
+                }
+                if (dp[i][j] > len) {
+                    start = i;
+                    len = dp[i][j];
+                }
+            }
+        }
+
+        return s.substring(start, start + len);
+    }
+
+    @Test
+    public void testIntArrayMethod() {
+        test(this::intArrayMethod);
+    }
+
+
+    public String compressMethod(String s) {
+        int n = s.length();
+        boolean[] dp = new boolean[n];
+
+        int start = 0, len = 1;
+        for (int i = n - 2; i >= 0; i--) {
+            dp[i + 1] = true;
+            // 右边依赖左边，所以从右往左遍历
+            for (int j = n - 1; j >= i + 1; j--) {
+                if (s.charAt(i) == s.charAt(j)) {
+                    if (j - i < 3)
+                        dp[j] = true;
+                    else
+                        dp[j] = dp[j - 1];
+                } else {
+                    dp[j] = false;
+                }
+                if (dp[j] && j - i + 1 > len) {
+                    start = i;
+                    len = j - i + 1;
+                }
+            }
+        }
+
+        return s.substring(start, start + len);
+    }
+
+    @Test
+    public void testCompressMethod() {
+        test(this::compressMethod);
     }
 }
