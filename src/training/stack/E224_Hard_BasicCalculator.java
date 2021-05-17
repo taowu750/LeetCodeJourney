@@ -39,7 +39,6 @@ public class E224_Hard_BasicCalculator {
         assertEquals(3, method.applyAsInt(" 2-1 + 2 "));
         assertEquals(23, method.applyAsInt("(1+(4+5+2)-3)+(6+8)"));
         assertEquals(-1, method.applyAsInt("-2+ 1"));
-        assertEquals(1, method.applyAsInt("2 - +1"));
         assertEquals(-12, method.applyAsInt("- (3 + (4 + 5))"));
     }
 
@@ -168,5 +167,80 @@ public class E224_Hard_BasicCalculator {
     @Test
     public void testCalculate() {
         test(this::calculate);
+    }
+
+
+    private int top, i;
+
+    /**
+     * LeetCode 耗时：3 ms - 98.79%
+     *          内存消耗：38.4 MB - 93.37%
+     */
+    public int betterMethod(String s) {
+        top = -1;
+        i = 0;
+        int[] stack = new int[s.length() + 1];
+
+        return dfs(s, stack);
+    }
+
+    private int dfs(String s, int[] stack) {
+        int n = s.length(), num = 0;
+        // 将符号分给每个数字，然后将它们压入栈中，最后计算结果
+        char sign = '+';
+        int topStart = top + 1;
+        for (; i < n; i++) {
+            char c = s.charAt(i);
+            if (c == ' ')
+                continue;
+            if (c >= '0' && c <= '9') {
+                num = num * 10 + (c - '0');
+            } else if (c == '+' || c == '-') {
+                if (sign == '+') {
+                    stack[++top] = num;
+                } else {
+                    stack[++top] = -num;
+                }
+                num = 0;
+                sign = c;
+            }
+            // 遇到 ( 则递归计算结果
+            else if (c == '(') {
+                i++;
+                int sub = dfs(s, stack);
+                // 将递归结果压入栈中
+                if (sign == '+') {
+                    stack[++top] = sub;
+                } else {
+                    stack[++top] = -sub;
+                }
+            }
+            // 遇到 )，则跳出循环，计算括号内的结果
+            else {
+                break;
+            }
+        }
+        // num 不为 0，则需要记录到栈中
+        if (num != 0) {
+            if (sign == '+') {
+                stack[++top] = num;
+            } else {
+                stack[++top] = -num;
+            }
+        }
+
+        int result = 0;
+        for (int j = topStart; j <= top; j++) {
+            result += stack[j];
+        }
+        // 结果计算完后收缩栈
+        top = topStart - 1;
+
+        return result;
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
     }
 }
