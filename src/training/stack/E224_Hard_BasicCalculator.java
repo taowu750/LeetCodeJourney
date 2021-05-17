@@ -81,7 +81,8 @@ public class E224_Hard_BasicCalculator {
             if (c >= '0' && c <= '9') {
                 int num = 0;
                 do {
-                    num = num * 10 + c - '0';
+                    // 将 c - '0' 括起来，防止潜在的数字溢出
+                    num = num * 10 + (c - '0');
                     if (++i == n)
                         break;
                     c = infix.charAt(i);

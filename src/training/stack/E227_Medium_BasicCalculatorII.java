@@ -30,10 +30,10 @@ import static training.stack.E224_Hard_BasicCalculator.infixToSuffix;
  * - 1 <= s.length <= 3 * 10**5
  * - s 由整数和算符 ('+', '-', '*', '/') 组成，中间由一些空格隔开
  * - s 表示一个有效表达式
- * - 表达式中的所有整数都是非负整数，且在范围 [0, 231 - 1] 内
+ * - 表达式中的所有整数都是非负整数，且在范围 [0, 2**31 - 1] 内
  * - 题目数据保证答案是一个 32-bit 整数
  */
-public class E227_Medium_BasicCalculator {
+public class E227_Medium_BasicCalculatorII {
 
     static void test(ToIntFunction<String> method) {
         assertEquals(7, method.applyAsInt("3+2*2"));
