@@ -75,6 +75,9 @@ public class E300_Medium_LongestIncreasingSubsequence {
     /**
      * 耐心排序：二分查找，O(n log(n))
      *
+     * 详解参见：
+     * https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/dong-tai-gui-hua-er-fen-cha-zhao-tan-xin-suan-fa-p/
+     *
      * LeetCode 耗时：2 ms - 99.04%
      *          内存消耗：38.9 MB - 35.55%
      */

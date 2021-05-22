@@ -1385,6 +1385,8 @@ public int lengthOfLIS(int[] nums) {
 我们只要把处理扑克牌的过程编程写出来即可。每次处理一张扑克牌不是要找一个合适的牌堆顶来放吗，牌堆顶的牌不是有序吗，
 这就能用到[二分查找][bs]了：用二分查找来搜索当前牌应放置的位置。
 
+此方法的具体思路参见这个[链接][lis-bin]。
+
 代码如下所示：
 ```java
 public int lengthOfLIS(int[] nums) {
@@ -3017,6 +3019,7 @@ public int maxProfit(int[] prices, int fee) {
 [lis-bs]: ../../../res/img/dp-lis-bs.jpg
 [lis-poker]: ../../../res/img/dp-lis-poker.jpg
 [lis-result]: ../../../res/img/dp-lis-result.jpg
+[lis-bin]: https://leetcode-cn.com/problems/longest-increasing-subsequence/solution/dong-tai-gui-hua-er-fen-cha-zhao-tan-xin-suan-fa-p/
 [nest-question]: ../../../res/img/dp-nest-question.PNG
 [nest-sort]: ../../../res/img/dp-nest-sort.jpg
 [nest-lis]: ../../../res/img/dp-nest-lis.jpg
