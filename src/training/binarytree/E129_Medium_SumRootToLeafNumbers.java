@@ -47,7 +47,7 @@ import static training.binarytree.TreeNode.newTree;
  * - 0 <= Node.val <= 9
  * - 树的深度不超过 10
  */
-public class E129_Sum_RootToLeafNumbers {
+public class E129_Medium_SumRootToLeafNumbers {
 
     static void test(ToIntFunction<TreeNode> method) {
         assertEquals(25, method.applyAsInt(newTree(1,2,3)));
