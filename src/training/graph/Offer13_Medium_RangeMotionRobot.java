@@ -83,4 +83,40 @@ public class Offer13_Medium_RangeMotionRobot {
     public void testMovingCount() {
         test(this::movingCount);
     }
+
+
+    private static final int[][] DIRS = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+
+    private int count;
+
+    /**
+     * LeetCode 耗时：1 ms - 83.65%
+     *          内存消耗：36.1 MB - 15.11%
+     */
+    public int dfsMethod(int m, int n, int k) {
+        boolean[][] table = new boolean[m][n];
+        table[0][0] = true;
+        count = 1;
+        dfs(m, n, k, table, 0, 0);
+
+        return count;
+    }
+
+    private void dfs(int m, int n, int k, boolean[][] table, int row, int col) {
+        for (int[] dir : DIRS) {
+            int r = row + dir[0], c = col + dir[1];
+            if (r >= 0 && r < m && c >= 0 && c < n
+                    && !table[r][c]
+                    && (sumOfDigits(r) + sumOfDigits(c) <= k)) {
+                table[r][c] = true;
+                count++;
+                dfs(m, n, k, table, r, c);
+            }
+        }
+    }
+
+    @Test
+    public void testDfsMethod() {
+        test(this::dfsMethod);
+    }
 }
