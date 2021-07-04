@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 约束：
  * - 你可以假设 n 不小于 2 且不大于 58。
  */
-public class E344_Medium_IntegerBreak {
+public class E343_Medium_IntegerBreak {
 
     static void test(IntUnaryOperator method) {
         assertEquals(1, method.applyAsInt(2));
@@ -35,6 +35,16 @@ public class E344_Medium_IntegerBreak {
 
     /**
      * 有些类似于完全背包问题。
+     *
+     * 对于的正整数 n，当 n ≥ 2 时，可以拆分成至少两个正整数的和。令 k 是拆分出的第一个正整数，
+     * 则剩下的部分是 n-k，n-k 可以不继续拆分，或者继续拆分成至少两个正整数的和。
+     *
+     * 当 i ≥ 2 时，假设对正整数 i 拆分出的第一个正整数是 j（1≤ j < i），则有以下两种方案：
+     * - 将 i 拆分成 j 和 i-j 的和，且 i-j 不再拆分成多个正整数，此时的乘积是 j×(i−j)；
+     * - 将 i 拆分成 j 和 i−j 的和，且 i−j 继续拆分成多个正整数，此时的乘积是 j×dp[i−j]。
+     *
+     * 参见：
+     * https://leetcode-cn.com/problems/integer-break/solution/zheng-shu-chai-fen-by-leetcode-solution/
      *
      * LeetCode 耗时：2 ms - 12.74%
      *          内存消耗：35.3 MB - 23.42%
@@ -55,9 +65,9 @@ public class E344_Medium_IntegerBreak {
 
         for (int i = 2; i < n; i++) {
             for (int j = i + 1; j <= n; j++) {
-                dp[i][j] = Math.max(dp[i - 1][j],  // 不用数字 i，i - 1 个数的最好结果
-                        Math.max(dp[i][j - i] * i, // 数字 i 乘以，使用前 i 个数和为 j - i 的最好结果
-                                i * (j - i)));     //
+                dp[i][j] = Math.max(dp[i - 1][j],
+                        Math.max(dp[i][j - i] * i,
+                                i * (j - i)));
             }
         }
 
@@ -96,5 +106,33 @@ public class E344_Medium_IntegerBreak {
     @Test
     public void testCompressMethod() {
         test(this::compressMethod);
+    }
+
+
+    /**
+     * 数学方法，参见：
+     * https://leetcode-cn.com/problems/integer-break/solution/343-zheng-shu-chai-fen-tan-xin-by-jyd/
+     *
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：34.9 MB - 93.47%
+     */
+    public int mathMethod(int n) {
+        if (n <= 3) {
+            return n - 1;
+        }
+
+        int quotient = n / 3, remainder = n % 3;
+        if (remainder == 0) {
+            return (int) Math.pow(3, quotient);
+        } else if (remainder == 1) {
+            return (int) (Math.pow(3, quotient - 1) * 4);
+        } else {
+            return (int) (Math.pow(3, quotient) * 2);
+        }
+    }
+
+    @Test
+    public void testMathMethod() {
+        test(this::mathMethod);
     }
 }
