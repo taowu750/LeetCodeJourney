@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 55. 跳跃游戏: https://leetcode-cn.com/problems/jump-game/
+ *
  * 给定一个非负整数数组 nums ，你最初位于数组的「第一个下标」。
  * 数组中的每个元素代表你在该位置可以跳跃的「最大」长度。
  * 判断你是否能够到达最后一个下标。
@@ -34,9 +36,41 @@ public class E55_Medium_JumpGame {
     }
 
     /**
-     * 动态规划算法。
+     * 贪心算法，计算 nums[i] 范围内下一步所能达到的最远距离。
+     *
+     * LeetCode 耗时：72 ms - 15.27%
+     *          内存消耗：39.5 MB - 83.09%
      */
     public boolean canJump(int[] nums) {
+        for (int i = 0; i < nums.length;) {
+            if (i + nums[i] >= nums.length - 1) {
+                return true;
+            }
+            if (nums[i] == 0) {
+                return false;
+            }
+            int nextStep = 1;
+            for (int j = 2; j <= nums[i]; j++) {
+                if (i + j + nums[i + j] > i + nextStep + nums[i + nextStep]) {
+                    nextStep = j;
+                }
+            }
+            i += nextStep;
+        }
+
+        return false;
+    }
+
+    @Test
+    public void testCanJump() {
+        test(this::canJump);
+    }
+
+
+    /**
+     * 动态规划算法。上面方法的逆向思维，计算每一步的最远下标（上一步能达到的情况下）。
+     */
+    public boolean dpMethod(int[] nums) {
         final int n = nums.length;
         // dp[i] 表示根据 nums[0..i] 所能到达的最远下标
         final int[] dp = new int[n];
@@ -52,8 +86,8 @@ public class E55_Medium_JumpGame {
     }
 
     @Test
-    public void testCanJump() {
-        test(this::canJump);
+    public void testDpMethod() {
+        test(this::dpMethod);
     }
 
 
