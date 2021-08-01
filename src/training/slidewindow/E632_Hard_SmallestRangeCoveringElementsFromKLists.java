@@ -1,4 +1,4 @@
-package training.array;
+package training.slidewindow;
 
 import org.junit.jupiter.api.Test;
 
