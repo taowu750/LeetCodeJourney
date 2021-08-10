@@ -13,10 +13,19 @@ public class CollectionUtil {
         return new HashSet<>(c1).equals(new HashSet<>(c2));
     }
 
-    public static <T extends Comparable<T>> void equalsIgnoreOrder(List<T> c1, List<T> c2) {
-        Collections.sort(c1);
-        Collections.sort(c2);
-        Assertions.assertEquals(c1, c2);
+    public static <T extends Comparable<T>> void equalsIgnoreOrder(List<T> expected, List<T> actual) {
+        if (expected.size() != actual.size()) {
+            throw new AssertionError("expected and actual size not match:\n" +
+                    "expected: " + expected + "\n" +
+                    "actual: " + actual);
+        }
+        if (expected.size() == 0) {
+            return;
+        }
+
+        Collections.sort(expected);
+        Collections.sort(actual);
+        Assertions.assertEquals(expected, actual);
     }
 
     public static <T extends Comparable<T>> boolean deepEqualsIgnoreOrder(List<List<T>> expected,
