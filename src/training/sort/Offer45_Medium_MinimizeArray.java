@@ -1,4 +1,4 @@
-package training.string;
+package training.sort;
 
 import org.junit.jupiter.api.Test;
 
