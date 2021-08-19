@@ -1,4 +1,4 @@
-package training.binarysearchtree;
+package training.sort;
 
 import org.junit.jupiter.api.Test;
 import util.datastructure.function.TriPredicate;

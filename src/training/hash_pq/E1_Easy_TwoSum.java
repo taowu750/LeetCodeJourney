@@ -1,4 +1,4 @@
-package training.array;
+package training.hash_pq;
 
 import org.junit.jupiter.api.Test;
 
