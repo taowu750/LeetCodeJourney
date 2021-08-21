@@ -1,6 +1,8 @@
-package training.graph;
+package training.uf;
 
 import org.junit.jupiter.api.Test;
+import training.linkedlist.E92_Medium_ReverseLinkedListII;
+import training.linkedlist.Review_E206_Easy_ReverseLinkedList;
 import util.datastructure.function.TriFunction;
 
 import java.util.*;
@@ -137,5 +139,123 @@ public class E399_Medium_EvaluateDivision {
     @Test
     public void testCalcEquation() {
         test(this::calcEquation);
+    }
+
+
+    /**
+     * 并查集方法，参见：
+     * https://leetcode-cn.com/problems/evaluate-division/solution/399-chu-fa-qiu-zhi-nan-du-zhong-deng-286-w45d/
+     *
+     * LeetCode 耗时：1 ms - 73.82%
+     *          内存消耗：37 MB - 88.27%
+     */
+    public double[] ufMethod(List<List<String>> equations, double[] values, List<List<String>> queries) {
+        Set<String> set = new HashSet<>(equations.size());
+        for (List<String> equation : equations) {
+            set.add(equation.get(0));
+            set.add(equation.get(1));
+        }
+
+        UF uf = new UF(set.size());
+        Map<String, Integer> var2id = new HashMap<>((int) (set.size() / 0.75) + 1);
+        int id = 0;
+        for (String var : set) {
+            var2id.put(var, id++);
+        }
+
+        int i = 0;
+        for (List<String> equation : equations) {
+            uf.union(var2id.get(equation.get(0)), var2id.get(equation.get(1)), values[i++]);
+        }
+
+        double[] result = new double[queries.size()];
+        for (i = 0; i < result.length; i++) {
+            int srcId = var2id.getOrDefault(queries.get(i).get(0), -1);
+            int dstId = var2id.getOrDefault(queries.get(i).get(1), -1);
+            if (srcId != -1 && dstId != -1) {
+                result[i] = uf.isConnected(srcId, dstId);
+            } else {
+                result[i] = -1;
+            }
+        }
+
+        return result;
+    }
+
+    private static class UF {
+        private int[] parent;
+        // weight[i] = i / parent[i]
+        private double[] weight;
+
+        UF(int count) {
+            parent = new int[count];
+            weight = new double[count];
+
+            for (int i = 0; i < count; i++) {
+                parent[i] = i;
+                weight[i] = 1;
+            }
+        }
+
+        /**
+         * p / q = value
+         */
+        void union(int p, int q, double value) {
+            int rootP = find(p), rootQ = find(q);
+            if (rootP == rootQ) {
+                return;
+            }
+
+            // 将 p 合并到 rootQ 上，同时更新权重
+            // 不必担心这一步会导致树增高，查找过程中会进行路径压缩
+            parent[rootP] = rootQ;
+            /*
+            基本条件：
+            p / q = value
+            weight[p] = p / rootP
+            weight[q] = q / rootQ
+
+            则有：
+            rootP = p / weight[p]
+            rootQ = q / weight[q]
+
+            weight[rootP] 需要更新为 rootP 和 rootQ 的商，则有：
+            weight[rootP]
+            = rootP / rootQ
+            = (p / weight[p]) / (q / weight[q])
+            = weight[q] * value / weight[p]
+             */
+            weight[rootP] = weight[q] * value / weight[p];
+        }
+
+        /**
+         * 找到 p 的根，并执行路径压缩，同时更新 weight[p] = p / parent[p]。
+         *
+         * 递归算法，想出定义、每层需要做的事情即可，参见 {@link Review_E206_Easy_ReverseLinkedList}
+         * 和 {@link E92_Medium_ReverseLinkedListII}。
+         */
+        int find(int p) {
+            if (p != parent[p]) {
+                int origin = parent[p];
+                // 查找 parent[p] 的根，同时更新了原 parent[p]（origin） 的权重
+                parent[p] = find(parent[p]);
+                weight[p] *= weight[origin];
+            }
+            return parent[p];
+        }
+
+        double isConnected(int p, int q) {
+            int rootP = find(p), rootQ = find(q);
+            if (rootP == rootQ) {
+                return weight[p] / weight[q];
+            }
+
+            return -1;
+        }
+    }
+
+    @Test
+    public void testUfMethod() {
+        test(this::ufMethod);
     }
 }
