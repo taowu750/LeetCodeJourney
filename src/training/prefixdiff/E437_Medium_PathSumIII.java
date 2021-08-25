@@ -1,6 +1,7 @@
-package training.binarytree;
+package training.prefixdiff;
 
 import org.junit.jupiter.api.Test;
+import training.binarytree.TreeNode;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -112,5 +113,47 @@ public class E437_Medium_PathSumIII {
     @Test
     public void testPathSum() {
         test(this::pathSum);
+    }
+
+
+    /**
+     * 把一条路径看做一个数组，在这个数组上找区间和为 targetSum 的问题可以很容易通过前缀数组解决。
+     * 因此这个问题也可以应用前缀的思路。
+     *
+     * LeetCode 耗时：3 ms - 80.46%
+     *          内存消耗：38.2 MB - 62.00%
+     */
+    public int prefixMethod(TreeNode root, int targetSum) {
+        Map<Integer, Integer> prefix2cnt = new HashMap<>();
+        prefix2cnt.put(0, 1);
+        result = 0;
+
+        dfs(root, targetSum, prefix2cnt, 0);
+
+        return result;
+    }
+
+    private void dfs(TreeNode root, int targetSum, Map<Integer, Integer> prefix2cnt, int prefix) {
+        if (root == null) {
+            return;
+        }
+
+        int newPrefix = root.val + prefix;
+        result += prefix2cnt.getOrDefault(newPrefix - targetSum, 0);
+        prefix2cnt.merge(newPrefix, 1, Integer::sum);
+
+        dfs(root.left, targetSum, prefix2cnt, newPrefix);
+        dfs(root.right, targetSum, prefix2cnt, newPrefix);
+
+        if (prefix2cnt.get(newPrefix) == 1) {
+            prefix2cnt.remove(newPrefix);
+        } else {
+            prefix2cnt.merge(newPrefix, -1, Integer::sum);
+        }
+    }
+
+    @Test
+    public void testPrefixMethod() {
+        test(this::prefixMethod);
     }
 }
