@@ -135,4 +135,125 @@ public class E621_Medium_TaskScheduler {
     public void testLeastInterval() {
         test(this::leastInterval);
     }
+
+
+    static class Tuple {
+        int time;
+        int cnt;
+
+        public Tuple(int time, int cnt) {
+            this.time = time;
+            this.cnt = cnt;
+        }
+
+        @Override
+        public String toString() {
+            return "{" + time + ", " + cnt + "}";
+        }
+    }
+
+    /**
+     * 模拟时间轴方法。参见：
+     * https://leetcode-cn.com/problems/task-scheduler/solution/ren-wu-diao-du-qi-by-leetcode-solution-ur9w/
+     *
+     * LeetCode 耗时：18 ms - 30.87%
+     *          内存消耗：38.7 MB - 88.43%
+     */
+    public int simulatorMethod(char[] tasks, int n) {
+        if (n == 0) {
+            return tasks.length;
+        }
+
+        Map<Character, Integer> t2c = new HashMap<>((int) (Math.min(tasks.length, 26) / 0.75) + 1);
+        for (char task : tasks) {
+            t2c.merge(task, 1, Integer::sum);
+        }
+
+        Tuple[] tuples = new Tuple[t2c.size()];
+        int i = 0;
+        for (Map.Entry<Character, Integer> entry : t2c.entrySet()) {
+            tuples[i++] = new Tuple(1, entry.getValue());
+        }
+
+        // 模拟 CPU 时间，从 1 开始
+        int time = 1;
+        while (true) {
+            Tuple running = null, minTimeTask = null;
+            // 找到当前时刻可以运行的任务，并且是剩余次数最多的任务
+            for (Tuple tuple : tuples) {
+                if (tuple.cnt > 0 && tuple.time <= time && (running == null || tuple.cnt > running.cnt)) {
+                    running = tuple;
+                }
+            }
+            // 找到 running 之外，运行时刻最小的任务
+            for (Tuple tuple : tuples) {
+                if (tuple.cnt > 0 && tuple != running && (minTimeTask == null || tuple.time < minTimeTask.time)) {
+                    minTimeTask = tuple;
+                }
+            }
+            // 让 running 运行，它的下一次运行时间将加上冷却时间
+            if (running != null) {
+                running.time += n + 1;
+                running.cnt--;
+            }
+            if (minTimeTask != null) {
+                // 如果运行时刻最小的任务，在下一时刻不能运行，则将 time 调整到和它一样，避免无效查找
+                if (minTimeTask.time > time + 1) {
+                    time = minTimeTask.time;
+                } else {  // 否则 time 正常前进
+                    time++;
+                }
+            }
+            // 如果没有 minTimeTask，表示没有其他可以运行的任务了；并且 running 也结束了，则所有任务运行完毕
+            else if (running == null || running.cnt == 0) {
+                break;
+            }
+        }
+
+        return time;
+    }
+
+    @Test
+    public void testSimulatorMethod() {
+        test(this::simulatorMethod);
+    }
+
+
+    /**
+     * 构造法，参见：
+     * https://leetcode-cn.com/problems/task-scheduler/solution/ren-wu-diao-du-qi-by-leetcode-solution-ur9w/
+     *
+     * LeetCode 耗时：1 ms - 100%
+     *          内存消耗：38.9 MB - 81.13%
+     */
+    public int constructMethod(char[] tasks, int n) {
+        // 用 Map 耗时 15ms
+        int[] freq = new int[26];
+        // 最多的执行次数
+        int maxExec = 0;
+        for (char ch : tasks) {
+            freq[ch - 'A']++;
+        }
+        // 将 maxExec 的计算从上面的循环抽出来，减少了 1ms 耗时
+        for (int f : freq) {
+            if (f > maxExec) {
+                maxExec = f;
+            }
+        }
+
+        // 具有最多执行次数的任务数量
+        int maxCount = 0;
+        for (int f : freq) {
+            if (f == maxExec) {
+                ++maxCount;
+            }
+        }
+
+        return Math.max((maxExec - 1) * (n + 1) + maxCount, tasks.length);
+    }
+
+    @Test
+    public void testConstructMethod() {
+        test(this::constructMethod);
+    }
 }
