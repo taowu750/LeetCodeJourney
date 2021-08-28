@@ -221,7 +221,7 @@ public class E621_Medium_TaskScheduler {
 
     /**
      * 构造法，参见：
-     * https://leetcode-cn.com/problems/task-scheduler/solution/ren-wu-diao-du-qi-by-leetcode-solution-ur9w/
+     * https://leetcode-cn.com/problems/task-scheduler/solution/tong-zi-by-popopop/
      *
      * LeetCode 耗时：1 ms - 100%
      *          内存消耗：38.9 MB - 81.13%
