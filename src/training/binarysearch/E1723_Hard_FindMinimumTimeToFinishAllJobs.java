@@ -133,4 +133,115 @@ public class E1723_Hard_FindMinimumTimeToFinishAllJobs {
     public void testMinimumTimeRequired() {
         test(this::minimumTimeRequired);
     }
+
+
+    /**
+     * 动态规划解法，参见：
+     * https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs/solution/zhuang-ya-dp-jing-dian-tao-lu-xin-shou-j-3w7r/
+     *
+     * LeetCode 耗时：87 ms - 24.20%
+     *          内存消耗：37.7 MB - 22.80%
+     */
+    public int dpMethod(int[] jobs, int k) {
+        int n = jobs.length;
+
+        // 用 [0, 2^N] 之间的整数表示 jobs 的子集，tot[i] 代表子集 i 的工作总时间
+        int[] tot = new int[1 << n];
+        for (int i = 1; i < tot.length; i++) {
+            for (int j = 0; j < n; j++) {
+                if ((i & (1 << j)) == 0) {
+                    continue;
+                }
+                // i - (1 << j) 表示「子集 i 中去掉了元素 j 后剩下的那部分」
+                tot[i] = tot[i - (1 << j)] + jobs[j];
+                break;
+            }
+        }
+
+        // dp[i][j] 表示前 i 个工人为了完成作业子集 j，需要花费的最大工作时间的最小值；
+        // dp[i][j] = min(max(dp[i-1][i-s], tot[s]))   s ∈ i（s 是 i 的子集）
+        int[][] dp = new int[k][1 << n];
+        // 初始化只有一个工人的情况
+        System.arraycopy(tot, 0, dp[0], 0, tot.length);
+
+        for (int i = 1; i < k; i++) {
+            for (int j = 0; j < tot.length; j++) {
+                int minVal = Integer.MAX_VALUE;
+                // 枚举 j 的全部子集，参见：https://blog.csdn.net/wat1r/article/details/114298873#_329
+                for (int s = j; s != 0 ; s = (s - 1) & j) {
+                    minVal = Math.min(minVal, Math.max(dp[i - 1][j - s], tot[s]));
+                }
+                dp[i][j] = minVal;
+            }
+        }
+
+        return dp[k - 1][tot.length - 1];
+    }
+
+    @Test
+    public void testDpMethod() {
+        test(this::dpMethod);
+    }
+
+
+    /**
+     * 二分查找结合动态规划，在 n 比较大时会比单纯的动态规划更好。参见：
+     * https://leetcode-cn.com/problems/find-minimum-time-to-finish-all-jobs/solution/zhuang-ya-dp-jing-dian-tao-lu-xin-shou-j-3w7r/
+     *
+     * LeetCode 耗时：282 ms - 10.20%
+     *          内存消耗：36.1 MB - 26.20%
+     */
+    public int dpAndBinarySearchMethod(int[] jobs, int k) {
+        int n = jobs.length;
+
+        int max = Integer.MIN_VALUE, sum = 0;
+        for (int job : jobs) {
+            if (max < job)
+                max = job;
+            sum += job;
+        }
+
+        int[] tot = new int[1 << n];
+        for (int i = 1; i < tot.length; i++) {
+            for (int j = 0; j < n; j++) {
+                if ((i & (1 << j)) == 0) {
+                    continue;
+                }
+                tot[i] = tot[i - (1 << j)] + jobs[j];
+                break;
+            }
+        }
+
+        int[] dp = new int[1 << n];
+        Arrays.fill(dp, Integer.MAX_VALUE >>> 1);
+        dp[0] = 0;
+
+        int lo = max, hi = sum;
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            for (int i = 0; i < tot.length; i++) {
+                for (int s = i; s != 0; s = (s - 1) & i) {
+                    if (tot[s] <= mid) {
+                        dp[i] = Math.min(dp[i], dp[i - s] + 1);
+                    }
+                }
+            }
+
+            if (dp[(1 << n) - 1] <= k) {
+                hi = mid;
+            } else {
+                lo = mid + 1;
+            }
+
+            Arrays.fill(dp, Integer.MAX_VALUE >>> 1);
+            dp[0] = 0;
+        }
+
+        return lo;
+    }
+
+    @Test
+    public void testDpAndBinarySearchMethod() {
+        test(this::dpAndBinarySearchMethod);
+    }
 }
