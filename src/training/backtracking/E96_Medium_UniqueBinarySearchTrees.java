@@ -78,4 +78,37 @@ public class E96_Medium_UniqueBinarySearchTrees {
     public void testNumTrees() {
         test(this::numTrees);
     }
+
+
+    /**
+     * 动态规划解法。
+     *
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：34.8 MB - 96.41%
+     */
+    public int dpMethod(int n) {
+        // dp[i][j] 表示从 i..j 范围内不同二叉树的数量
+        int[][] dp = new int[n + 2][n + 2];
+        dp[0][0] = 1;
+        for (int i = 1; i < n + 2; i++) {
+            dp[i][i] = 1;
+            // 为了处理 i..i-1 的特殊情况
+            dp[i][i - 1] = 1;
+        }
+
+        for (int i = n - 1; i >= 1; i--) {
+            for (int j = i + 1; j <= n; j++) {
+                for (int root = i; root <= j; root++) {
+                    dp[i][j] += dp[i][root - 1] * dp[root + 1][j];
+                }
+            }
+        }
+
+        return dp[1][n];
+    }
+
+    @Test
+    public void testDpMethod() {
+        test(this::dpMethod);
+    }
 }
