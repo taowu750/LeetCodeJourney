@@ -2,6 +2,8 @@ package training.array;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.function.ToIntFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -107,5 +109,69 @@ public class E85_Hard_MaximalRectangle {
     @Test
     public void testMaximalRectangle() {
         test(this::maximalRectangle);
+    }
+
+
+    /**
+     * 单调栈解法，参见：
+     * https://leetcode-cn.com/problems/maximal-rectangle/solution/zui-da-ju-xing-by-leetcode-solution-bjlu/
+     *
+     * LeetCode 耗时：13 ms - 39%
+     *          内存消耗：40.8 MB - 85%
+     */
+    public int stackMethod(char[][] matrix) {
+        if (matrix.length == 0 || matrix[0].length == 0) {
+            return 0;
+        }
+
+        int m = matrix.length, n = matrix[0].length;
+        // 计算每个格子左边连续的 1 数量（包括它自己）
+        int[][] left = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (matrix[i][j] == '1') {
+                    left[i][j] = (j == 0 ? 0 : left[i][j - 1]) + 1;
+                }
+            }
+        }
+
+        int max = 0;
+        // 单增栈
+        Deque<Integer> stack = new ArrayDeque<>(m);
+        int[] up = new int[m], down = new int[m];
+        // 当作柱状图
+        for (int j = 0; j < n; j++) {
+            // 为 j 列的每个格子找到它的上边界（left 刚好小于它的）
+            for (int i = 0; i < m; i++) {
+                while (!stack.isEmpty() && left[stack.peek()][j] >= left[i][j]) {
+                    stack.pop();
+                }
+                up[i] = stack.isEmpty() ? -1 : stack.peek();
+                stack.push(i);
+            }
+            stack.clear();
+
+            // 为 j 列的每个格子找到它的下边界（left 刚好小于它的）
+            for (int i = m - 1; i >= 0; i--) {
+                while (!stack.isEmpty() && left[stack.peek()][j] >= left[i][j]) {
+                    stack.pop();
+                }
+                down[i] = stack.isEmpty() ? m : stack.peek();
+                stack.push(i);
+            }
+            stack.clear();
+
+            for (int i = 0; i < m; i++) {
+                int height = down[i] - up[i] - 1;
+                max = Math.max(max, height * left[i][j]);
+            }
+        }
+
+        return max;
+    }
+
+    @Test
+    public void testStackMethod() {
+        test(this::stackMethod);
     }
 }
