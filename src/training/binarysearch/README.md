@@ -100,7 +100,8 @@ return nums[left] == target ? left : -1;
 
 # 4. 寻找左侧边界的二分搜索
 
-直接看代码，其中的标记是需要注意的细节：
+**左侧边界就是第一个大于等于搜索数的下标**。直接看代码，其中的标记是需要注意的细节：
+
 ```java
 int left_bound(int[] nums, int target) {
     if (nums.length == 0) return -1;
@@ -123,8 +124,7 @@ int left_bound(int[] nums, int target) {
 
 ## 4.1 为什么 while(left < right) 而不是 <= ?
 
-用相同的方法分析，因为初始化 `right = nums.length` 而不是 `nums.length - 1` 。
-因此每次循环的「搜索区间」是 `[left, right)` 左闭右开。
+因为可能所有的数都小于 `target`，需要将 `nums.length` 包含进来，所以 `right = nums.length`。用相同的方法分析，因为初始化 `right = nums.length` 而不是 `nums.length - 1` 因此每次循环的「搜索区间」是 `[left, right)` 左闭右开。
 
 `while(left < right)` 终止的条件是 `left == right`，此时搜索区间 `[left, left)` 恰巧为空，所以可以正确终止。
 
@@ -169,7 +169,8 @@ if (nums[mid] == target)
 
 # 5. 寻找右侧边界的二分查找
 
-寻找右侧边界和寻找左侧边界的代码差不多，只有两处不同，已标注：
+**右侧边界就是第一个大于搜索数的下标**。不过下面的代码进行了一下改造，返回了最后一个等于搜索数的下标。寻找右侧边界和寻找左侧边界的代码差不多，只有两处不同，已标注：
+
 ```java
 int right_bound(int[] nums, int target) {
     if (nums.length == 0) return -1;
