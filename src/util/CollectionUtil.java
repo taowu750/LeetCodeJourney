@@ -57,4 +57,13 @@ public class CollectionUtil {
 
         return new HashSet<>(c1).equals(new HashSet<>(c2));
     }
+
+    public static <T> void in(List<T> actual, List<T>... expected) {
+        for (List<T> ts : expected) {
+            if (actual.equals(ts)) {
+                return;
+            }
+        }
+        throw new AssertionError("no match. actual=" + actual);
+    }
 }
