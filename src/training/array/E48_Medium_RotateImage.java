@@ -154,12 +154,21 @@ public class E48_Medium_RotateImage {
 
 
     /**
+     *      top
+     *      ————————| right
+     *      |       |
+     *      |       |
+     *      |       |
+     * left |————————
+     *         bottom
+     *
      * LeetCode 耗时：0 ms - 100.00%
      *          内存消耗：38.4 MB - 79.22%
      */
     public void betterMethod(int[][] matrix) {
         int n = matrix.length;
-        // 由外向内顺时针旋转，总共需要旋转 n/2 次
+        // 由外向内顺时针旋转，总共需要旋转 n/2 次。
+        // 每次旋转一圈都是从左上角旋转，也就是 (times, times)，也就是移动的下标会和次数相关
         for (int times = 0; times < (n >>> 1); times++) {
             int len = n - (times << 1);
             for (int i = 0; i < len - 1; i++) {
