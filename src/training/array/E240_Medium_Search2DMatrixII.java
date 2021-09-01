@@ -126,4 +126,40 @@ public class E240_Medium_Search2DMatrixII {
     public void testSearchMatrix() {
         test(this::searchMatrix);
     }
+
+
+    /**
+     * 极其巧妙的方法，利用了矩阵从左到右升序、从上到下升序的性质。
+     * 从矩阵的左下角开始，如果 target 大于当前数，则上升一行；如果小于，则向右一列。
+     * 每次都能去掉一行或一列，因此时间复杂度为 O(m+n)。
+     *
+     * 因为行是从左到右排序的，所以我们知道当前值右侧的每个值都比它大。因此如果当前值已经大于 target，则当前行不可能会有 target。
+     * 也可以对列进行类似的论证，因此这种搜索方式将始终在矩阵中找到目标（如果存在）。
+     *
+     * 这个二维数组就类似一棵排序二叉树，对于每一个数来说，上方的数都小于它，右边的数都大于它，所以把左下角作为根节点开始查找。
+     *
+     * 参见：https://leetcode-cn.com/problems/search-a-2d-matrix-ii/solution/sou-suo-er-wei-ju-zhen-ii-by-leetcode-2/
+     *
+     * LeetCode 耗时：5 ms - 96.24%
+     *          内存消耗：44 MB - 35.53%
+     */
+    public boolean betterMethod(int[][] matrix, int target) {
+        int m = matrix.length, n = matrix[0].length;
+        for (int i = m - 1, j = 0; i >= 0 && j < n;) {
+            if (matrix[i][j] == target) {
+                return true;
+            } else if (matrix[i][j] > target) {
+                i--;
+            } else {
+                j++;
+            }
+        }
+
+        return false;
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
+    }
 }
