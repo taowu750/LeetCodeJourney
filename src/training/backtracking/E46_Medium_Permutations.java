@@ -9,6 +9,8 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 46. 全排列：https://leetcode-cn.com/problems/permutations/
+ *
  * 给定一个「没有重复」数字的序列，返回其所有可能的全排列。
  *
  * 例 1：
