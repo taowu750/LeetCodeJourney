@@ -1,4 +1,4 @@
-package training.backtracking;
+package training.array;
 
 import org.junit.jupiter.api.Test;
 
