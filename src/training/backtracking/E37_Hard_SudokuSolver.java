@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.util.function.Consumer;
 
 /**
+ * 37. 解数独：https://leetcode-cn.com/problems/sudoku-solver/
+ *
  * 编写一个程序，通过填充空格来解决数独问题。一个数独的解法需遵循如下规则：
  * 1. 数字 1-9 在每一行只能出现一次。
  * 2. 数字 1-9在每一列只能出现一次。
@@ -97,5 +99,72 @@ public class E37_Hard_SudokuSolver {
     @Test
     public void testSolveSudoku() {
         test(this::solveSudoku);
+    }
+
+
+    /**
+     * 空间换时间。
+     *
+     * LeetCode 耗时：1 ms - 99.08%
+     *          内存消耗：36 MB - 27.87%
+     */
+    public void betterMethod(char[][] board) {
+        boolean[][] rows = new boolean[9][9];
+        boolean[][] cols = new boolean[9][9];
+        boolean[][][] cells = new boolean[3][3][9];
+
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                if (board[i][j] == '.') {
+                    continue;
+                }
+                int num = board[i][j] - '0' - 1;
+                rows[i][num] = true;
+                cols[j][num] = true;
+                cells[i / 3][j / 3][num] = true;
+            }
+        }
+
+        dfs(board, rows, cols, cells, 0, 0);
+    }
+
+    private boolean dfs(char[][] board, boolean[][] rows, boolean[][] cols, boolean[][][] cells,
+                        int i, int j) {
+        if (i >= 9) {
+            return true;
+        }
+        while (j >= 9 || board[i][j] != '.') {
+            if (++j >= 9) {
+                j = 0;
+                if (++i >= 9) {
+                    return true;
+                }
+            }
+        }
+
+        for (int num = 0; num < 9; num++) {
+            if (!rows[i][num] && !cols[j][num] && !cells[i / 3][j / 3][num]) {
+                board[i][j] = (char) (num + '1');
+                rows[i][num] = true;
+                cols[j][num] = true;
+                cells[i / 3][j / 3][num] = true;
+
+                if (dfs(board, rows, cols, cells, i, j + 1)) {
+                    return true;
+                }
+
+                board[i][j] = '.';
+                rows[i][num] = false;
+                cols[j][num] = false;
+                cells[i / 3][j / 3][num] = false;
+            }
+        }
+
+        return false;
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
     }
 }
