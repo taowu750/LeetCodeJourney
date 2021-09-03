@@ -31,7 +31,7 @@ public class CollectionUtil {
     public static <T extends Comparable<T>> boolean deepEqualsIgnoreOrder(List<List<T>> expected,
                                                                           List<List<T>> actual) {
         if (expected.size() != actual.size())
-            throw new AssertionError("expected and actual do not match in size");
+            throw new AssertionError("expected and actual do not match in size, actual=" + actual);
 
         for (List<T> ts : expected)
             Collections.sort(ts);

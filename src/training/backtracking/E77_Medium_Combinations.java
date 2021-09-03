@@ -13,6 +13,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 77. 组合: https://leetcode-cn.com/problems/combinations/
+ *
  * 给定两个整数 n 和 k，返回 1 ... n 中所有可能的 k 个数的组合。
  *
  * 例 1：
@@ -72,5 +74,49 @@ public class E77_Medium_Combinations {
     @Test
     public void testCombine() {
         test(this::combine);
+    }
+
+
+    /**
+     * 更加简洁的方法。
+     *
+     * LeetCode 耗时：1 ms - 99.99%
+     *          内存消耗：39.7 MB - 65.66%
+     */
+    public List<List<Integer>> conciseMethod(int n, int k) {
+        int cap = 1;
+        for (int i = n; i > n - k; i--)
+            cap *= i;
+        int factor = 1;
+        for (int i = 2; i <= k; i++)
+            factor *= i;
+        ArrayList<List<Integer>> result = new ArrayList<>(cap / factor + 1);
+        dfs(n, k, result, new ArrayList<>(k), 1);
+
+        return result;
+    }
+
+    private void dfs(int n, int k, List<List<Integer>> result, ArrayList<Integer> path, int i) {
+        if (path.size() == k) {
+            //noinspection unchecked
+            result.add((List<Integer>) path.clone());
+            return;
+        }
+
+        // 将 i 添加进来
+        int size = path.size();
+        path.add(i);
+        dfs(n, k, result, path, i + 1);
+        path.remove(size);
+
+        if (k - path.size() <= n - i) {
+            // 不添加 i
+            dfs(n, k, result, path, i + 1);
+        }
+    }
+
+    @Test
+    public void testConciseMethod() {
+        test(this::conciseMethod);
     }
 }
