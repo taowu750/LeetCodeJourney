@@ -9,6 +9,8 @@ import java.util.function.IntUnaryOperator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 651. 4键键盘: https://leetcode-cn.com/problems/4-keys-keyboard/
+ *
  * 假设你有一个特殊的键盘，键盘上有如下键:
  * - 键 1: (A): 在屏幕上打印一个'A'。
  * - 键 2: (Ctrl-A): 选择整个屏幕。
@@ -31,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - 1 <= N <= 50
  * - 答案将在 32 位有符号整数的范围内。
  */
-public class LintCode867_Medium_FourButtonKeyboard {
+public class E651_Medium_FourButtonKeyboard {
 
     static void test(IntUnaryOperator method) {
         assertEquals(method.applyAsInt(3), 3);
@@ -48,16 +50,17 @@ public class LintCode867_Medium_FourButtonKeyboard {
     /**
      * 参见 README.md 中“4键键盘”题解。
      *
-     * LintCode 耗时：142ms - 100%
+     * LeetCode 耗时：1ms - 98.67%
+     *          内存消耗：35.1 MB - 66.00%
      */
-    public int maxA(int N) {
-        int[] dp = new int[N + 1];
-        for (int i = 1; i <= N; i++) {
+    public int maxA(int n) {
+        int[] dp = new int[n + 1];
+        for (int i = 1; i <= n; i++) {
             dp[i] = dp[i - 1] + 1;
             for (int j = 2; j < i; j++)
                 dp[i] = Math.max(dp[i], dp[j - 2] * (i - j + 1));
         }
-        return dp[N];
+        return dp[n];
     }
 
     @Test
