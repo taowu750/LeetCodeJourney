@@ -7,6 +7,8 @@ import java.util.function.ToIntBiFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 718. 最长重复子数组: https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/
+ *
  * 给两个整数数组 A 和 B ，返回两个数组中公共的、长度最长的子数组的长度。
  *
  * 例 1：
@@ -87,5 +89,76 @@ public class E718_Medium_MaximumLengthOfRepeatedSubarray {
     @Test
     public void testCompressMethod() {
         test(this::compressMethod);
+    }
+
+
+    /**
+     * 滑动窗口法，参见：
+     * https://leetcode-cn.com/problems/maximum-length-of-repeated-subarray/solution/wu-li-jie-fa-by-stg-2/
+     *
+     * LeetCode 耗时：42 ms - 76.65%
+     *          内存消耗：38 MB - 93.83%
+     */
+    public int slideWindowMethod(int[] A, int[] B) {
+        return A.length <= B.length ? findMax(A, B) : findMax(B, A);
+    }
+
+    private int findMax(int[] A, int[] B) {
+        int m = A.length, n = B.length;
+        int max = 0;
+
+        /*
+        A:           |*|*|*|*|
+        B: |*|*|*|*|*|*|
+                 ↓
+        A:       |*|*|*|*|
+        B: |*|*|*|*|*|*|
+         */
+        for (int len = 1; len < m; len++) {
+            max = Math.max(max, find(A, B, 0, n - len, len));
+        }
+
+        /*
+        A:     |*|*|*|*|
+        B: |*|*|*|*|*|*|
+                 ↓
+        A: |*|*|*|*|
+        B: |*|*|*|*|*|*|
+         */
+        for (int j = n - m; j >= 0; j--) {
+            max = Math.max(max, find(A, B, 0, j, m));
+        }
+
+        /*
+        A: |*|*|*|*|
+        B:   |*|*|*|*|*|*|
+                 ↓
+        A: |*|*|*|*|
+        B:       |*|*|*|*|*|*|
+         */
+        for (int len = m - 1; len > 0; len--) {
+            max = Math.max(max, find(A, B, m - len, 0, len));
+        }
+
+        return max;
+    }
+
+    private int find(int[] A, int[] B, int i, int j, int len) {
+        int max = 0, count = 0;
+        for (int k = 0; k < len; k++) {
+            if (A[i + k] == B[j + k]) {
+                count++;
+            } else {
+                max = Math.max(max, count);
+                count = 0;
+            }
+        }
+
+        return Math.max(max, count);
+    }
+
+    @Test
+    public void testSlideWindowMethod() {
+        test(this::slideWindowMethod);
     }
 }
