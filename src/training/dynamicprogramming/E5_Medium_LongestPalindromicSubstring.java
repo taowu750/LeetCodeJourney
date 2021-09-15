@@ -145,4 +145,33 @@ public class E5_Medium_LongestPalindromicSubstring {
     public void testCompressMethod() {
         test(this::compressMethod);
     }
+
+
+    /**
+     * 中心扩散法。参见 {@link training.string.E647_Medium_PalindromicSubstrings}。
+     *
+     * LeetCode 耗时：24 ms - 87.94%
+     *          内存消耗：38.6 MB - 69.86%
+     */
+    public String centerSpreadMethod(String s) {
+        int n = s.length(), bestLeft = 0, bestRight = -1;
+        for (int center = 0; center < 2 * n - 1; center++) {
+            int left = center / 2, right = left + center % 2;
+            while (left >= 0 && right < n && s.charAt(left) == s.charAt(right)) {
+                left--;
+                right++;
+            }
+            if (right - left - 1 > bestRight - bestLeft + 1) {
+                bestLeft = left + 1;
+                bestRight = right - 1;
+            }
+        }
+
+        return s.substring(bestLeft, bestRight + 1);
+    }
+
+    @Test
+    public void testCenterSpreadMethod() {
+        test(this::centerSpreadMethod);
+    }
 }
