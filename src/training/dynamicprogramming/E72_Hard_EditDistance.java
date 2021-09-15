@@ -7,6 +7,8 @@ import java.util.function.ToIntBiFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 72. 编辑距离: https://leetcode-cn.com/problems/edit-distance/
+ *
  * 给你两个单词 word1 和 word2，请你计算出将 word1 转换成 word2 所使用的最少操作数 。
  * 你可以对一个单词进行如下三种操作：
  * - 插入一个字符
@@ -70,8 +72,8 @@ public class E72_Hard_EditDistance {
                     dp[i][j] = dp[i - 1][j - 1];            // 相等就不需要操作
                 else
                     dp[i][j] = Math.min(dp[i - 1][j - 1],   // 替换
-                            Math.min(dp[i - 1][j],          // 删除
-                                    dp[i][j - 1]))          // 插入
+                            Math.min(dp[i - 1][j],          // 插入
+                                    dp[i][j - 1]))          // 删除
                             + 1;                            // 加上这一次操作
             }
         }

@@ -7,6 +7,8 @@ import java.util.function.ToIntFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 300. 最长递增子序列: https://leetcode-cn.com/problems/longest-increasing-subsequence/
+ *
  * 给你一个整数数组 nums ，找到其中最长严格递增子序列的长度。
  * <p>
  * 子序列是由数组派生而来的序列，删除（或不删除）数组中的元素而不改变其余元素的顺序。
