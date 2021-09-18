@@ -51,11 +51,16 @@ public class CollectionUtil {
         return true;
     }
 
-    public static <T extends Comparable<T>> boolean deepEqualsIgnoreOutOrder(List<List<T>> c1, List<List<T>> c2) {
-        if (c1.size() != c2.size())
-            return false;
+    public static <T extends Comparable<T>> boolean deepEqualsIgnoreOutOrder(List<List<T>> expected, List<List<T>> actual) {
+        if (expected.size() != actual.size()) {
+            throw new AssertionError("size mismatch, actual=" + actual);
+        }
 
-        return new HashSet<>(c1).equals(new HashSet<>(c2));
+        if (!(new HashSet<>(expected).equals(new HashSet<>(actual)))) {
+            throw new AssertionError("mismatch, actual=" + actual);
+        }
+
+        return true;
     }
 
     public static <T> void in(List<T> actual, List<T>... expected) {
