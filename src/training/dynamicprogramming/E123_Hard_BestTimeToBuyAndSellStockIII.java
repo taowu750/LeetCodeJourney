@@ -10,9 +10,11 @@ import java.util.function.ToIntFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 123. 买卖股票的最佳时机 III: https://leetcode-cn.com/problems/best-time-to-buy-and-sell-stock-iii/
+ *
  * 给定一个数组，它的第 i 个元素是一支给定的股票在第 i 天的价格。
  * 设计一个算法来计算你所能获取的最大利润。你最多可以完成「两笔」交易。
- * 此题和 {@link E122_Easy_BestTimeToBuyAndSellStockII} 类似，只不过限制了交易次数为 2 次。
+ * 此题和 {@link E122_Medium_BestTimeToBuyAndSellStockII} 类似，只不过限制了交易次数为 2 次。
  *
  * 注意：你不能同时参与多笔交易（你必须在再次购买前出售掉之前的股票）。
  *
@@ -52,7 +54,7 @@ public class E123_Hard_BestTimeToBuyAndSellStockIII {
     }
 
     /**
-     * 套用和 {@link E122_Easy_BestTimeToBuyAndSellStockII} 一样的框架。
+     * 套用和 {@link E122_Medium_BestTimeToBuyAndSellStockII} 一样的框架。
      *
      * 在最后一个测试样例超时。
      */
