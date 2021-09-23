@@ -1,6 +1,7 @@
 package training.dynamicprogramming;
 
 import org.junit.jupiter.api.Test;
+import training.backtracking.E139_Medium_WordBreak;
 
 import java.util.*;
 import java.util.function.BiFunction;
