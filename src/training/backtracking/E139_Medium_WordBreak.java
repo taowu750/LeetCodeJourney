@@ -1,4 +1,4 @@
-package training.dynamicprogramming;
+package training.backtracking;
 
 import org.junit.jupiter.api.Test;
 
@@ -43,29 +43,32 @@ public class E139_Medium_WordBreak {
     }
 
     /**
-     * 超时。
+     * LeetCode 耗时：1 ms - 99.65%
+     *          内存消耗：36 MB - 99.96%
      */
     public boolean wordBreak(String s, List<String> wordDict) {
-        return dfs(s, wordDict, 0);
+        return dfs(s, wordDict, 0, new HashMap<>());
     }
 
-    /**
-     * dfs，枚举 wordDict 列表。
-     */
-    private boolean dfs(String s, List<String> wordDict, int start) {
-        if (start >= s.length()) {
+    private boolean dfs(String s, List<String> wordDict, int start, Map<Integer, Boolean> cache) {
+        if (start == s.length()) {
             return true;
         }
 
-        for (String word : wordDict) {
-            if (s.startsWith(word, start)) {
-                if (dfs(s, wordDict, start + word.length())) {
-                    return true;
-                }
-            }
+        if (cache.containsKey(start)) {
+            return cache.get(start);
         }
 
-        return false;
+        boolean result = false;
+        for (String word : wordDict) {
+            if (s.startsWith(word, start) && dfs(s, wordDict, start + word.length(), cache)) {
+                result = true;
+                break;
+            }
+        }
+        cache.put(start, result);
+
+        return result;
     }
 
     @Test
@@ -75,10 +78,13 @@ public class E139_Medium_WordBreak {
 
 
     /**
-     * 从 s 出发使用 dfs，能够用上 cache 和 hash 优化，并且最终可以导出动态规划方法。
+     * 从 s 出发使用 dfs，能够最终可以导出动态规划方法。
      * 参见：https://leetcode-cn.com/problems/word-break/solution/shou-hui-tu-jie-san-chong-fang-fa-dfs-bfs-dong-tai/
+     *
+     * 这个方法和上面的方法类似，不过上面的方法是遍历 wordDict 去匹配 s，而此方法是遍历 s 匹配 wordDict。
+     * 两种方法在 s 长度、wordDict 长度不同时会有不同的效果。
      */
-    public boolean betterDfs(String s, List<String> wordDict) {
+    public boolean otherDfs(String s, List<String> wordDict) {
         Set<String> words = new HashSet<>(wordDict);
         Map<Integer, Boolean> cache = new HashMap<>();
         return dfs(s, words, cache, 0);
@@ -106,8 +112,8 @@ public class E139_Medium_WordBreak {
     }
 
     @Test
-    public void testBetterDfs() {
-        test(this::betterDfs);
+    public void testOtherDfs() {
+        test(this::otherDfs);
     }
 
 
@@ -126,6 +132,7 @@ public class E139_Medium_WordBreak {
             }
         }
 
+        // dp[i] 表示字符串 s 前 i 个字符组成的字符串 s[0..i-1] 是否能被空格拆分成若干个字典中出现的单词
         boolean[] dp = new boolean[s.length() + 1];
         dp[0] = true;
         for (int len = 1; len <= s.length(); len++) {
