@@ -1,4 +1,4 @@
-package training.dynamicprogramming;
+package training.hash_pq;
 
 import org.junit.jupiter.api.Test;
 
@@ -88,5 +88,40 @@ public class E128_Medium_LongestConsecutiveSequence {
     @Test
     public void testLongestConsecutive() {
         test(this::longestConsecutive);
+    }
+
+
+    /**
+     * 参见：https://leetcode-cn.com/problems/longest-consecutive-sequence/solution/dong-tai-gui-hua-python-ti-jie-by-jalan/
+     *
+     * LeetCode 耗时：31 ms - 42.36%
+     *          内存消耗：48.2 MB - 78.99%
+     */
+    public int betterMethod(int[] nums) {
+        int max = 0;
+        // 这个哈希表中存的实际上端点对应区间的长度值，只不过区间内部的元素长度我们也设为和端点一样，
+        // 表示这个元素我们已经访问过了
+        Map<Integer, Integer> intervals = new HashMap<>((int) (nums.length / 0.75) + 1);
+        for (int num : nums) {
+            if (!intervals.containsKey(num)) {
+                int left = intervals.getOrDefault(num - 1, 0);
+                int right = intervals.getOrDefault(num + 1, 0);
+                int curLen = left + right + 1;
+                if (curLen > max) {
+                    max = curLen;
+                }
+
+                intervals.put(num, curLen);
+                intervals.put(num - left, curLen);
+                intervals.put(num + right, curLen);
+            }
+        }
+
+        return max;
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
     }
 }
