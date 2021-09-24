@@ -84,7 +84,7 @@ public class E264_Medium_UglyNumberII {
 
     /**
      * 动态规划+三指针法：
-     * https://leetcode-cn.com/problems/ugly-number-ii/solution/chou-shu-ii-by-leetcode-solution-uoqd/
+     * https://leetcode-cn.com/problems/ugly-number-ii/solution/san-zhi-zhen-fang-fa-de-li-jie-fang-shi-by-zzxn/
      *
      * LeetCode 耗时：3 ms - 77.44%
      *          内存消耗：37.4 MB - 77.02%
