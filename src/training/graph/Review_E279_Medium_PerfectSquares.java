@@ -8,6 +8,8 @@ import java.util.function.IntUnaryOperator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 279. 完全平方数: https://leetcode-cn.com/problems/perfect-squares/
+ *
  * 给定整数 n，返回求和为 n 的最少”完美平方“数量。
  * <p>
  * ”完美平方“是一个整数的平方，同时”完美平方“还是这个整数的倍数。例如，1、4、9 和 16 是”完美平方“，
@@ -95,31 +97,33 @@ public class Review_E279_Medium_PerfectSquares {
 
 
     /**
-     * 动态规划方法。类似于 {@link training.dynamicprogramming.E322_Medium_CoinChange}。
+     * 动态规划方法。
      *
-     * LeetCode 耗时：161 ms - 14.65%
-     *          内存消耗：38 MB - 23.27%
+     * LeetCode 耗时：78 ms - 17%
+     *          内存消耗：37.6 MB - 42.22%
      */
     public int dpMethod(int n) {
-        int sqr;
-        if ((sqr = (int) Math.sqrt(n)) * sqr == n && n % sqr == 0)
+        int sqrt = (int) Math.sqrt(n);
+        if (sqrt * sqrt == n) {
             return 1;
-
-        // 计算所有小于 n 的完美平方数
-        List<Integer> perfectSquares = new ArrayList<>(sqr + 1);
-        for (int i = 2; i * i < n; i++) {
-            perfectSquares.add(i * i);
         }
 
-        int[] dp = new int[n + 1];
-        dp[1] = 1;
+        List<Integer> perfect = new ArrayList<>(sqrt + 1);
+        for (int i = 1; i * i < n; i++) {
+            perfect.add(i * i);
+        }
 
-        for (int i = 2; i <= n; i++) {
-            dp[i] = dp[i - 1] + 1;
-            for (int perfectSquare : perfectSquares) {
-                if (perfectSquare > i)
-                    break;
-                dp[i] = Math.min(dp[i], dp[i - perfectSquare] + 1);
+        int m = perfect.size();
+        int[] dp = new int[n + 1];
+        for (int j = 1; j <= n; j++) {
+            dp[j] = j;
+        }
+
+        for (int i = 2; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                if (perfect.get(i - 1) <= j) {
+                    dp[j] = Math.min(dp[j], dp[j - perfect.get(i - 1)] + 1);
+                }
             }
         }
 

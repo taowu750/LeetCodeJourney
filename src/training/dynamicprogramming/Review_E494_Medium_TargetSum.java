@@ -5,10 +5,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.ToIntBiFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 494. 目标和: https://leetcode-cn.com/problems/target-sum/
+ *
  * 给定非负整数 a1，a2，...，an 列表和目标 S。现在您有 2 个符号 + 和 -。
  * 对于每个整数，应从 + 和 - 中选择一个作为它的正负号。
  * <p>
@@ -31,18 +34,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class Review_E494_Medium_TargetSum {
 
-    interface TargetSumMethod {
-        int findTargetSumWays(int[] nums, int S);
-    }
-
-    static void test(TargetSumMethod method) {
-        assertEquals(method.findTargetSumWays(new int[]{1, 1, 1, 1, 1}, 3), 5);
-
-        assertEquals(method.findTargetSumWays(new int[]{0, 0, 0}, 3), 0);
-
-        assertEquals(method.findTargetSumWays(new int[]{1, 1}, 0), 2);
-
-        assertEquals(method.findTargetSumWays(new int[]{0, 1, 3}, -2), 2);
+    static void test(ToIntBiFunction<int[], Integer> method) {
+        assertEquals(5, method.applyAsInt(new int[]{1, 1, 1, 1, 1}, 3));
+        assertEquals(0, method.applyAsInt(new int[]{0, 0, 0}, 3));
+        assertEquals(2, method.applyAsInt(new int[]{1, 1}, 0));
+        assertEquals(2, method.applyAsInt(new int[]{0, 1, 3}, -2));
     }
 
     int[] suffix;
@@ -158,6 +154,7 @@ public class Review_E494_Medium_TargetSum {
         则我们有 dp[i][j] = dp[i-1][j] + dp[i-1][j - nums[i - 1]]。
          */
         int[][] dp = new int[nums.length + 1][ps + 1];
+        // 注意，nums 中可能有 0，因此 dp[i][0] 可能大于 1
         dp[0][0] = 1;
         for (int i = 1; i <= nums.length;  i++) {
             for (int j = 0; j <= ps;  j++) {
