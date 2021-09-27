@@ -87,4 +87,42 @@ public class E124_Hard_BinaryTreeMaximumPathSum {
     public void testMaxPathSum() {
         test(this::maxPathSum);
     }
+
+
+    /**
+     * 更好的方法，使用返回数组，避免使用 Map。
+     *
+     * LeetCode 耗时：1 ms - 62.48%
+     *          内存消耗：40 MB - 93.55%
+     */
+    public int betterMethod(TreeNode root) {
+        if (root == null) {
+            return 0;
+        }
+
+        return maxPath(root)[0];
+    }
+
+    /**
+     * 返回 root 的最大路径和和以 root 为根的「单条」路径最大和
+     */
+    private int[] maxPath(TreeNode root) {
+        if (root == null) {
+            return new int[]{Integer.MIN_VALUE, 0};
+        }
+
+        int[] leftPath = maxPath(root.left);
+        int[] rightPath = maxPath(root.right);
+        int rootPath = leftPath[1] + root.val + rightPath[1];
+        int maxSinglePath = Math.max(root.val, root.val + Math.max(leftPath[1], rightPath[1]));
+
+        return new int[]{
+                Math.max(Math.max(leftPath[0], rightPath[0]), Math.max(rootPath, maxSinglePath)),
+                maxSinglePath};
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
+    }
 }
