@@ -10,9 +10,11 @@ import java.util.function.Function;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static training.binarytree.TreeNode.newTree;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static util.CollectionUtil.equalsIgnoreOrder;
 
 /**
+ * 652. 寻找重复的子树：https://leetcode-cn.com/problems/find-duplicate-subtrees/
+ *
  * 如果两棵树具有相同的结构和相同的节点值，则它们是重复的。
  * 给定二叉树的根，返回所有重复的子树。
  * 对于每种重复的子树，您只需要返回其中任何一个子树的根节点。
@@ -53,22 +55,22 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class E652_Medium_FindDuplicateSubtrees {
 
     static void test(Function<TreeNode, List<TreeNode>> method) {
-        assertEquals(method.apply(newTree(1,2,3,4,null,2,4,null,null,4)),
+        equalsIgnoreOrder(method.apply(newTree(1,2,3,4,null,2,4,null,null,4)),
                 asList(newTree(2, 4), new TreeNode(4)));
 
-        assertEquals(method.apply(newTree(2,1,1)),
+        equalsIgnoreOrder(method.apply(newTree(2,1,1)),
                 singletonList(new TreeNode(1)));
 
-        assertEquals(method.apply(newTree(2,2,2,3,null,3,null)),
+        equalsIgnoreOrder(method.apply(newTree(2,2,2,3,null,3,null)),
                 asList(newTree(2, 3), new TreeNode(3)));
 
-        assertEquals(method.apply(newTree(1,4,3,2,null,2,4,null,null,4)),
+        equalsIgnoreOrder(method.apply(newTree(1,4,3,2,null,2,4,null,null,4)),
                 singletonList(new TreeNode(4)));
 
-        assertEquals(method.apply(newTree(0,0,0,0,null,null,0,null,null,null,0)),
+        equalsIgnoreOrder(method.apply(newTree(0,0,0,0,null,null,0,null,null,null,0)),
                 singletonList(new TreeNode(0)));
 
-        assertEquals(method.apply(newTree(0,0,0,0,null,null,0,0,0,0,0)),
+        equalsIgnoreOrder(method.apply(newTree(0,0,0,0,null,null,0,0,0,0,0)),
                 asList(newTree(0, 0, 0), new TreeNode(0)));
     }
 
