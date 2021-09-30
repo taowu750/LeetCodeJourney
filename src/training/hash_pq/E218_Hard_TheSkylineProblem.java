@@ -113,6 +113,7 @@ public class E218_Hard_TheSkylineProblem {
         // 为了计算高度差，需要保存之前最高的高度
         int lastHeight = 0;
         List<List<Integer>> res = new ArrayList<>();
+        // 遍历数组，可以看做是在水平方向上移动
         for (int[] buildingPoint : buildingPoints) {
             if (buildingPoint[1] < 0) {
                 // 说明此时是「从下到上」，纵坐标参与选拔最大值，请见「规则 1」
@@ -120,14 +121,14 @@ public class E218_Hard_TheSkylineProblem {
             } else {
                 /*
                 这里不需要把高度添加到堆中，因为左端点和右端点高度是一样的，之前就已经存在了。
-                不是真的删除 buildingPoint[1]，把它放进 delayed，等到堆顶元素是 buildingPoint[1] 的时候，才真的删除
+                把 buildingPoint[1] 放进 delayed，等到堆顶元素是它的时候，才真的删除
                  */
                 delayedMap.merge(buildingPoint[1], 1, Integer::sum);
             }
 
             /*
-            如果堆顶元素在延迟删除集合中，才真正删除，这一步可能执行多次，所以放在 while 中
-            while (true) 都是可以的，因为 maxHeap 一定不会为空
+            如果堆顶元素在延迟删除集合中，才真正删除，这一步可能执行多次，所以放在 while 中。
+            while (true) 都是可以的，maxHeap 一定不会为空，因为有最开始的一个 0
              */
             while (true) {
                 int maxHeight = maxHeap.element();
