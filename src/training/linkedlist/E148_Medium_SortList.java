@@ -132,4 +132,71 @@ public class E148_Medium_SortList {
     public void testSortList() {
         test(this::sortList);
     }
+
+
+    /**
+     * 递归式的归并排序。
+     *
+     * LeetCode 耗时：5 ms - 99.32%
+     *          内存消耗：42.7 MB - 98.93%
+     */
+    public ListNode recursiveMethod(ListNode head) {
+        return recursiveMethod(head, null);
+    }
+
+    private ListNode recursiveMethod(ListNode head, ListNode tail) {
+        if (head == null) {
+            return null;
+        }
+        /*
+        这一步很关键，当只有一个节点时，会将节点的 next 指针置为 null。
+        这样一来，每个节点的 next 指针最后都会变成 null，从而将链表所有节点拆分，简化了归并步骤
+         */
+        if (head.next == tail) {
+            head.next = null;
+            return head;
+        }
+
+        // 用快慢针将链表分为两半
+        ListNode slow = head, fast = head;
+        while (fast != tail && fast.next != tail) {
+            slow = slow.next;
+            fast = fast.next.next;
+        }
+
+        ListNode left = recursiveMethod(head, slow);
+        ListNode right = recursiveMethod(slow, tail);
+
+        return merge(left, right);
+    }
+
+    private ListNode empty = new ListNode();
+
+    private ListNode merge(ListNode left, ListNode right) {
+        ListNode p = empty, l = left, r = right;
+        // 因为之前每个节点都被分割了，所以这里直接用 null
+        while (l != null && r != null) {
+            if (l.val <= r.val) {
+                p.next = l;
+                l = l.next;
+            } else {
+                p.next = r;
+                r = r.next;
+            }
+            p = p.next;
+        }
+        if (l != null) {
+            p.next = l;
+        }
+        if (r != null) {
+            p.next = r;
+        }
+
+        return empty.next;
+    }
+
+    @Test
+    public void testRecursiveMethod() {
+        test(this::recursiveMethod);
+    }
 }
