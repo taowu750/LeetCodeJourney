@@ -9,6 +9,8 @@ import java.util.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 33. 搜索旋转排序数组：https://leetcode-cn.com/problems/search-in-rotated-sorted-array/
+ *
  * 给定一个整数数组 nums 以升序排序（具有不同的值）。
  * <p>
  * 在传递给函数之前，nums 以未知的枢轴索引 k（0 <= k < nums.length）旋转，
@@ -76,46 +78,43 @@ public class E33_Medium_SearchInRotatedSortedArray {
      * LeetCode 耗时：0ms - 100%
      */
     public int search(int[] nums, int target) {
-        int len = nums.length;
-        int end = len - 1, lo = 0, hi = len - 1;
-        // 先找到最大值位置。旋转数组前面部分所有值大于后面部分所有值。
-        if (nums[0] > nums[len - 1]) {
-            while (lo <= hi) {
-                int mid = (lo + hi) >>> 1;
-                if (mid - 1 >= 0 && nums[mid] < nums[mid - 1]) {
-                    end = mid - 1;
-                    break;
-                } else if (mid + 1 < len && nums[mid] > nums[mid + 1]) {
-                    end = mid;
-                    break;
-                } else if (nums[mid] < nums[len - 1]) {
-                    hi = mid - 1;
-                } else {
-                    lo = mid + 1;
-                }
+        // 先确定最大值的位置
+        int lo = 0, hi = nums.length - 1, k = -1;
+        while (lo <= hi) {
+            int mid = (lo + hi) >>> 1;
+            // 如果数组被旋转了，最大值会大于右边的数
+            if (mid < nums.length - 1 && nums[mid] > nums[mid + 1]) {
+                k = mid;
+                break;
+            }
+            // 如果数组被旋转了，旋转后左边的数都大于右边的数
+            else if (nums[mid] > nums[nums.length - 1]) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
             }
         }
-        int start = (end + 1) % len;
-        if (target >= nums[start] && target <= nums[end]) {
-            lo = 1;
-            hi = 0;
-            // 确定值在哪一部分
-            if (target >= nums[0]) {
-                lo = 0;
-                hi = end;
-            } else if (target <= nums[len - 1]) {
-                lo = end + 1;
-                hi = len - 1;
-            }
 
-            while (lo <= hi) {
-                int mid = (lo + hi) >>> 1;
-                if (nums[mid] < target)
-                    lo = mid + 1;
-                else if (nums[mid] > target)
-                    hi = mid - 1;
-                else
-                    return mid;
+        lo = 0;
+        hi = nums.length - 1;
+        // 如果数组被旋转了，则可以缩减寻找范围
+        if (k != -1) {
+            if (target >= nums[0]) {
+                hi = k;
+            } else {
+                lo = k + 1;
+            }
+        }
+
+        // 二分查找
+        while (lo <= hi) {
+            int mid = (lo + hi) >>> 1;
+            if (nums[mid] == target) {
+                return mid;
+            } else if (nums[mid] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid - 1;
             }
         }
 

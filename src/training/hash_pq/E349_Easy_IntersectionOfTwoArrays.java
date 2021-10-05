@@ -1,4 +1,4 @@
-package training.binarysearch;
+package training.hash_pq;
 
 import org.junit.jupiter.api.Test;
 

@@ -66,22 +66,17 @@ public class E744_Easy_FindSmallestLetterGreaterThanTarget {
      * LeetCode 耗时：0ms - 100%
      */
     public char nextGreatestLetter(char[] letters, char target) {
-        // 也可以通过在开头判断 target 是否大于等于 letters 最大值来避免特殊情况
-        int lo = 0, hi = letters.length - 1;
-        while (hi - lo > 1) {
+        int lo = 0, hi = letters.length;
+        while (lo < hi) {
             int mid = (lo + hi) >>> 1;
-            if (letters[mid] <= target)
-                lo = mid;
-            else
+            if (letters[mid] <= target) {
+                lo = mid + 1;
+            } else {
                 hi = mid;
+            }
         }
 
-        if (target < letters[lo])
-            return letters[lo];
-        else if (target >= letters[hi])
-            return letters[(hi + 1) % letters.length];
-        else
-            return letters[hi];
+        return lo < letters.length ? letters[lo] : letters[0];
     }
 
     @Test
