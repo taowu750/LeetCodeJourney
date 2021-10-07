@@ -7,6 +7,8 @@ import java.util.function.ToIntFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 154. 寻找旋转排序数组中的最小值 II: https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array-ii/
+ *
  * 假设以升序排序的数组在事先未知的某个元素上旋转。例如[0,1,2,4,5,6,7]可能会变成[4,5,6,7,0,1,2]。
  * 找到最小的元素。注意数组可能包含重复值。
  * <p>
@@ -70,6 +72,8 @@ public class Review_E154_Hard_FindMinimumInRotatedSortedArrayII {
 
 
     /**
+     * 参见 {@link Review_E153_Medium_FindMinimumInRotatedSortedArray#invariantMethod(int[])}。
+     *
      * LeetCode 耗时：0ms - 100%
      */
     public int betterMethod(int[] nums) {

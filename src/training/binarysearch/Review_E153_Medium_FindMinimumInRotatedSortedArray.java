@@ -7,6 +7,8 @@ import java.util.function.ToIntFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 153. 寻找旋转排序数组中的最小值：https://leetcode-cn.com/problems/find-minimum-in-rotated-sorted-array/
+ *
  * 假设以升序排序的长度为 n 的数组在 1 到 n 之间向右旋转。例如，数组 nums = [0,1,2,4,5,6,7]可能变为：
  * - 旋转 4 次：[4,5,6,7,0,1,2]。
  * - 旋转 7 次：[0,1,2,4,5,6,7]。
@@ -48,25 +50,20 @@ public class Review_E153_Medium_FindMinimumInRotatedSortedArray {
      * LeetCode 耗时：0ms - 100%
      */
     public int findMin(int[] nums) {
-        int len = nums.length;
-        if (nums[0] <= nums[len - 1])
-            return nums[0];
-
-        int lo = 0, hi = len - 1;
-        while (lo < hi) {
+        int maxIdx = -1, lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
             int mid = (lo + hi) >>> 1;
-            if (mid - 1 >= 0 && nums[mid] < nums[mid - 1]) {
-                return nums[mid];
-            } else if (mid + 1 < len && nums[mid] > nums[mid + 1]) {
-                return nums[mid + 1];
-            } else if (nums[mid] < nums[len - 1]) {
-                hi = mid - 1;
-            } else {
+            if (mid < nums.length - 1 && nums[mid] > nums[mid + 1]) {
+                maxIdx = mid;
+                break;
+            } else if (nums[mid] > nums[nums.length - 1]) {
                 lo = mid + 1;
+            } else {
+                hi = mid - 1;
             }
         }
 
-        return nums[lo];
+        return maxIdx == -1 ? nums[0] : nums[maxIdx + 1];
     }
 
     @Test

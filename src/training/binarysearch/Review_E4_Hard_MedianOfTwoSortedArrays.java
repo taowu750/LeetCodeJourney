@@ -7,6 +7,8 @@ import java.util.function.ToDoubleBiFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 4. 寻找两个正序数组的中位数: https://leetcode-cn.com/problems/median-of-two-sorted-arrays/
+ *
  * 给定两个分别大小为 m 和 n 的排序数组 nums1 和 nums2，返回两个排序数组的中位数。
  * 写出时间复杂度 O(log(m+n)) 的实现。
  * <p>
@@ -77,67 +79,42 @@ public class Review_E4_Hard_MedianOfTwoSortedArrays {
      * A[0], A[1], ..., A[i-1]  |  A[i], A[i+1], ..., A[m-1]
      * B[0], B[1], ..., B[j-1]  |  B[j], B[j+1], ..., B[n-1]
      *
-     * 如果我们能够保证：
+     * 当 A 和 B 的长度是偶数时，如果我们能够保证：
      * 1) len(left_part) == len(right_part)
      * 2) max(left_part) <= min(right_part)
      * 就有 median = (max(left_part)+ min(right_part))/ 2。
      *
+     * 当 A 和 B 的长度是奇数时，如果我们能够保证：
+     * 1) len(left_part) == len(right_part) + 1
+     * 2) max(left_part) <= min(right_part)
+     * 就有 median = max(left_part)。
+     *
      * 为了确保这两个条件，我们只需要确保：
-     * (1) i + j == m - i + n - j (or: m - i + n - j + 1)
-     *     if n >= m, 则有 i = 0 ~ m, j = (m + n + 1)/2 - i
-     * (2) B[j-1] <= A[i] and A[i-1] <= B[j]
-     * 注意，必须 n >= m，因为我必须确保 j 为非负数，因为 0 <= i <= m 并且 j=(m+n+1)/2 - i。
-     * 如果 n < m，则 j 可能为负，这将导致错误的结果。
-     * 其他边界情况后面会讲到。
+     * (1) i + j == m - i + n - j (当 m + n 是偶数) 或 i + j == m - i + n - j + 1 (当 m + n 是奇数)
+     *     于是有 i + j = (m + n + 1) / 2，这里的分数结果只保留整数部分。
+     * (2) 如果我们规定 m <= n，则有 i ∈ [0, m], j = (m + n + 1)/2 - i ∈ [0, n]。
+     *     那么我们在 [0, m] 的范围内枚举 i 并得到 j，就不需要额外的性质了。
+     * (3) 如果 A 的长度较大，那么我们只要交换 A 和 B 即可。
+     *
+     * 为了简化分析，假设 A[i−1],B[j−1],A[i],B[j] 总是存在。对于 i=0、i=m、j=0、j=n 这样的临界条件，
+     * 我们只需要规定 A[−1]=B[−1]=−∞，A[m]=B[n]=∞ 即可。这也是比较直观的：当一个数组不出现在前一部分时，
+     * 对应的值为负无穷，就不会对前一部分的最大值产生影响；当一个数组不出现在后一部分时，对应的值为正无穷，
+     * 就不会对后一部分的最小值产生影响。
      *
      * 因此，我们需要做的是：
-     * 在 [0，m] 中搜索 i，以找到元素`i`使得，B[j-1] <= A[i] && A[i-1] <= B[j]
-     * （其中 j=(m + n + 1)/ 2-i）。
+     * 在 [0，m] 中搜索 i，以找到元素 i，使得：
+     *      B[j-1] <= A[i] && A[i-1] <= B[j]（其中 j=(m + n + 1)/ 2-i）。
      *
-     * 我们可以按照以下步骤进行二分查找：
-     * (1) 令 imin = 0，imax = m，然后开始在 [imin，imax] 中搜索
-     * (2) 令 i = (imin + imax)/2, j = (m + n + 1)/2 - i
-     * (3) 现在我们有 len(left_part)==len(right_part)。现在会有下面三种情况：
-     *     (a) B[j-1] <= A[i] && A[i-1] <= B[j]
-     *         意味着我们已经找到了元素“i”，因此停止搜索。
-     *     (b) B[j-1] > A[i]
-     *         表示 A[i] 太小。我们必须调整 i 才能得到 B[j-1] <= A[i]。
-     *         我们必须增加 i。也就是说，我们必须将搜索范围调整为
-     *         [i + 1，imax]。因此，设置 imin = i+1，然后转到 (2)。
-     *     (c) A[i-1] > B[j]
-     *         表示 A[i-1] 太大。我们必须减小 i 以使得 A[i-1] <= B[j]。
-     *         也就是说，我们必须将搜索范围调整为 [imin, i-1]。
-     *         因此，设置 imax = i-1，然后转到 (2)。
+     * 我们证明它等价于：
+     * 在 [0, m] 中找到「最大的 i」，使得：
+     *      A[i-1] <= B[j]（其中 j=(m + n + 1)/ 2-i）
      *
-     * 找到元素 i 时，中位数为：
-     * max(A[i-1], B[j-1]) (当 m + n 是奇数)
-     * 或者 (max(A[i-1], B[j-1]) + min(A[i], B[j]))/2 (当 m + n 是偶数)
+     * 这是因为：
+     * - 当 i 从 0∼m 递增时，A[i−1] 递增，B[j] 递减，所以一定存在一个「最大的 i」满足 A[i−1]≤B[j]；
+     * - 如果 i 是最大的，那么说明 i+1 不满足。将 i+1 带入可以得到 A[i]>B[j−1]，也就是 B[j−1] < A[i]，
+     *   就和我们进行等价变换前 i 的性质一致了（甚至还要更强）。
      *
-     * 现在让我们考虑边界条件 i=0，i=m，j=0，j=n，这会使 A[i-1]，B[j-1]，A[i]，B[j]
-     * 可能不存在。
-     *
-     * 我们需要确保 max(left_part) <= min(right_part)。
-     * 当 i，j 不是边界值时，只要检查 B[j-1] <= A[i] && A[i-1] <= B[j]。
-     * 当 i, j 是边界值时，我们只需要检查其中一个条件。
-     * 因此，我们需要做的是：
-     * 在 [0, m] 中查找元素`i`使得:
-     *     (j == 0 or i == m or B[j-1] <= A[i]) and
-     *     (i == 0 or j == n or A[i-1] <= B[j])
-     *     其中 j = (m + n + 1)/2 - i
-     *
-     * 在搜索循环中，我们只会遇到三种情况：
-     * (1) (j == 0 or i == m or B[j-1] <= A[i]) and
-     *     (i == 0 or j = n or A[i-1] <= B[j])
-     *     此时 i 是要查找的值，终止循环
-     * (2) j > 0 and i < m and B[j - 1] > A[i]
-     *     表示 i 太小，我们必须增加它。
-     * (3) i > 0 and j < n and A[i - 1] > B[j]
-     *     表示 i 太大，我们必须减小它。
-     *
-     * 其中，由 i < m 可推得 j > 0；i > 0 可推得 j < n，因为
-     *   m <= n, i < m ==> j = (m+n+1)/2 - i > (m+n+1)/2 - m >= (2*m+1)/2 - m >= 0
-     *   m <= n, i > 0 ==> j = (m+n+1)/2 - i < (m+n+1)/2 <= (2*n+1)/2 <= n
-     * 所以在 (2)、(3) 中我们其实可以不检查 j > 0 和 j < n。
+     * 因此我们可以在 [0, m] 上进行二分查找
      *
      * LeetCode 耗时：2ms - 99.81%
      */
@@ -150,41 +127,31 @@ public class Review_E4_Hard_MedianOfTwoSortedArrays {
 
         int m = nums1.length, n = nums2.length;
         int iMin = 0, iMax = nums1.length;
-        int i, j;
-        for (;;) {
-            i = (iMin + iMax) >>> 1;
-            j = (m + n + 1) / 2 - i;
-            if ((j == 0 || i == m || nums2[j - 1] <= nums1[i])
-                    && (i == 0 || j == n || nums1[i - 1] <= nums2[j]))
-                break;
-            else if (i < m && nums2[j - 1] > nums1[i])
+        // median1：前一部分的最大值。median2：后一部分的最小值
+        int median1 = 0, median2 = 0;
+
+        while (iMin <= iMax) {
+            // 前一部分包含 nums1[0 .. i-1] 和 nums2[0 .. j-1]
+            // 后一部分包含 nums1[i .. m-1] 和 nums2[j .. n-1]
+            int i = (iMin + iMax) / 2;
+            int j = (m + n + 1) / 2 - i;
+
+            // nums1_im1, nums1_i, nums2_jm1, nums2_j 分别表示 nums1[i-1], nums1[i], nums2[j-1], nums2[j]
+            int nums1_im1 = (i == 0 ? Integer.MIN_VALUE : nums1[i - 1]);
+            int nums1_i = (i == m ? Integer.MAX_VALUE : nums1[i]);
+            int nums2_jm1 = (j == 0 ? Integer.MIN_VALUE : nums2[j - 1]);
+            int nums2_j = (j == n ? Integer.MAX_VALUE : nums2[j]);
+
+            if (nums1_im1 <= nums2_j) {
+                median1 = Math.max(nums1_im1, nums2_jm1);
+                median2 = Math.min(nums1_i, nums2_j);
                 iMin = i + 1;
-            else
+            } else {
                 iMax = i - 1;
+            }
         }
 
-        /*
-        max(A[i-1], B[j-1])
-
-        i = 0 时，j = (m + n + 1) / 2 - i >= 1
-        j = 0 时，i = (m + n + 1) / 2 >= 1
-         */
-        int max = i == 0
-                ? nums2[j - 1]
-                : j == 0 ? nums1[i - 1] : Math.max(nums1[i - 1], nums2[j - 1]);
-        if ((m + n) % 2 == 1)
-            return max;
-        else {
-            // (max(A[i-1], B[j-1]) + min(A[i], B[j]))/2
-            int min = 0;
-            if (i != m && j != n)
-                min = Math.min(nums1[i], nums2[j]);
-            else if (i != m)
-                min = nums1[i];
-            else if (j != n)
-                min = nums2[j];
-            return (min + max) / 2.0;
-        }
+        return (m + n) % 2 == 0 ? (median1 + median2) / 2.0 : median1;
     }
 
     @Test
