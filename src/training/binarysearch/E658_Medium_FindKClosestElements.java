@@ -11,6 +11,8 @@ import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 658. 找到 K 个最接近的元素: https://leetcode-cn.com/problems/find-k-closest-elements/
+ *
  * 给定一个排序的整数数组 arr，两个整数 k 和 x，返回数组中最接近 x 的 k 个整数。
  * 结果也应按升序排序。
  * <p>
@@ -32,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - arr 以升序排序
  * - -10**4 <= arr[i], x <= 10**4
  */
-public class Review_E658_Medium_FindKClosestElements {
+public class E658_Medium_FindKClosestElements {
 
     static void test(TriFunction<int[], Integer, Integer, List<Integer>> method) {
         assertEquals(method.apply(new int[]{1, 2, 3, 4, 5}, 4, 3), asList(1, 2, 3, 4));
@@ -62,37 +64,33 @@ public class Review_E658_Medium_FindKClosestElements {
     }
 
     /**
-     * LeetCode 耗时：2ms - 99.97%
+     * LeetCode 耗时：3 ms - 99.62%
+     *          内存消耗：40.1 MB - 48.83%
      */
     public List<Integer> findClosestElements(int[] arr, int k, int x) {
-        int lo = 0, hi = arr.length - 1, xIdx = -1;
-        while (lo <= hi) {
-            int mid = (lo + hi) >>> 1;
-            if (arr[mid] == x) {
-                xIdx = mid;
-                break;
-            } else if (arr[mid] < x)
-                lo = mid + 1;
-            else
-                hi = mid - 1;
+        int idx = Arrays.binarySearch(arr, x), left, right;
+        if (idx >= 0) {
+            left = idx - 1;
+            right = idx + 1;
+        } else {
+            idx = -idx - 1;
+            left = idx - 1;
+            right = idx;
         }
-        if (xIdx == -1)
-            xIdx = lo;
 
-        Integer[] result = new Integer[k];
-        int left = xIdx - 1, right = xIdx;
-        for (int i = 0; i < k; i++) {
-            // 只动指针，不要现在就把值写入 result。避免最后还要排序 result
-            if (right >= arr.length
-                    || (left >= 0
-                    && Math.abs(arr[left] - x) <= Math.abs(arr[right] - x)))
-                left--;
-            else
+        while (right - left - 1 < k) {
+            if (left < 0 || (right < arr.length && Math.abs(x - arr[left]) > Math.abs(x - arr[right]))) {
                 right++;
+            } else {
+                left--;
+            }
         }
-        left++;
-        for (int i = 0; i < k; i++)
-            result[i] = arr[left++];
+
+        // 这比用 ArrayList 少了 1ms
+        Integer[] result = new Integer[k];
+        for (int i = left + 1; i < right; i++) {
+            result[i - left - 1] = arr[i];
+        }
 
         return Arrays.asList(result);
     }

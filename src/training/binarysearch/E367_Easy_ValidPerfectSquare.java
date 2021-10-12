@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 367. 有效的完全平方数: https://leetcode-cn.com/problems/valid-perfect-square/
+ *
  * 给定正整数 num，编写一个函数，如果 num 是一个完美平方数，则返回 True，否则返回 False。
  * 不要使用内置的 sqrt 函数。
  *
@@ -33,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 约束：
  * 1 <= num <= 2**31 - 1
  */
-public class Review_E367_Easy_ValidPerfectSquare {
+public class E367_Easy_ValidPerfectSquare {
 
     static void test(IntPredicate method) {
         assertTrue(method.test(16));
@@ -60,19 +62,19 @@ public class Review_E367_Easy_ValidPerfectSquare {
      */
     public boolean isPerfectSquare(int num) {
         int lo = 1, hi = num;
-        while (lo < hi) {
+        while (lo <= hi) {
             int mid = (lo + hi) >>> 1;
-            // 这里也可以使用 long 避免溢出
             int quotient = num / mid;
-            if (quotient == mid)
+            if (quotient == mid) {
                 return quotient * mid == num;
-            else if (quotient < mid)
-                hi = mid;
-            else
+            } else if (quotient > mid) {
                 lo = mid + 1;
+            } else {
+                hi = mid - 1;
+            }
         }
 
-        return lo * lo == num;
+        return false;
     }
 
     @Test

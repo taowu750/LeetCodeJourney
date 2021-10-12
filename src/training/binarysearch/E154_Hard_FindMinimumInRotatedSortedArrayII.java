@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Input: [2,2,2,0,1]
  * Output: 0
  */
-public class Review_E154_Hard_FindMinimumInRotatedSortedArrayII {
+public class E154_Hard_FindMinimumInRotatedSortedArrayII {
 
     static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{1, 3, 5}), 1);
@@ -72,7 +72,7 @@ public class Review_E154_Hard_FindMinimumInRotatedSortedArrayII {
 
 
     /**
-     * 参见 {@link Review_E153_Medium_FindMinimumInRotatedSortedArray#invariantMethod(int[])}。
+     * 参见 {@link E153_Medium_FindMinimumInRotatedSortedArray#invariantMethod(int[])}。
      *
      * LeetCode 耗时：0ms - 100%
      */

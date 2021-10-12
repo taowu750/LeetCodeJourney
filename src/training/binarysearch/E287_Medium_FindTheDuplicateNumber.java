@@ -8,6 +8,8 @@ import java.util.function.ToIntFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 287. 寻找重复数: https://leetcode-cn.com/problems/find-the-duplicate-number/
+ *
  * 给定一个整数数组 nums 包含 n + 1 个整数，其中每个整数都在 [1，n] 范围内。
  * nums 中只有一个重复的数字，请返回此重复的数字。
  * <p>
@@ -37,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - 1 <= nums[i] <= n
  * - 所有在 nums 中的整数仅出现一次，但唯独会有一个整数出现两次或多次。
  */
-public class Review_E287_Medium_FindTheDuplicateNumber {
+public class E287_Medium_FindTheDuplicateNumber {
 
     static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{1, 3, 4, 2, 2}), 2);
@@ -54,20 +56,9 @@ public class Review_E287_Medium_FindTheDuplicateNumber {
     /**
      * 此题的解题思路和 {@link Review_E142_Medium_LinkedListCycleHead}（寻找环开头）类似。
      * 如果数组中没有重复项，我们可以将每个索引映射到该数组中的每个数字。
-     * 换句话说，我们可以构造一个一一映射 f(index) = num。
      *
-     * 例如，nums = [2, 1, 3]，它有映射 0->2, 1->1, 2->3。如果我们从索引 0 开始，
-     * 我们可以根据此映射函数获得一个值，然后将该值用作新索引，然后再次根据该新索引获得另一个新值。
-     * 我们重复此过程，直到索引超出数组为止。实际上，通过这样做，我们可以获得一个序列：
-     * 0->2->3。
-     *
-     * 但是，如果数组中有重复项，则映射是多对一的，并且索引不会超出数组。
-     * 例如，nums = [2,3,1,1]，它有映射 0->2, 1->3, {2,3}->1。那么我们得到的序列肯定有一个环：
-     * 0->2->1->3->1->3->1->...。此环的起点是重复数字。
-     *
-     * 注意到 nums[0] 始终是具有重复数字的循环的入口，因为没有值可以跳回 nums[0]。
-     *
-     * 那么，解决问题的方法就和 {@link Review_E142_Medium_LinkedListCycleHead} 一样。
+     * 参见：
+     * https://leetcode-cn.com/problems/find-the-duplicate-number/solution/kuai-man-zhi-zhen-de-jie-shi-cong-damien_undoxie-d/
      *
      * LeetCode 耗时：0ms - 100%
      */
@@ -99,6 +90,15 @@ public class Review_E287_Medium_FindTheDuplicateNumber {
      * 如果 cnt <= mid，则在 mid+1...hi 范围内有不止 n-mid 个元素，因此该范围包含重复项。
      */
     public int binarySearch(int[] nums) {
+        /*
+        下面的循环和 README 中的“寻找右侧边界的二分查找”很类似，只不过 lo、hi 取在数值范围内。
+        因为所需要寻找的目标范围就在 [1, n] 中，所以 lo、hi 需要这样选取。
+
+        重复数在左半部分的时候，mid 还有可能是最后的目标，所以 hi = mid；
+        最小值在右半部分的时候，mid 不可能是最后的目标了，因此 low = mid + 1
+
+        这种模式的核心想法就是 mid 这个元素在左半边和右半边还用得上吗？
+         */
         int lo = 1, hi = nums.length - 1;
         while (lo < hi) {
             int mid = (lo + hi) >>> 1;

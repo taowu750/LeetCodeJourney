@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - 1 <= m + n <= 2000
  * - -10**6 <= nums1[i], nums2[i] <= 10**6
  */
-public class Review_E4_Hard_MedianOfTwoSortedArrays {
+public class E4_Hard_MedianOfTwoSortedArrays {
 
     static void test(ToDoubleBiFunction<int[], int[]> method) {
         assertEquals(method.applyAsDouble(new int[]{1, 3}, new int[]{2}), 2.0);

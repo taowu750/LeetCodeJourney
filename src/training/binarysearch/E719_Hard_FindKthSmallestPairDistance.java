@@ -8,6 +8,8 @@ import java.util.function.BiFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 719. 找出第 k 小的距离对: https://leetcode-cn.com/problems/find-k-th-smallest-pair-distance/
+ *
  * 给定一个整数数组，返回所有对中的第 k 个最小距离。一对（A，B）的距离定义为 A 和 B 之间差的绝对值。
  *
  * 例 1：
@@ -26,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - 0 <= nums[i] < 1000000.
  * - 1 <= k <= len(nums) * (len(nums) - 1) / 2.
  */
-public class Review_E719_Hard_FindKthSmallestPairDistance {
+public class E719_Hard_FindKthSmallestPairDistance {
 
     static void test(BiFunction<int[], Integer, Integer> method) {
         assertEquals(method.apply(new int[]{1,3,1}, 1), 0);

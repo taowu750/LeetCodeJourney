@@ -10,6 +10,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 162. 寻找峰值: https://leetcode-cn.com/problems/find-peak-element/
+ *
  * 峰值元素是严格大于其相邻元素的元素。
  * <p>
  * 给定一个整数数组 nums，找到一个峰值元素，然后返回其索引。如果数组包含多个峰，
@@ -33,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * - -2**31 <= nums[i] <= 2**31 - 1
  * - 所有相邻元素不相等，即 nums[i] != nums[i + 1]
  */
-public class Review_E162_Medium_FindPeakElement {
+public class E162_Medium_FindPeakElement {
 
     static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{1, 2, 3, 1}), 2);

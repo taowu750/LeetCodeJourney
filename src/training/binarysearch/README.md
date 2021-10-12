@@ -275,12 +275,24 @@ return nums[left-1] == target ? (left-1) : -1;
  - [BinarySearchII.java][b2]
  - [BinarySearchIII.java][b3]
 
+# 8. 其他常见范式
 
-[b1]: ../../learn/binarysearch/BinarySearch.java
-[b2]: ../../learn/binarysearch/BinarySearchII.java
-[b3]: ../../learn/binarysearch/BinarySearchIII.java
+## 8.1 类似《寻找右侧边界的二分查找》
+
+1. [(153).(Medium) 寻找旋转排序数组中的最小值][153]
+2. [(287).(Medium) 寻找重复数][287]
+3. [(410).(Hard) 分割数组的最大值][410]
+
+
+[b1]: E704_Easy_BinarySearch.java
+[b2]: BinarySearchII.java
+[b3]: BinarySearchIII.java
 
 [left-bound]: ../../../res/img/binarysearch-left-bound.png
 [right-bound]: ../../../res/img/binarysearch-right-bound.png
+
+[153]: E153_Medium_FindMinimumInRotatedSortedArray.java
+[287]: E287_Medium_FindTheDuplicateNumber.java
+[410]: E410_Hard_SplitArrayLargestSum.java
 
 <b id="f1">\[1\]</b> https://mp.weixin.qq.com/s/uA2suoVykENmCQcKFMOSuQ [↩](#a1)  
