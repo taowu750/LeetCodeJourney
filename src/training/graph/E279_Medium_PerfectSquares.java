@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 约束：
  * - 1 <= n <= 10**4
  */
-public class Review_E279_Medium_PerfectSquares {
+public class E279_Medium_PerfectSquares {
 
     static void test(IntUnaryOperator method) {
         assertEquals(method.applyAsInt(12), 3);

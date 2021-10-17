@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  * - 给定矩阵中至少有一个 0。
  * - 单元格仅在四个方向上相邻：上，下，左和右。
  */
-public class Review_E542_Medium_Matrix01 {
+public class E542_Medium_Matrix01 {
 
     static void test(Function<int[][], int[][]> method) {
         assertArrayEquals(method.apply(new int[][]{{0, 0, 0}, {0, 1, 0}, {0, 0, 0}}),

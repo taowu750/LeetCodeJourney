@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - 1 <= m, n <= 300
  * - grid[i][j] 是 '0' 或 '1'.
  */
-public class Review_E200_Medium_NumberOfIslands {
+public class E200_Medium_NumberOfIslands {
 
     static void test(ToIntFunction<char[][]> method) {
         char[][] grid = {

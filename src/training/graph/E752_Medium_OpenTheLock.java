@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - target 不会出现在 deadend 列表中
  * - target 和 deadends[i] 只由数字组成
  */
-public class Review_E752_Medium_OpenTheLock {
+public class E752_Medium_OpenTheLock {
 
     static void test(ToIntBiFunction<String[], String> method) {
         String[] deadends = {"0201", "0101", "0102", "1212", "2002"};
