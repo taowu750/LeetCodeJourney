@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E55_Medium_JumpGame {
 
-    static void test(Predicate<int[]> method) {
+    public static void test(Predicate<int[]> method) {
         assertTrue(method.test(new int[]{2,3,1,1,4}));
         assertFalse(method.test(new int[]{3,2,1,0,4}));
     }

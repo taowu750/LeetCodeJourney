@@ -7,6 +7,8 @@ import java.util.function.ToIntFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 45. 跳跃游戏 II: https://leetcode-cn.com/problems/jump-game-ii/
+ *
  * 给定一个非负整数数组，你最初位于数组的第一个位置。数组中的每个元素代表你在该位置可以跳跃的「最大」长度。
  * 你的目标是使用「最少」的跳跃次数到达数组的最后一个位置。
  *
@@ -16,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 输入: [2,3,1,1,4]
  * 输出: 2
  * 解释: 跳到最后一个位置的最小跳跃数是 2。
- *      从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。
+ *      从下标为 0 跳到下标为 1 的位置，跳 1 步，然后跳 3 步到达数组的最后一个位置。
  */
 public class E45_Hard_JumpGameII {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{2,3,1,1,4}), 2);
         assertEquals(method.applyAsInt(new int[]{2,3,0,1,4}), 2);
     }
@@ -83,8 +85,12 @@ public class E45_Hard_JumpGameII {
      *          内存消耗：35.7 MB - 91.44%
      */
     public int betterMethod(int[] nums) {
+        /*
+        每次在上次能跳到的范围（end）内选择一个能跳的最远的位置（也就是能跳到 farthest 位置的点）作为下次的起跳点。
+         */
+
         int n = nums.length;
-        // end 表示上次跳跃的最远下标
+        // end 表示上次跳跃可达范围右边界（下次的最右起跳点）
         int end = 0, farthest = 0, count = 0;
         for (int i = 0; i < n - 1; i++) {
             farthest = Math.max(i + nums[i], farthest);

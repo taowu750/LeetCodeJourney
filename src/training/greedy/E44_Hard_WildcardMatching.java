@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E44_Hard_WildcardMatching {
 
-    static void test(BiPredicate<String, String> method) {
+    public static void test(BiPredicate<String, String> method) {
         assertFalse(method.test("aa", "a"));
         assertTrue(method.test("aa", "*"));
         assertFalse(method.test("cb", "?a"));
@@ -132,7 +132,7 @@ public class E44_Hard_WildcardMatching {
 
 
     /**
-     * 参见 https://leetcode-cn.com/problems/wildcard-matching/submissions/
+     * 参见 https://leetcode-cn.com/problems/wildcard-matching/solution/tong-pei-fu-pi-pei-by-leetcode-solution/
      *
      * LeetCode 耗时：26 ms - 65.90%
      *          内存消耗：38.7 MB - 74.25%
@@ -215,6 +215,12 @@ public class E44_Hard_WildcardMatching {
      *          内存消耗：38.5 MB - 90.76%
      */
     public boolean greedyMethod(String s, String p) {
+        /*
+        如果模式 p 的结尾字符不是星号，那么就必须与字符串 s 的结尾字符匹配。那么我们不断地匹配 s 和 p 的结尾字符，
+        直到 p 为空或者 p 的结尾字符是星号为止。
+
+        在这个过程中，如果匹配失败，或者最后 p 为空但 s 不为空，那么需要返回 false。
+         */
         int sRight = s.length(), pRight = p.length();
         while (sRight > 0 && pRight > 0 && p.charAt(pRight - 1) != '*') {
             if (charMatch(s.charAt(sRight - 1), p.charAt(pRight - 1))) {
@@ -224,31 +230,47 @@ public class E44_Hard_WildcardMatching {
                 return false;
             }
         }
-
         if (pRight == 0) {
             return sRight == 0;
         }
 
+        /*
+        我们定义 p 的片段是被 * 号包围的序列，p 就类似于  * u_i * u_i+1 * ... * u_x *
+
+        我们用 sIndex 和 pIndex 表示当前遍历到 s 和 p 的位置，此时我们在 s 中寻找一个 p 的片段 u_i，
+        u_i 在 s 和 p 中的起始位置为 sRecord 和 pRecord
+
+        我们先让 sRecord 和 tRecord 的初始值为 -1，表示模式 p 的开头字符不是星号，并且在匹配失败时进行判断，
+        如果它们的值仍然为 -1，说明没有「反悔」重新进行匹配的机会
+         */
         int sIndex = 0, pIndex = 0;
         int sRecord = -1, pRecord = -1;
 
         while (sIndex < sRight && pIndex < pRight) {
+            // 如果遇到星号，说明找到了 u_i，开始寻找 u_i+1
             if (p.charAt(pIndex) == '*') {
                 ++pIndex;
                 sRecord = sIndex;
                 pRecord = pIndex;
             } else if (charMatch(s.charAt(sIndex), p.charAt(pIndex))) {
+                // 如果两个字符可以匹配，就继续寻找 u_i 的下一个字符
                 ++sIndex;
                 ++pIndex;
             } else if (sRecord != -1 && sRecord + 1 < sRight) {
+                // 如果两个字符不匹配，那么需要重新寻找 u_i。枚举下一个 s 中的起始位置
                 ++sRecord;
                 sIndex = sRecord;
                 pIndex = pRecord;
             } else {
+                // 如果不匹配并且下一个起始位置不存在，那么匹配失败
                 return false;
             }
         }
 
+        /*
+        由于 p 的最后一个字符是星号，那么 s 未匹配完，那么没有关系;
+        但如果 p 没有匹配完，那么 p 剩余的字符必须都是星号
+         */
         return allStars(p, pIndex, pRight);
     }
 
