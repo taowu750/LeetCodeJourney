@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E659_Medium_SplitArrayIntoConsecutiveSubsequences {
 
-    static void test(Predicate<int[]> method) {
+    public static void test(Predicate<int[]> method) {
         assertTrue(method.test(new int[]{1,2,3,3,4,5}));
         assertTrue(method.test(new int[]{1,2,3,3,4,4,5,5}));
         assertFalse(method.test(new int[]{1,2,3,4,4,5}));

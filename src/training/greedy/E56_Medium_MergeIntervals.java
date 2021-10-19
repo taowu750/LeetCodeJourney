@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E56_Medium_MergeIntervals {
 
-    static void test(UnaryOperator<int[][]> method) {
+    public static void test(UnaryOperator<int[][]> method) {
         assertArrayEquals(new int[][]{{1, 6}, {8, 10}, {15, 18}},
                 method.apply(new int[][]{{1, 3}, {2, 6}, {8, 10}, {15, 18}}));
 
