@@ -1,4 +1,4 @@
-package training.math;
+package training.bitwise;
 
 import org.junit.jupiter.api.Test;
 
