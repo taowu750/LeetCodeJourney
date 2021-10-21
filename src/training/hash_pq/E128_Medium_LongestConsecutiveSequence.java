@@ -29,7 +29,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E128_Medium_LongestConsecutiveSequence {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(4, method.applyAsInt(new int[]{100,4,200,1,3,2}));
         assertEquals(9, method.applyAsInt(new int[]{0,3,7,2,5,8,4,6,0,1}));
         assertEquals(4, method.applyAsInt(new int[]{-7,-1,3,-9,-4,7,-3,2,4,9,4,-9,8,-7,5,-1,-7}));
