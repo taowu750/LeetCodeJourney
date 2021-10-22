@@ -2,11 +2,14 @@ package training.slidewindow;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.function.ToIntFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 3. 无重复字符的最长子串：https://leetcode-cn.com/problems/longest-substring-without-repeating-characters/
+ *
  * 给定一个字符串，请你找出其中不含有重复字符的「最长子串」的长度。
  *
  * 例 1：
@@ -23,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * Input: s = "pwwkew"
  * Output: 3
  * Explanation: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
- *              请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+ *              请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
  *
  * 例 4：
  * Input: s = ""
@@ -36,11 +39,12 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class E3_Medium_LongestSubstringWithoutRepeatingCharacters {
 
     static void test(ToIntFunction<String> method) {
-        assertEquals(method.applyAsInt("abcabcbb"), 3);
-        assertEquals(method.applyAsInt("bbbbb"), 1);
-        assertEquals(method.applyAsInt("pwwkew"), 3);
-        assertEquals(method.applyAsInt(""), 0);
-        assertEquals(method.applyAsInt("au"), 2);
+        assertEquals(3, method.applyAsInt("abcabcbb"));
+        assertEquals(1, method.applyAsInt("bbbbb"));
+        assertEquals(3, method.applyAsInt("pwwkew"));
+        assertEquals(0, method.applyAsInt(""));
+        assertEquals(2, method.applyAsInt("au"));
+        assertEquals(1, method.applyAsInt(" "));
     }
 
     /**
@@ -81,5 +85,42 @@ public class E3_Medium_LongestSubstringWithoutRepeatingCharacters {
     @Test
     public void testLengthOfLongestSubstring() {
         test(this::lengthOfLongestSubstring);
+    }
+
+
+    /**
+     * 更好的滑动窗口方法。
+     *
+     * LeetCode 耗时：2 ms - 99.12%
+     *          内存消耗：38.3 MB - 84.68%
+     */
+    public int betterMethod(String s) {
+        if (s.length() < 2) {
+            return s.length();
+        }
+
+        // 记录字符和它们在 s 中的下标
+        int[] window = new int[128];
+        Arrays.fill(window, -1);
+        int result = 0, left = 0, right = 0;
+        while (right < s.length()) {
+            char c = s.charAt(right++);
+            // 如果字符已存在窗口中，则需要移动 left
+            if (window[c] >= left) {
+                left = window[c] + 1;
+            }
+            // 更新字符在窗口中的位置
+            window[c] = right - 1;
+            if (right - left > result) {
+                result = right - left;
+            }
+        }
+
+        return result;
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
     }
 }
