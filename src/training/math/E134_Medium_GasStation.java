@@ -18,12 +18,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * 例 1：
  * 输入:
- * [1,3,6,10,15]
- * [3,7,12,13,15]
- *
- * [15,14,12,9,5]
- * [15,12,8,3,2]
- *
  * gas  = [1,2,3,4,5]
  * cost = [3,4,5,1,2]
  * 输出: 3
@@ -56,7 +50,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E134_Medium_GasStation {
 
-    static void test(ToIntBiFunction<int[], int[]> method) {
+    public static void test(ToIntBiFunction<int[], int[]> method) {
         assertEquals(3, method.applyAsInt(new int[]{1,2,3,4,5}, new int[]{3,4,5,1,2}));
         assertEquals(-1, method.applyAsInt(new int[]{2,3,4}, new int[]{3,4,3}));
     }

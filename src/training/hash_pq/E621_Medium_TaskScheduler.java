@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E621_Medium_TaskScheduler {
 
-    static void test(ToIntBiFunction<char[], Integer> method) {
+    public static void test(ToIntBiFunction<char[], Integer> method) {
         assertEquals(8, method.applyAsInt(new char[]{'A', 'A', 'A', 'B', 'B', 'B'}, 2));
         assertEquals(6, method.applyAsInt(new char[]{'A', 'A', 'A', 'B', 'B', 'B'}, 0));
         assertEquals(16, method.applyAsInt(new char[]{'A', 'A', 'A', 'A', 'A', 'A', 'B', 'C', 'D', 'E', 'F', 'G'}, 2));

@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E89_Medium_GrayCode {
 
-    static void test(IntFunction<List<Integer>> method) {
+    public static void test(IntFunction<List<Integer>> method) {
         //noinspection unchecked
         CollectionUtil.in(method.apply(2), Arrays.asList(0, 1, 3, 2), Arrays.asList(0, 2, 3, 1));
         assertEquals(Collections.singletonList(0), method.apply(0));
