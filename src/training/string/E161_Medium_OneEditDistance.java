@@ -1,4 +1,4 @@
-package training.dynamicprogramming;
+package training.string;
 
 import org.junit.jupiter.api.Test;
 
