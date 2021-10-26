@@ -125,4 +125,38 @@ public class E134_Medium_GasStation {
     public void testMathMethod() {
         test(this::mathMethod);
     }
+
+
+    /**
+     * 贪心法，参见：
+     * https://leetcode-cn.com/problems/gas-station/solution/jia-you-zhan-by-leetcode-solution/
+     *
+     * 汽车进入站点i可以加gas[i]的油，离开站点会损耗cost[i]的油，那么可以把站点和与其相连的路看做一个整体，
+     * 将gas[i] - cost[i]作为经过站点i的油量变化值。
+     *
+     * 有了这个环形数组，我们需要判断这个环形数组中是否能够找到一个起点start，使得从这个起点开始的累加和一直大于等于 0。
+     *
+     * 通过作折线图可以发现，无论选择哪一点作为起点，折线图形状都是一样的，只不过 y 坐标变了。
+     * 要使 整个图像都保持在 x 轴以上，就需要选择「最低点」作为原点。
+     *
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：38.7 MB - 48.96%
+     */
+    public int greedyMethod(int[] gas, int[] cost) {
+        int sum = 0, min = Integer.MAX_VALUE, minIdx = -1;
+        for (int i = 0; i < gas.length; i++) {
+            sum += gas[i] - cost[i];
+            if (min > sum) {
+                min = sum;
+                minIdx = i;
+            }
+        }
+
+        return sum < 0 ? -1 : (minIdx + 1) % gas.length;
+    }
+
+    @Test
+    public void testGreedyMethod() {
+        test(this::greedyMethod);
+    }
 }
