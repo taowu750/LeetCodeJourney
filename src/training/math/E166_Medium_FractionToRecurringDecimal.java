@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E166_Medium_FractionToRecurringDecimal {
 
-    static void test(BiFunction<Integer, Integer, String> method) {
+    public static void test(BiFunction<Integer, Integer, String> method) {
         assertEquals("0.5", method.apply(1,2));
         assertEquals("2", method.apply(2,1));
         assertEquals("0.(6)", method.apply(2,3));
@@ -89,6 +89,10 @@ public class E166_Medium_FractionToRecurringDecimal {
                 break;
             }
             digit2idx.put(remainder, result.length());
+            /*
+            不断对余数补 0，再重新计算余数和除数的新余数。由于是对余数补 0，因此往后的过程完全取决于余数，
+            所以当出现了重复的余数时，表示出现了循环小数。
+             */
             remainder *= 10;
             result.append(remainder / d);
             remainder %= d;
