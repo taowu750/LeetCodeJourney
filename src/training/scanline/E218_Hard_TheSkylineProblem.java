@@ -1,4 +1,4 @@
-package training.hash_pq;
+package training.scanline;
 
 import org.junit.jupiter.api.Test;
 
@@ -55,6 +55,9 @@ public class E218_Hard_TheSkylineProblem {
     /**
      * 扫描线算法，用到了优先队列+延迟删除技巧，参见：
      * https://leetcode-cn.com/problems/the-skyline-problem/solution/you-xian-dui-lie-java-by-liweiwei1419-jdb5/
+     *
+     * 扫描线的思想应用参见：
+     * https://leetcode-cn.com/problems/the-skyline-problem/solution/gong-shui-san-xie-sao-miao-xian-suan-fa-0z6xc/
      *
      * 因为在 Java 的优先队列中移除一个元素（remove() 方法），是个耗时的操作（先线性找到这个元素 O(N)，再移除 O(logN)）。
      * 这里引入「延迟删除」技巧，设计一个哈希表 delayed，记录删除元素，以及被删除的次数。规则是：一旦堆顶元素在延迟删除集合中：
