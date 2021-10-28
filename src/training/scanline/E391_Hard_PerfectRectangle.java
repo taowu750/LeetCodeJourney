@@ -1,9 +1,11 @@
-package training.math;
+package training.scanline;
 
 import javafx.util.Pair;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.HashSet;
+import java.util.PriorityQueue;
 import java.util.Set;
 import java.util.function.Predicate;
 
@@ -236,5 +238,76 @@ public class E391_Hard_PerfectRectangle {
     @Test
     public void testBetterMethod() {
         test(this::betterMethod);
+    }
+
+
+    /**
+     * 扫描线算法，参见：
+     * https://leetcode-cn.com/problems/perfect-rectangle/solution/wan-mei-ju-xing-sao-miao-xian-by-he-qi-e-o9m2/
+     *
+     * LeetCode 耗时：25 ms - 91.57%
+     *          内存消耗：47.4 MB - 48.19%
+     */
+    public boolean scanlineMethod(int[][] rectangles) {
+        // 从左到右、从下到上排序矩形
+        Arrays.sort(rectangles, (a, b) -> {
+            int cmp = Integer.compare(a[0], b[0]);
+            return cmp != 0 ? cmp : Integer.compare(a[1], b[1]);
+        });
+
+        // 记录扫描线的堆。扫描线包含矩形的右边界的 x、下边 y 和上边 y
+        PriorityQueue<int[]> pq = new PriorityQueue<>((a, b) -> {
+            int cmp = Integer.compare(a[0], b[0]);
+            if (cmp != 0) {
+                return cmp;
+            }
+            cmp = Integer.compare(a[1], b[1]);
+            return cmp != 0 ? cmp : Integer.compare(a[2], b[2]);
+        });
+
+        // i 记录已经扫描的矩形
+        int i = 0, n = rectangles.length;
+        int nextX = rectangles[0][0], nextY = Integer.MIN_VALUE;
+        // 现将最左边一列的矩形加到堆中，作为匹配的开始
+        while (i < n && rectangles[i][0] == nextX) {
+            // 只有当上一个矩形的上边和下一个矩形的下边相邻时，才符合完美矩形
+            if (nextY == Integer.MIN_VALUE || nextY == rectangles[i][1]) {
+                nextY = rectangles[i][3];
+            } else {
+                return false;
+            }
+            // 添加矩形的扫描线，也就是右边界
+            pq.add(new int[]{rectangles[i][2], rectangles[i][1], rectangles[i][3]});
+            i++;
+        }
+
+        // 从左到右，从下到上，从已经匹配的矩形开始往右推进，不断进行匹配
+        // 因为都是正方形，所以当匹配成功时也一定是正方形
+        while (!pq.isEmpty()) {
+            int[] top = pq.remove();
+            // 从堆顶找一条 x 相同、连续的最长的线段，也就是上下边相接
+            int xStart = top[0], yStart = top[1], yEnd = top[2];
+            while (!pq.isEmpty() && pq.peek()[0] == xStart && pq.peek()[1] == yEnd) {
+                yEnd = pq.remove()[2];
+            }
+            // 从 rectangles[i:] 开始找到与上面线段完美匹配的连续矩形，
+            // 也就是和上面线段 x 相接并且高度相等的矩形
+            while (i < n && rectangles[i][0] == xStart && rectangles[i][1] == yStart) {
+                yStart = rectangles[i][3];
+                pq.add(new int[]{rectangles[i][2], rectangles[i][1], rectangles[i][3]});
+                i++;
+            }
+            // 如果没有完美匹配，要么匹配错了，要么已经匹配完了最右的一列
+            if (yStart != yEnd && (i < n || !pq.isEmpty())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Test
+    public void testScanlineMethod() {
+        test(this::scanlineMethod);
     }
 }
