@@ -42,7 +42,9 @@ public class E793_Hard_PreimageSizeOfFactorialZeroesFunction {
     }
 
     /**
-     * 参见 {@link E172_Easy_FactorialTrailingZeroes}。
+     * 阶乘末尾 0 的计算参见 {@link E172_Medium_FactorialTrailingZeroes}。
+     * 参见：
+     * https://leetcode-cn.com/problems/preimage-size-of-factorial-zeroes-function/solution/jie-cheng-han-shu-hou-kge-ling-by-leetcode/
      *
      * LeetCode 耗时：0 ms - 100.00%
      *          内存消耗：35.2 MB - 53.14%

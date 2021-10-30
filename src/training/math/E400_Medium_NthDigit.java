@@ -23,7 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E400_Medium_NthDigit {
 
-    static void test(IntUnaryOperator method) {
+    public static void test(IntUnaryOperator method) {
         assertEquals(3, method.applyAsInt(3));
         assertEquals(0, method.applyAsInt(11));
         assertEquals(1, method.applyAsInt(28));
@@ -33,38 +33,37 @@ public class E400_Medium_NthDigit {
     }
 
     /**
+     * 1 位数字有 9 个，2 位数字有 90 个，3 位数字有 900 个，...
+     * 根据这个可以确定 n 在哪位数字范围中。
+     *
      * LeetCode 耗时：0 ms - 100.00%
      *          内存消耗：35 MB - 89.41%
      */
     public int findNthDigit(int n) {
-        if (n < 10) {
+        if (n <= 9) {
             return n;
         }
 
         // 当前数字的位数
         int digit = 1;
-        // 当前位数所有数字的长度，注意要用 long 防止数字溢出
-        long digitAllSize;
-        while (n >= (digitAllSize = 9 * (long) Math.pow(10, digit - 1) * digit)) {
-            n -= digitAllSize;
+        // weight 表示当前位数数字的个数
+        long weight = 9;
+        // 计算 n 在哪个位数范围内，并且减去之前所有位数数字的长度
+        do {
+            n -= weight * digit;
+            weight *= 10;
             digit++;
-        }
-        // 如果 n 刚好为 0，说明到了最后当前位数最后一个数字，结尾必定是 9
-        if (n == 0) {
-            return 9;
-        }
+        } while (n > weight * digit);
 
-        // 计算在当前位数的数字位置
-        int quotient = n / digit, remainder = n % digit;
-        int base;
-        // 根据余数分情况处理
-        if (remainder > 0) {
-            base = (int) Math.pow(10, digit - 1) + quotient;
-            for (int i = 0; i < digit - remainder; i++) {
-                base /= 10;
-            }
-        } else {
-            base = (int) Math.pow(10, digit - 1) + quotient - 1;
+        // base 表示 n 所在的数字
+        int base = (int) (n / digit + weight / 9 - 1), remainder = n % digit;
+        // 如果余数等于 0，表示 base 的末尾恰好就是第 n 位数字
+        if (remainder == 0) {
+            return base % 10;
+        }
+        // 余数不等于 0，则 n 在 base + 1 中，并且是它的第 remainder 位数字
+        for (base++, remainder = digit - remainder; remainder > 0; remainder--) {
+            base /= 10;
         }
 
         return base % 10;

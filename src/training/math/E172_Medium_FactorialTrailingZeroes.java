@@ -23,9 +23,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 输出: 1
  * 解释: 5! = 120, 尾数中有 1 个零.
  */
-public class E172_Easy_FactorialTrailingZeroes {
+public class E172_Medium_FactorialTrailingZeroes {
 
-    static void test(IntUnaryOperator method) {
+    public static void test(IntUnaryOperator method) {
         assertEquals(0, method.applyAsInt(3));
         assertEquals(1, method.applyAsInt(5));
         assertEquals(6, method.applyAsInt(25));
