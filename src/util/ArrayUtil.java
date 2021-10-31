@@ -23,6 +23,22 @@ public class ArrayUtil {
                         IntStream.of(expected).boxed().toArray(Integer[]::new))));
     }
 
+    public static <T extends Comparable<T>> boolean equalsIgnoreOrder(T[] expected, T[] actual) {
+        if (expected.length != actual.length)
+            throw new AssertionError("expected and actual do not match in length");
+        expected = expected.clone();
+        actual = actual.clone();
+        Arrays.sort(expected);
+        Arrays.sort(actual);
+        for (int i = 0; i < expected.length; i++) {
+            if (expected[i].compareTo(actual[i]) != 0)
+                throw new AssertionError("\nexpected=" + Arrays.toString(expected)
+                        + "\nactual=" + Arrays.toString(actual));
+        }
+
+        return true;
+    }
+
     public static boolean equalsIgnoreOrder(int[] expected, int[] actual) {
         if (expected.length != actual.length)
             throw new AssertionError("expected and actual do not match in length");
