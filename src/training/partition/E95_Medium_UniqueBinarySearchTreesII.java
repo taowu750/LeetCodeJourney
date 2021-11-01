@@ -41,7 +41,7 @@ import static util.CollectionUtil.equalsIgnoreOrder;
  */
 public class E95_Medium_UniqueBinarySearchTreesII {
 
-    static void test(IntFunction<List<TreeNode>> method) {
+    public static void test(IntFunction<List<TreeNode>> method) {
         equalsIgnoreOrder(asList(newTree(1,null,3,2), newTree(3,2,null,1),
                 newTree(3,1,null,null,2), newTree(2,1,3), newTree(1,null,2,null,3)),
                 method.apply(3));

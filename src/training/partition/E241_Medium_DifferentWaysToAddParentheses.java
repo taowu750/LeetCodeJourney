@@ -35,7 +35,7 @@ import static util.CollectionUtil.equalsIgnoreOrder;
  */
 public class E241_Medium_DifferentWaysToAddParentheses {
 
-    static void test(Function<String, List<Integer>> method) {
+    public static void test(Function<String, List<Integer>> method) {
         equalsIgnoreOrder(Arrays.asList(0, 2), method.apply("2-1-1"));
         equalsIgnoreOrder(Arrays.asList(-34, -14, -10, -10, 10), method.apply("2*3-4*5"));
     }
