@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - 给定整数之和不超过 1000
  * - 输出结果保证在 int 范围内
  */
-public class Review_E494_Medium_TargetSum {
+public class E494_Medium_TargetSum {
 
     static void test(ToIntBiFunction<int[], Integer> method) {
         assertEquals(5, method.applyAsInt(new int[]{1, 1, 1, 1, 1}, 3));

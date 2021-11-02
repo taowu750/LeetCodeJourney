@@ -1,4 +1,4 @@
-package training.array;
+package training.greedy;
 
 import org.junit.jupiter.api.Test;
 
