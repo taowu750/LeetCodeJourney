@@ -5,33 +5,25 @@ package util.datastructure;
  */
 public class UF {
 
-    int count;
-    int[] parent;
-    int[] weight;
+    private int count;
+    private int[] parent;
 
     public UF(int count) {
         this.count = count;
         parent = new int[count];
-        weight = new int[count];
 
         for (int i = 0; i < count; i++) {
             parent[i] = i;
-            weight[i] = 1;
         }
     }
 
     public void union(int p, int q) {
-        int pr = find(p), qr = find(q);
-        if (pr == qr)
+        int rootP = find(p), rootQ = find(q);
+        if (rootP == rootQ) {
             return;
-
-        if (weight[pr] > weight[qr]) {
-            parent[qr] = pr;
-            weight[pr] += weight[qr];
-        } else {
-            parent[pr] = qr;
-            weight[qr] += weight[pr];
         }
+
+        parent[rootP] = rootQ;
         count--;
     }
 
@@ -43,16 +35,11 @@ public class UF {
         return count;
     }
 
-    /**
-     * 找到 id 的根 id。
-     */
     private int find(int id) {
-        while (id != parent[id]) {
-            // 路径压缩
-            parent[id] = parent[parent[id]];
-            id = parent[id];
+        // 路径压缩
+        if (parent[id] != id) {
+            parent[id] = find(parent[id]);
         }
-
-        return id;
+        return parent[id];
     }
 }
