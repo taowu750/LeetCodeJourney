@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E16_Medium_3SumClosest {
 
-    static void test(ToIntBiFunction<int[], Integer> method) {
+    public static void test(ToIntBiFunction<int[], Integer> method) {
         assertEquals(2, method.applyAsInt(new int[]{-1,2,1,-4}, 1));
     }
 

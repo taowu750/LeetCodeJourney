@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E11_Medium_ContainerWithMostWater {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(49, method.applyAsInt(new int[]{1,8,6,2,5,4,8,3,7}));
         assertEquals(1, method.applyAsInt(new int[]{1,1}));
         assertEquals(16, method.applyAsInt(new int[]{4,3,2,1,4}));
