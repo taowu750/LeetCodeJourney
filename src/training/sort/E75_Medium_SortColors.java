@@ -1,4 +1,4 @@
-package training.pointer;
+package training.sort;
 
 import org.junit.jupiter.api.Test;
 

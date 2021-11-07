@@ -50,6 +50,8 @@ public class E6_Medium_ZigZagConversion {
     }
 
     /**
+     * 模拟法
+     *
      * LeetCode 耗时：4 ms - 81.96%
      *          内存消耗：39.2 MB - 21.36%
      */
