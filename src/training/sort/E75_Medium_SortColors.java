@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E75_Medium_SortColors {
 
-    static void test(Consumer<int[]> method) {
+    public static void test(Consumer<int[]> method) {
         int[] nums = new int[]{2,0,2,1,1,0};
         method.accept(nums);
         assertArrayEquals(new int[]{0,0,1,1,2,2}, nums);
@@ -62,7 +62,7 @@ public class E75_Medium_SortColors {
      *          内存消耗：37.8MS - 48%
      */
     public void sortColors(int[] nums) {
-        // i 表示第一个 1 的位置，j 表示最后一个 1 的位置，k 表示第一个 2 的位置
+        // i 表示第一个 1 的位置，j 表示最后一个 1 的位置+1，k 表示第一个 2 的位置-1
         for (int i = 0, j = 0, k = nums.length - 1; j <= k;) {
             if (nums[j] == 0) {
                 if (j != i) {

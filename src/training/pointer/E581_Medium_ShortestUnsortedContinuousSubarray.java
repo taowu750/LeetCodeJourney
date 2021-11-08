@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E581_Medium_ShortestUnsortedContinuousSubarray {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(5, method.applyAsInt(new int[]{2,6,4,8,10,9,15}));
         assertEquals(0, method.applyAsInt(new int[]{1,2,3,4}));
         assertEquals(0, method.applyAsInt(new int[]{1}));
@@ -45,6 +45,7 @@ public class E581_Medium_ShortestUnsortedContinuousSubarray {
         assertEquals(5, method.applyAsInt(new int[]{1,3,11,4,5,6,7}));
         assertEquals(4, method.applyAsInt(new int[]{1,3,5,2,4}));
         assertEquals(5, method.applyAsInt(new int[]{5,4,3,2,1}));
+        assertEquals(4, method.applyAsInt(new int[]{1,3,5,4,2}));
     }
 
     /**
@@ -126,5 +127,85 @@ public class E581_Medium_ShortestUnsortedContinuousSubarray {
     @Test
     public void testTwoPointMethod() {
         test(this::twoPointMethod);
+    }
+
+
+    /**
+     * 自己想出来的一个易懂直接的指针方法。
+     *
+     * LeetCode 耗时：1 ms - 100.00%
+     *          内存消耗：39.8 MB - 37.49%
+     */
+    public int selfDirectMethod(int[] nums) {
+        int prefixEnd = 0, suffixStart = nums.length - 1;
+        // 找到左边开始最长的递增序列
+        while (prefixEnd < nums.length - 1 && nums[prefixEnd] <= nums[prefixEnd + 1]) {
+            prefixEnd++;
+        }
+        // 找到右边开始最长的递减序列
+        while (suffixStart > 0 && nums[suffixStart] >= nums[suffixStart - 1]) {
+            suffixStart--;
+        }
+        // 单增序列，无需排序
+        if (prefixEnd >= suffixStart) {
+            return 0;
+        }
+
+        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
+        if (prefixEnd < suffixStart - 1) {
+            // 计算中间区域的最小、最大值
+            for (int i = prefixEnd + 1; i < suffixStart; i++) {
+                if (min > nums[i]) {
+                    min = nums[i];
+                }
+                if (max < nums[i]) {
+                    max = nums[i];
+                }
+            }
+        } else {
+            // 没有中间区域，则将 prefixEnd 和 suffixStart 作为中间区域
+            min = nums[suffixStart];
+            max = nums[prefixEnd];
+            prefixEnd--;
+            suffixStart++;
+        }
+
+        // 中间区域向两边扩展，只有当中间区域的最小值大于等于左边的最大值、
+        // 中间区域的最大值小于等于右边区域的最小值时，我们就找到了最小的需排序子数组
+        while (prefixEnd >= 0 || suffixStart < nums.length) {
+            if (prefixEnd < 0) {
+                if (max > nums[suffixStart]) {
+                    suffixStart++;
+                } else {
+                    break;
+                }
+            } else if (suffixStart >= nums.length) {
+                if (min < nums[prefixEnd]) {
+                    prefixEnd--;
+                } else {
+                    break;
+                }
+            } else {
+                if (max <= nums[suffixStart] && min >= nums[prefixEnd]) {
+                    break;
+                }
+                if (max > nums[suffixStart]) {
+                    suffixStart++;
+                }
+                if (min < nums[prefixEnd]) {
+                    prefixEnd--;
+                }
+                // 注意更新中间区域最大最小值
+                max = Math.max(max, nums[prefixEnd + 1]);
+                min = Math.min(min, nums[suffixStart - 1]);
+            }
+        }
+
+        return suffixStart - prefixEnd - 1;
+    }
+
+    @Test
+    public void testSelfDirectMethod() {
+        test(this::selfDirectMethod);
     }
 }

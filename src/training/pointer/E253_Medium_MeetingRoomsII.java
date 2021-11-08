@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E253_Medium_MeetingRoomsII {
 
-    static void test(ToIntFunction<int[][]> method) {
+    public static void test(ToIntFunction<int[][]> method) {
         assertEquals(2, method.applyAsInt(new int[][]{{0, 30}, {5, 10}, {15, 20}}));
         assertEquals(1, method.applyAsInt(new int[][]{{7, 10}, {2, 4}}));
         assertEquals(2, method.applyAsInt(new int[][]{{0, 5}, {3, 10}, {6, 15}}));
@@ -49,22 +49,15 @@ public class E253_Medium_MeetingRoomsII {
         // 将结束时间添加到堆中
         PriorityQueue<Integer> pq = new PriorityQueue<>();
         pq.add(intervals[0][1]);
-
-        int result = 1, remainRoom = 0;
+        int result = 1;
         for (int i = 1; i < intervals.length; i++) {
-            int start = intervals[i][0], end = intervals[i][1];
             // 将已经结束的事件弹出来，这样就有会议室空了出来
-            while (!pq.isEmpty() && pq.peek() <= start) {
+            while (!pq.isEmpty() && pq.peek() <= intervals[i][0]) {
                 pq.poll();
-                remainRoom++;
             }
-            pq.add(end);
-            // 如果没有剩余会议室，则需要添加会议室；否则可以使用空着的会议室
-            if (remainRoom == 0) {
-                result++;
-            } else {
-                remainRoom--;
-            }
+            pq.add(intervals[i][1]);
+            // 更新最大会议室数
+            result = Math.max(result, pq.size());
         }
 
         return result;
