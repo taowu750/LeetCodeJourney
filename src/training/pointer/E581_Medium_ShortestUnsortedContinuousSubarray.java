@@ -49,30 +49,27 @@ public class E581_Medium_ShortestUnsortedContinuousSubarray {
     }
 
     /**
+     * 利用单调栈和逆序对思想。
+     *
      * LeetCode 耗时：6 ms - 53.50%
      *          内存消耗：39.3MB - 79.43%
      */
     public int findUnsortedSubarray(int[] nums) {
-        // 找到所有不重叠逆序对区间，最前面逆序对的头和最后面逆序对的尾、连起来的数组就是最短无序连续子数组
+        // 找到所有不重叠逆序对区间，最前面逆序对的头和最后面逆序对的尾、连起来的数组就是最短无序连续子数组。
 
-        // 递减栈
+        // 递减栈，使用它找到最后面逆序对的尾
         Deque<Integer> stack = new LinkedList<>();
-        // 需排序区域头尾
+        // 需排序区域头尾（其中 sortEnd 是实际下标+1）
         int sortStart = -1, sortEnd = -1, min = Integer.MAX_VALUE;
         // 从后往前遍历，并记录最小值；如果出现逆序对，则需要更新 sortStart、sortEnd
+        // 从栈顶到栈底就是数组尾部的递增序列
         for (int i = nums.length - 1; i >= 0; i--) {
-            while (!stack.isEmpty() && nums[stack.peek()] <= nums[i]) {
-                if (nums[stack.peek()] < nums[i]
-                        // 当 nums[i] 等于递增栈顶（也就是 nums[i+1]），则需要看看递增栈顶的数是不是需排序区域头
-                        || sortStart == stack.peek()) {
-                    sortEnd = Math.max(sortEnd, stack.remove() + 1);
-                    sortStart = i;
-                } else {
-                    break;
-                }
+            // 当 nums[i] 大于递增栈顶，表明出现逆序对，此时更新 sortEnd
+            while (!stack.isEmpty() && nums[stack.peek()] < nums[i]) {
+                sortEnd = Math.max(sortEnd, stack.remove() + 1);
             }
             stack.push(i);
-            // 如果 nums[i] 大于右边的最小值，那么表示有一个逆序对
+            // 如果 nums[i] 大于右边的最小值，那么表示有一个逆序对，此时更新 sortStart
             if (nums[i] > min) {
                 sortStart = i;
             }
@@ -94,11 +91,11 @@ public class E581_Medium_ShortestUnsortedContinuousSubarray {
      *
      * 因此有 numsA 中每一个数 nums_i <= min(nums[i+1..n-1])。
      * 我们可以从大到小枚举 i，用一个变量 minn 记录 min(nums[i+1..n-1])，
-     * 这样最后一个使得不等式不成立的 i 即为 left。
+     * 这样最后一个使得不等式不成立的 i（注意上面的不等式里是 i+1）即为 left。
      *
      * 同理有 numsC 中每一个数 nums_i >= max(nums[0,i-1])。
      * 我们可以从小到大枚举 i，用一个变量 maxn 记录 max(nums[0,i-1])，
-     * 这样最后一个使得不等式不成立的 i 即为 right。
+     * 这样最后一个使得不等式成立的 i 即为 right。
      *
      * 参见：https://leetcode-cn.com/problems/shortest-unsorted-continuous-subarray/solution/zui-duan-wu-xu-lian-xu-zi-shu-zu-by-leet-yhlf/
      *
