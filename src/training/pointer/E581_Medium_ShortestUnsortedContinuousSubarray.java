@@ -106,6 +106,7 @@ public class E581_Medium_ShortestUnsortedContinuousSubarray {
         int n = nums.length;
         int maxn = Integer.MIN_VALUE, right = -1;
         int minn = Integer.MAX_VALUE, left = -1;
+        // 注意，下面 maxn 从左到右遍历，minn 从右到左遍历
         for (int i = 0; i < n; i++) {
             if (maxn > nums[i]) {
                 right = i;

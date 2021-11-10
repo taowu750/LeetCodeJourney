@@ -8,6 +8,8 @@ import java.util.function.Function;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
+ * 977. 有序数组的平方：https://leetcode-cn.com/problems/squares-of-a-sorted-array/
+ *
  * 给定一个按照非降序排列的整数数组，返回其中每个数字平方之后的组成的非降序排列数组。
  * <p>
  * 例子：
@@ -20,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  * - -10**4 <= nums[i] <= 10**4
  * - nums 以非降序顺序排列.
  */
-public class Review_E977_Easy_SortedSquares {
+public class E977_Easy_SortedSquares {
 
     static void test(Function<int[], int[]> func) {
         int[] inp = {-4, -1, 0, 3, 10};

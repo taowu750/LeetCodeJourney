@@ -8,12 +8,15 @@ import java.util.function.Consumer;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
+ * 1089. 复写零: https://leetcode-cn.com/problems/duplicate-zeros/
+ *
  * 给定一个整数数组，重复其中的每个 0，将 0 之后的元素往右移。
  * 请注意，超出原始数组长度的元素将被舍弃。
  * 对输入数组执行上述修改，不要从函数中返回任何内容。
  * <p>
  * 例子：
  * Input: [1,0,2,3,0,4,5,0]
+ * [3,0,0,4]
  * Output: null
  * Explanation: 在函数调用完后，输入数组被修改为：[1,0,0,2,3,0,0,4]
  * <p>
@@ -21,9 +24,9 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  * - 1 <= arr.length <= 10000
  * - 0 <= arr[i] <= 9
  */
-public class Review_E1089_Easy_DuplicateZeros {
+public class E1089_Easy_DuplicateZeros {
 
-    static void test(Consumer<int[]> func) {
+    public static void test(Consumer<int[]> func) {
         int[] inp = {1, 0, 2, 3, 0, 4, 5, 0};
         func.accept(inp);
         assertArrayEquals(inp, new int[]{1, 0, 0, 2, 3, 0, 0, 4});

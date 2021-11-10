@@ -8,6 +8,8 @@ import java.util.function.BiFunction;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
+ * 167. 两数之和 II - 输入有序数组：https://leetcode-cn.com/problems/two-sum-ii-input-array-is-sorted/
+ *
  * 给定一个已经按升序排序的整数数组 nums，请找到两个数字，使它们加起来成为一个特定的数字 target。
  * 返回两个数字的索引(以1开始)数组 answer，其中 1 <= answer[0] < answer[1] <= numbers.length。
  * <p>
@@ -31,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  * - -1000 <= target <= 1000
  * - 只有一个有效答案
  */
-public class Review_E167_Easy_TwoSumII {
+public class E167_Easy_TwoSumII {
 
     static void test(BiFunction<int[], Integer, int[]> method) {
         assertArrayEquals(method.apply(new int[]{2, 7, 11, 15}, 9),

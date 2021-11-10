@@ -8,6 +8,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 941. 有效的山脉数组：https://leetcode-cn.com/problems/valid-mountain-array/
+ *
  * 给定一个整数数组 arr，如果它是“mountain”数组返回 true。
  * 当且仅当 arr 满足下列条件时，它是一个“mountain”数组：
  * 1. arr.length >= 3
@@ -32,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 1 <= arr.length <= 10**4
  * 0 <= arr[i] <= 10**4
  */
-public class Review_E941_Easy_ValidMountainArray {
+public class E941_Easy_ValidMountainArray {
 
     static void test(Predicate<int[]> method) {
         int[] arr = {2, 1};
