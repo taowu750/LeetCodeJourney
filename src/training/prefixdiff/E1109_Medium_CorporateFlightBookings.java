@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E1109_Medium_CorporateFlightBookings {
 
-    static void test(BiFunction<int[][], Integer, int[]> method) {
+    public static void test(BiFunction<int[][], Integer, int[]> method) {
         assertArrayEquals(new int[]{10,55,45,25,25},
                 method.apply(new int[][]{{1,2,10}, {2,3,20}, {2,5,25}}, 5));
 
