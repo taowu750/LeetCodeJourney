@@ -9,8 +9,12 @@ import java.util.List;
 
 public class CollectionUtil {
 
-    public static <T> boolean setEquals(Collection<T> c1, Collection<T> c2) {
-        return new HashSet<>(c1).equals(new HashSet<>(c2));
+    public static <T> boolean setEquals(Collection<T> expected, Collection<T> actual) {
+        if (!(new HashSet<>(expected).equals(new HashSet<>(actual)))) {
+            throw new AssertionError("not equal, actual=" + actual);
+        }
+
+        return true;
     }
 
     public static <T extends Comparable<T>> void equalsIgnoreOrder(List<T> expected, List<T> actual) {
