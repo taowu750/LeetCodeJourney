@@ -7,6 +7,8 @@ import java.util.function.BiFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 76. 最小覆盖子串: https://leetcode-cn.com/problems/minimum-window-substring/
+ *
  * 给你一个字符串 s 、一个字符串 t 。返回 s 中涵盖 t 所有字符的最小子串。
  * 如果 s 中不存在涵盖 t 所有字符的子串，则返回空字符串 "" 。
  *
@@ -30,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E76_Hard_MinimumWindowSubstring {
 
-    static void test(BiFunction<String, String, String> method) {
+    public static void test(BiFunction<String, String, String> method) {
         assertEquals(method.apply("ADOBECODEBANC", "ABC"), "BANC");
         assertEquals(method.apply("a", "a"), "a");
         assertEquals(method.apply("a", "aa"), "");
@@ -66,63 +68,47 @@ public class E76_Hard_MinimumWindowSubstring {
      *     }
      * }
      *
-     * LeetCode 耗时：4ms - 88.49%
-     *          内存消耗：38.7 MB - 74.36%
+     * LeetCode 耗时：3 ms - 91.45%
+     *          内存消耗：38.5 MB - 77.57%
      */
     public String minWindow(String s, String t) {
-        // t 只有一个字符，直接找就完事了
-        if (t.length() == 1)
+        if (s.length() < t.length()) {
+            return "";
+        } else if (t.length() == 1) {
             return s.indexOf(t.charAt(0)) >= 0 ? t : "";
+        }
 
-        int[] need = new int[128];
-        int[] window = new int[128];
-        for (char c : t.toCharArray())
-            need[c] += 1;
-
-        // 滑动窗口：[left, right)。left 和 right 是 s 中的下标。
-        // left 是滑动窗口中第一个在 t 中的字符的位置；right 是滑动窗口右边界。
-        // cnt 记录了当前滑动窗口内包含了多少个 t 中的字符。
-        int left = 0, right = 0, cnt = 0, bestLeft = 0, bestRight = s.length();
-        // covered 表示有没有找到过覆盖子串
-        boolean covered = false;
-        while (right < s.length()) {
-            // 将 right 位置的字符加入滑动窗口
-            char c = s.charAt(right++);
-            // 如果 c 不是 t 中的字符，则跳过
-            if (need[c] == 0) {
-                // 如果还没有找到过任何字符，则收缩左边界
-                if (cnt == 0)
-                    left++;
-                continue;
-            }
-            // 此时 c 是 t 中的字符
-
-            // 进行记录
-            window[c]++;
-            // 如果 window 中记录的数量小于等于 t 中对应的数量，则增加计数
-            if (window[c] <= need[c])
-                cnt++;
-            // 如果涵盖子串已找到，则收缩左侧窗口
-            while (cnt == t.length()) {
-                // 标记找到了涵盖子串
-                covered = true;
-                // 更新最小涵盖子串
-                if (right - left < bestRight - bestLeft) {
-                    bestLeft = left;
-                    bestRight = right;
-                }
-                // 取消记录 left 的字符
-                char leftChar = s.charAt(left);
-                window[leftChar]--;
-                // 如果 window 中包含的 leftChar 个数少于 t 中的，则减少计数
-                if (window[leftChar] < need[leftChar])
-                    cnt--;
-                // 收缩左边界，直到下一个存在于 t 中的字符。注意别忘了边界检查
-                while (++left < right && window[s.charAt(left)] == 0);
+        // 使用 tcnts 记录 t 中字符出现的次数
+        int[] tcnts = new int[128];
+        // 使用 distinct 记录 tcnts 和下面的滑动窗口中字符的差异
+        int distinct = 0;
+        for (int i = 0; i < t.length(); i++) {
+            if (tcnts[t.charAt(i)]++ == 0) {
+                distinct++;
             }
         }
 
-        return covered ? s.substring(bestLeft, bestRight) : "";
+        int[] window = new int[128];
+        int left = 0, right = 0, resultLeft = 0, resultRight = Integer.MAX_VALUE;
+        while (right < s.length()) {
+            char c = s.charAt(right++);
+            if (++window[c] == tcnts[c]) {
+                distinct--;
+            }
+
+            while (distinct == 0) {
+                if (resultRight - resultLeft > right - left) {
+                    resultLeft = left;
+                    resultRight = right;
+                }
+                char lc = s.charAt(left++);
+                if (--window[lc] < tcnts[lc]) {
+                    distinct++;
+                }
+            }
+        }
+
+        return resultRight != Integer.MAX_VALUE ? s.substring(resultLeft, resultRight) : "";
     }
 
     @Test

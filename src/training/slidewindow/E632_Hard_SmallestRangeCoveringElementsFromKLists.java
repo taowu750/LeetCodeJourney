@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E632_Hard_SmallestRangeCoveringElementsFromKLists {
 
-    static void test(Function<List<List<Integer>>, int[]> method) {
+    public static void test(Function<List<List<Integer>>, int[]> method) {
         assertArrayEquals(new int[]{20,24},
                 method.apply(asList(asList(4,10,15,24,26), asList(0,9,12,20), asList(5,18,22,30))));
 
@@ -150,71 +150,49 @@ public class E632_Hard_SmallestRangeCoveringElementsFromKLists {
 
 
     /**
-     * 滑动窗口方法。
+     * 滑动窗口方法。参见：
+     * https://leetcode-cn.com/problems/smallest-range-covering-elements-from-k-lists/solution/pai-xu-hua-chuang-by-netcan/
      *
-     * LeetCode 耗时：90ms - 25%
-     *          内存消耗：46.4MB - 26%
+     * LeetCode 耗时：20 ms - 95.40%
+     *          内存消耗：44.6 MB - 47.90%
      */
     public int[] slidingWindowMethod(List<List<Integer>> nums) {
-        int k = nums.size();
-        if (k == 1) {
-            int b = nums.get(0).get(0);
-            return new int[]{b,b};
+        int size = 0;
+        for (List<Integer> numList : nums) {
+            size += numList.size();
         }
-
-        // 遍历所有数字。键是 nums 中的数字，值是包含此数字的列表的下标。滑动窗口将在 indices 上移动
-        Map<Integer, List<Integer>> indices = new HashMap<>();
-        Function<Integer, List<Integer>> compute = new Function<Integer, List<Integer>>() {
-            @Override
-            public List<Integer> apply(Integer integer) {
-                return new LinkedList<>();
-            }
-        };
-        // 记录最大最小值
-        int min = Integer.MAX_VALUE, max = Integer.MIN_VALUE;
-        for (int i = 0; i < k; i++) {
-            for (int num: nums.get(i)) {
-                if (num < min)
-                    min = num;
-                if (num > max)
-                    max = num;
-                indices.computeIfAbsent(num, compute).add(i);
+        // 将所有数字合并，并记录它们所属的组
+        int[][] allNums = new int[size][2];
+        for (int i = 0, j = 0; i < nums.size(); i++) {
+            for (int num : nums.get(i)) {
+                allNums[j][0] = num;
+                allNums[j++][1] = i;
             }
         }
+        // 排序这些数字
+        Arrays.sort(allNums, (a, b) -> Integer.compare(a[0], b[0]));
 
-        int[] freq = new int[k];
-        // 滑动窗口指针
-        int left = min, right = min - 1, count = 0;
-        int bestLeft = min, bestRight = max;
-        outer: while (right < max) {
-            right++;
-            if (indices.containsKey(right)) {
-                // right 存在于 nums 中。将对应列表添加到滑动窗口计数中
-                for (int idx: indices.get(right)) {
-                    if (++freq[idx] == 1)
-                        count++;
+        int[] window = new int[nums.size()];
+        int left = 0, right = 0, lo = allNums[0][0], hi = allNums[size - 1][0];
+        int distinct = 0;
+        while (right < allNums.length) {
+            int[] data = allNums[right++];
+            if (window[data[1]]++ == 0) {
+                distinct++;
+            }
+
+            while (distinct == nums.size()) {
+                if (hi - lo > allNums[right - 1][0] - allNums[left][0]) {
+                    lo = allNums[left][0];
+                    hi = allNums[right - 1][0];
                 }
-                // count 等于 k，说明滑动窗口已经包含了所有列表
-                while (count == k) {
-                    if (right - left < bestRight - bestLeft) {
-                        bestLeft = left;
-                        bestRight = right;
-                    }
-                    // 如果 left == right，则直接跳出，因为不会有比 0 更小的范围了
-                    if (left == right)
-                        break outer;
-                    // 开始收缩滑动窗口，缩减 left
-                    for (int idx: indices.get(left)) {
-                        if (--freq[idx] == 0)
-                            count--;
-                    }
-                    // 找到下一个存在于 indices 中的 left
-                    while (++left < right && !indices.containsKey(left));
+                if (--window[allNums[left++][1]] == 0) {
+                    distinct--;
                 }
             }
         }
 
-        return new int[]{bestLeft, bestRight};
+        return new int[]{lo, hi};
     }
 
     @Test

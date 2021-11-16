@@ -49,7 +49,7 @@ import java.util.function.BiFunction;
  */
 public class E239_Hard_SlidingWindowMaximum {
 
-    static void test(BiFunction<int[], Integer, int[]> method) {
+    public static void test(BiFunction<int[], Integer, int[]> method) {
         Assertions.assertArrayEquals(new int[]{3,3,5,5,6,7},
                 method.apply(new int[]{1,3,-1,-3,5,3,6,7}, 3));
 
