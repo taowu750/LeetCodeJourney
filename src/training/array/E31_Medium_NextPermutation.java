@@ -75,18 +75,10 @@ public class E31_Medium_NextPermutation {
                     nums[i + j] = nums[n - 1 - j];
                     nums[n - 1 - j] = tmp;
                 }
+                // 交换值，得到下一个最大排列
                 int num = nums[i - 1];
-                // 二分查找找到刚好大于 nums[i - 1] 的元素。参见“二分查找解析”文档
-                int lo = i, hi = n;
-                while (lo < hi) {
-                    int mid = (lo + hi) >>> 1;
-                    if (nums[mid] <= num)
-                        lo = mid + 1;
-                    else
-                        hi = mid;
-                }
-                nums[i - 1] = nums[lo];
-                nums[lo] = num;
+                nums[i - 1] = nums[nums.length - 1];
+                nums[nums.length - 1] = num;
                 break;
             }
         }
