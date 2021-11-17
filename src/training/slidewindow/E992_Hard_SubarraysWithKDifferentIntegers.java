@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E992_Hard_SubarraysWithKDifferentIntegers {
 
-    static void test(ToIntBiFunction<int[], Integer> method) {
+    public static void test(ToIntBiFunction<int[], Integer> method) {
         assertEquals(7, method.applyAsInt(new int[]{1,2,1,2,3}, 2));
         assertEquals(3, method.applyAsInt(new int[]{1,2,1,3,4}, 3));
         assertEquals(15, method.applyAsInt(new int[]{1,1,1,1,1}, 1));
