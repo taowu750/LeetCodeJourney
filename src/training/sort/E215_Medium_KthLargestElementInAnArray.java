@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E215_Medium_KthLargestElementInAnArray {
 
-    static void test(ToIntBiFunction<int[], Integer> method) {
+    public static void test(ToIntBiFunction<int[], Integer> method) {
         assertEquals(5, method.applyAsInt(new int[]{3,2,1,5,6,4}, 2));
         assertEquals(4, method.applyAsInt(new int[]{3,2,3,1,2,4,5,5,6}, 4));
         assertEquals(2, method.applyAsInt(new int[]{-1,2,0}, 1));

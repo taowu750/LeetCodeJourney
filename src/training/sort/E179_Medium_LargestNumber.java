@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E179_Medium_LargestNumber {
 
-    static void test(Function<int[], String> method) {
+    public static void test(Function<int[], String> method) {
         assertEquals("210", method.apply(new int[]{10, 2}));
         assertEquals("9534330", method.apply(new int[]{3,30,34,5,9}));
         assertEquals("1", method.apply(new int[]{1}));
