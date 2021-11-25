@@ -46,7 +46,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E969_Medium_PancakeSorting {
 
-    static void applyPancakeSort(int[] arr, Function<int[], List<Integer>> method) {
+    public static void applyPancakeSort(int[] arr, Function<int[], List<Integer>> method) {
         int[] copy = arr.clone();
         List<Integer> reverse = method.apply(copy);
         assertTrue(reverse.size() < 10 * arr.length, reverse.size() + " - " + arr.length);
@@ -60,7 +60,7 @@ public class E969_Medium_PancakeSorting {
         ArrayUtil.isAscending(arr);
     }
 
-    static void test(Function<int[], List<Integer>> method) {
+    public static void test(Function<int[], List<Integer>> method) {
         applyPancakeSort(new int[]{3,2,4,1}, method);
         applyPancakeSort(new int[]{1,2,3}, method);
     }
@@ -76,6 +76,12 @@ public class E969_Medium_PancakeSorting {
         for (int i = 0; i < arr.length; i++) {
             indices[arr[i] - 1] = i;
         }
+        /*
+        每次找到未排序的最大值，翻转两次：
+        1. 第一次把它翻转到开头；
+        2. 第二次把它翻转到最终的位置；
+        3. 重复 1、2，直到完成所有数字的排序
+         */
         for (int n = arr.length; n > 0; n--) {
             int maxIdx = indices[n - 1];
             if (maxIdx != n - 1) {

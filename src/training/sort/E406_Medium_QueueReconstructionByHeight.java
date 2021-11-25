@@ -42,7 +42,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E406_Medium_QueueReconstructionByHeight {
 
-    static void test(UnaryOperator<int[][]> method) {
+    public static void test(UnaryOperator<int[][]> method) {
         assertArrayEquals(new int[][]{{5, 0}, {7, 0}, {5, 2}, {6, 1}, {4, 4}, {7, 1}},
                 method.apply(new int[][]{{7, 0}, {4, 4}, {7, 1}, {5, 0}, {6, 1}, {5, 2}}));
 

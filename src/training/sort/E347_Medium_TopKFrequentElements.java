@@ -30,7 +30,7 @@ import static util.ArrayUtil.equalsIgnoreOrder;
  */
 public class E347_Medium_TopKFrequentElements {
 
-    static void test(BiFunction<int[], Integer, int[]> method) {
+    public static void test(BiFunction<int[], Integer, int[]> method) {
         equalsIgnoreOrder(new int[]{1,2}, method.apply(new int[]{1,1,1,2,2,3}, 2));
         equalsIgnoreOrder(new int[]{1}, method.apply(new int[]{1}, 1));
     }

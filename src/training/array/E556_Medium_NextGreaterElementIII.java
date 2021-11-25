@@ -1,6 +1,7 @@
 package training.array;
 
 import org.junit.jupiter.api.Test;
+import training.math.E31_Medium_NextPermutation;
 
 import java.util.function.IntUnaryOperator;
 
