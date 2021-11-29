@@ -1,7 +1,11 @@
 package util.datastructure;
 
+import training.binarytree.TreeNode;
+
 import java.lang.reflect.Constructor;
 import java.util.*;
+
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class BinaryTreeNode<T extends BinaryTreeNode<T>> {
 
@@ -144,5 +148,10 @@ public class BinaryTreeNode<T extends BinaryTreeNode<T>> {
         }
 
         return 0;
+    }
+
+    public static void assertBST(TreeNode root) {
+        assertTrue(isBalanced(root), "the tree is not balanced");
+        assertTrue(isValid(root), "the tree is invalid search tree");
     }
 }
