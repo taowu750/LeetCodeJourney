@@ -11,7 +11,9 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
- * 给定一个整数数组 nums 和两个整数 k 和 t，如果数组中有两个不同的索引 i 和 j，
+ * 220. 存在重复元素 III: https://leetcode-cn.com/problems/contains-duplicate-iii/
+ *
+ * 给定一个整数数组 nums 和两个整数 k 和 t，如果数组中有「两个不同的索引」 i 和 j，
  * 使得 abs(nums[i]-nums[j])<=t && abs(i-j)<=k，则返回 true。
  * <p>
  * 例 1：
@@ -33,9 +35,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * - 0 <= t <= 2**31 - 1
  * - i != j
  */
-public class Review_E220_Medium_ContainsDuplicateIII {
+public class E220_Medium_ContainsDuplicateIII {
 
-    static void test(TriPredicate<int[], Integer, Integer> method) {
+    public static void test(TriPredicate<int[], Integer, Integer> method) {
         assertTrue(method.test(new int[]{1, 2, 3, 1}, 3, 0));
 
         assertTrue(method.test(new int[]{1, 0, 1, 1}, 1, 2));

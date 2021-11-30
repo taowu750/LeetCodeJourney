@@ -8,6 +8,8 @@ import java.util.function.ToIntFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 1051. 高度检查器：https://leetcode-cn.com/problems/height-checker/
+ *
  * 给定一个数组，数组中是学生的高度，要求将学生以身高非递减的顺序排列。
  * 返回为了排成非递减顺序而需要移动的学生数量的最小值。
  * <p>
@@ -32,9 +34,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - 1 <= heights.length <= 100
  * - 1 <= heights[i] <= 100
  */
-public class Review_E1051_Easy_HeightChecker {
+public class E1051_Easy_HeightChecker {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         int[] heights = {1, 1, 4, 2, 1, 3};
         assertEquals(method.applyAsInt(heights), 3);
 
