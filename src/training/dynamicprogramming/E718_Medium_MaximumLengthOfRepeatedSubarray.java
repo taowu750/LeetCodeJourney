@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E718_Medium_MaximumLengthOfRepeatedSubarray {
 
-    static void test(ToIntBiFunction<int[], int[]> method) {
+    public static void test(ToIntBiFunction<int[], int[]> method) {
         assertEquals(method.applyAsInt(new int[]{1,2,3,2,1}, new int[]{3,2,1,4,7}), 3);
         assertEquals(method.applyAsInt(new int[]{0,1,1,1,1}, new int[]{1,0,1,0,1}), 2);
         assertEquals(method.applyAsInt(new int[]{1,0,0,0,1}, new int[]{1,0,0,1,1}), 3);

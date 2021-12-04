@@ -1,4 +1,4 @@
-package training.dicttree;
+package training.trie;
 
 import org.junit.jupiter.api.Test;
 
