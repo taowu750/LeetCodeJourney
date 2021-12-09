@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E316_Medium_RemoveDuplicateLetters {
 
-    static void test(UnaryOperator<String> method) {
+    public static void test(UnaryOperator<String> method) {
         assertEquals("abc", method.apply("bcabc"));
         assertEquals("acdb", method.apply("cbacdcbc"));
         assertEquals("adbc", method.apply("cdadabcc"));

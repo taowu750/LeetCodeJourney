@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertSame;
  */
 public class E426_Medium_ConvertBinarySearchTreeToSortedDoublyLinkedList {
 
-    static void assertList(Node head) {
+    public static void assertList(Node head) {
         if (head == null) {
             return;
         }
@@ -66,14 +66,14 @@ public class E426_Medium_ConvertBinarySearchTreeToSortedDoublyLinkedList {
         assertSame(head.left, p);
     }
 
-    static void test(UnaryOperator<Node> method) {
+    public static void test(UnaryOperator<Node> method) {
         assertList(method.apply(Node.newTree(4,2,5,1,3)));
         assertList(method.apply(Node.newTree(2,1,3)));
         assertList(method.apply(null));
         assertList(method.apply(Node.newTree(1)));
     }
 
-    static class Node extends BinaryTreeNode<Node> {
+    public static class Node extends BinaryTreeNode<Node> {
 
         public Node(int val) {
             super(val);
@@ -85,7 +85,7 @@ public class E426_Medium_ConvertBinarySearchTreeToSortedDoublyLinkedList {
     }
 
     /**
-     * 此题方法类似于 {@link Review_E98_Medium_ValidateBinarySearchTree}。
+     * 此题方法类似于 {@link E98_Medium_ValidateBinarySearchTree}。
      *
      * LeetCode 耗时：1 ms - 19.16%
      *          内存消耗：37.8 MB - 41.92%

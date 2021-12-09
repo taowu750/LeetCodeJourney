@@ -38,9 +38,9 @@ import static util.datastructure.BinaryTreeNode.find;
  * - p != q
  * - p 和 q 都存在于 BST 中
  */
-public class Review_E235_Easy_LowestCommonAncestorOfABinarySearchTree {
+public class E235_Easy_LowestCommonAncestorOfABinarySearchTree {
 
-    static void test(TriFunction<TreeNode, TreeNode, TreeNode, TreeNode> method) {
+    public static void test(TriFunction<TreeNode, TreeNode, TreeNode, TreeNode> method) {
         TreeNode root = newTree(6,2,8,0,4,7,9,null,null,3,5);
         assertEquals(method.apply(root, find(root, 2), find(root, 8)).val, 6);
 

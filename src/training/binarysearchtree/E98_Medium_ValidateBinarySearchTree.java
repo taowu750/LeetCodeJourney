@@ -40,9 +40,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * - 树中结点数量范围为 [1, 10**4]
  * - -2**31 <= Node.val <= 2**31 - 1
  */
-public class Review_E98_Medium_ValidateBinarySearchTree {
+public class E98_Medium_ValidateBinarySearchTree {
 
-    static void test(Predicate<TreeNode> method) {
+    public static void test(Predicate<TreeNode> method) {
         assertTrue(method.test(newTree(2, 1, 3)));
 
         assertFalse(method.test(newTree(5, 1, 4, null, null, 3, 6)));
