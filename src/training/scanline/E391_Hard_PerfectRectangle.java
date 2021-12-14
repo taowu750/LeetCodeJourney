@@ -282,7 +282,6 @@ public class E391_Hard_PerfectRectangle {
         }
 
         // 从左到右，从下到上，从已经匹配的矩形开始往右推进，不断进行匹配
-        // 因为都是正方形，所以当匹配成功时也一定是正方形
         while (!pq.isEmpty()) {
             int[] top = pq.remove();
             // 从堆顶找一条 x 相同、连续的最长的线段，也就是上下边相接

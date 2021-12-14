@@ -1,11 +1,12 @@
 package training.stack;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Deque;
 import java.util.LinkedList;
 import java.util.function.BiFunction;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * 402. 移掉 K 位数字: https://leetcode-cn.com/problems/remove-k-digits/
@@ -36,14 +37,18 @@ import java.util.function.BiFunction;
 public class E402_Medium_RemoveKDigits {
 
     public static void test(BiFunction<String, Integer, String> method) {
-        Assertions.assertEquals("1219", method.apply("1432219", 3));
-        Assertions.assertEquals("200", method.apply("10200", 1));
-        Assertions.assertEquals("0", method.apply("10", 2));
-        Assertions.assertEquals("0", method.apply("1023", 3));
-        Assertions.assertEquals("11", method.apply("112", 1));
+        assertEquals("1219", method.apply("1432219", 3));
+        assertEquals("200", method.apply("10200", 1));
+        assertEquals("0", method.apply("10", 2));
+        assertEquals("0", method.apply("1023", 3));
+        assertEquals("11", method.apply("112", 1));
+        assertEquals("99991", method.apply("9999999999991", 8));
     }
 
     /**
+     * 此算法题及其他类似算法题的思想参见：
+     * https://leetcode-cn.com/problems/remove-duplicate-letters/solution/yi-zhao-chi-bian-li-kou-si-dao-ti-ma-ma-zai-ye-b-4/
+     *
      * LeetCode 耗时：12 ms - 22.82%
      *          内存消耗：38.6 MB - 59.95%
      */
@@ -64,25 +69,18 @@ public class E402_Medium_RemoveKDigits {
         // 递增栈，让列表尾做栈顶，列表头做栈底，方便后面组成结果
         Deque<Character> stack = new LinkedList<>();
         for (int i = 0, remain = num.length() - k; i < num.length(); i++) {
-            // 注意，要保证剩余元素满足 remain 才能弹出
             while (!stack.isEmpty() && stack.getLast() > num.charAt(i)
                     && (stack.size() + num.length() - i) > remain) {
                 stack.removeLast();
             }
-            // 当还可以添加时再添加
             if (stack.size() < remain) {
                 stack.addLast(num.charAt(i));
             }
         }
 
         // 去除开头的 0
-        int size = stack.size();
-        for (int i = 0; i < size - 1; i++) {
-            if (stack.getFirst() == '0') {
-                stack.removeFirst();
-            } else {
-                break;
-            }
+        while (stack.size() > 1 && stack.getFirst() == '0') {
+            stack.removeFirst();
         }
 
         StringBuilder result = new StringBuilder();
