@@ -1,6 +1,8 @@
-package training.array;
+package training.pointer;
 
 import org.junit.jupiter.api.Test;
+
+import java.util.function.ToIntBiFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,14 +27,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E27_Easy_RemoveElement {
 
-    static interface RemoveMethod {
-        int removeElement(int[] nums, int val);
-    }
-
-    static void test(RemoveMethod method) {
+    public static void test(ToIntBiFunction<int[], Integer> method) {
         int[] nums = {3, 2, 2, 3}, result = new int[]{2, 2};
         int val = 3;
-        assertEquals(method.removeElement(nums, val), 2);
+        assertEquals(method.applyAsInt(nums, val), 2);
         for (int i = 0; i < result.length; i++) {
             assertEquals(nums[i], result[i]);
         }
@@ -40,7 +38,7 @@ public class E27_Easy_RemoveElement {
         nums = new int[]{0, 1, 2, 2, 3, 0, 4, 2};
         result = new int[]{0, 1, 3, 0, 4};
         val = 2;
-        assertEquals(method.removeElement(nums, val), 5);
+        assertEquals(method.applyAsInt(nums, val), 5);
         for (int i = 0; i < result.length; i++) {
             assertEquals(nums[i], result[i]);
         }

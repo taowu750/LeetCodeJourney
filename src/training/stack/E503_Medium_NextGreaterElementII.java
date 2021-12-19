@@ -7,6 +7,8 @@ import java.util.function.UnaryOperator;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
+ * 503. 下一个更大元素 II: https://leetcode-cn.com/problems/next-greater-element-ii/
+ *
  * 给定一个循环数组（最后一个元素的下一个元素是数组的第一个元素），输出每个元素的下一个更大元素。
  * 数字 x 的下一个更大的元素是按数组遍历顺序，这个数字之后的第一个比它更大的数，
  * 这意味着你应该循环地搜索它的下一个更大的数。如果不存在，则输出 -1。
@@ -23,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E503_Medium_NextGreaterElementII {
 
-    static void test(UnaryOperator<int[]> method) {
+    public static void test(UnaryOperator<int[]> method) {
         assertArrayEquals(new int[]{2,-1,2}, method.apply(new int[]{1,2,1}));
         assertArrayEquals(new int[]{5,-1,-1,4,2,3,4}, method.apply(new int[]{4,5,5,3,1,2,3}));
     }
@@ -82,7 +84,7 @@ public class E503_Medium_NextGreaterElementII {
         int[] stack = new int[n], result = new int[n];
 
         // 对于环形数组，常用套路就是将数组长度翻倍。我们可以假装数组长度翻倍，无需实际的扩容。
-        // 逆向遍历，栈中保存从最大值开始的递减序列，这样也能达到一样的效果
+        // 逆向遍历，栈从栈底到栈顶递增，这样也能达到一样的效果
         for (int i = 2 * n - 1; i >= 0; i--) {
             int idx = i % n;
             while (top > -1 && nums[idx] >= stack[top])

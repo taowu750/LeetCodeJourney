@@ -21,10 +21,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * minStack.top();    // return 0
  * minStack.getMin(); // return -2
  */
-public class Review_E155_Easy_MinStack {
+public class E155_Easy_MinStack {
 
     public static void main(String[] args) {
-        Review_E155_Easy_MinStack minStack = new Review_E155_Easy_MinStack();
+        E155_Easy_MinStack minStack = new E155_Easy_MinStack();
         minStack.push(-2);
         minStack.push(0);
         minStack.push(-3);
@@ -51,7 +51,7 @@ public class Review_E155_Easy_MinStack {
     private StackElement top;
     private int minVal;
 
-    public Review_E155_Easy_MinStack() {
+    public E155_Easy_MinStack() {
         minVal = Integer.MAX_VALUE;
     }
 

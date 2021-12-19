@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  * - T 长度范围为 [1, 30000]
  * - 温度的范围为 [30, 100]
  */
-public class Review_E739_Medium_DailyTemperatures {
+public class E739_Medium_DailyTemperatures {
 
     static void test(Function<int[], int[]> method) {
         int[] T = {73, 74, 75, 71, 69, 72, 76, 73};

@@ -1,4 +1,4 @@
-package training.array;
+package training.pointer;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E26_Easy_RemoveDuplicatesFromSortedArray {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         int[] nums = {1, 1, 2}, result = {1, 2};
         assertEquals(method.applyAsInt(nums), 2);
         for (int i = 0; i < result.length; i++) {

@@ -40,7 +40,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E496_Easy_NextGreaterElementI {
 
-    static void test(BinaryOperator<int[]> method) {
+    public static void test(BinaryOperator<int[]> method) {
         assertArrayEquals(new int[]{-1,3,-1}, method.apply(new int[]{4,1,2}, new int[]{1,3,4,2}));
         assertArrayEquals(new int[]{3,-1}, method.apply(new int[]{2,4}, new int[]{1,2,3,4}));
         assertArrayEquals(new int[]{6,4}, method.apply(new int[]{5,3}, new int[]{5,3,4,6}));
@@ -48,7 +48,7 @@ public class E496_Easy_NextGreaterElementI {
 
     /**
      * 单调栈算法。
-     * 此解法类似于 {@link Review_E739_Medium_DailyTemperatures#stackMethod(int[])}。
+     * 此解法类似于 {@link E739_Medium_DailyTemperatures#stackMethod(int[])}。
      *
      * LeetCode 耗时：3 ms - 98.32%
      *          内存消耗：38.6 MB - 65.56%
