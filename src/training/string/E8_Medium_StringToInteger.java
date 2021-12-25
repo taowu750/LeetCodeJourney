@@ -7,6 +7,8 @@ import java.util.function.ToIntFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 8. 字符串转换整数 (atoi)：https://leetcode-cn.com/problems/string-to-integer-atoi/
+ *
  * 请你来实现一个 myAtoi(string s) 函数，使其能将字符串转换成一个 32 位有符号整数（类似 C/C++ 中的 atoi 函数）。
  *
  * 函数 myAtoi(string s) 的算法如下：
@@ -91,7 +93,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E8_Medium_StringToInteger {
 
-    static void test(ToIntFunction<String> method) {
+    public static void test(ToIntFunction<String> method) {
         assertEquals(42, method.applyAsInt("42"));
         assertEquals(-42, method.applyAsInt("   -42"));
         assertEquals(4193, method.applyAsInt("4193 with words"));

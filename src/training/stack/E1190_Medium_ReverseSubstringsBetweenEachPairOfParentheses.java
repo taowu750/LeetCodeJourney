@@ -55,9 +55,9 @@ public class E1190_Medium_ReverseSubstringsBetweenEachPairOfParentheses {
      *          内存消耗：36.4 MB - 71.34%
      */
     public String reverseParentheses(String s) {
-        char[] chars = new char[s.length()];
+        char[] result = new char[s.length()];
         int end = 0;
-        // stack 记录每个左括号包围字符序列在 chars 中的起始下标
+        // stack 记录每个左括号包围字符序列在 result 中的起始下标
         Deque<Integer> stack = new LinkedList<>();
         for (int i = 0; i < s.length(); i++) {
             char c = s.charAt(i);
@@ -65,18 +65,17 @@ public class E1190_Medium_ReverseSubstringsBetweenEachPairOfParentheses {
                 stack.push(end);
             } else if (c == ')') {
                 // 反转括号区域
-                int start = stack.pop(), half = (end - start) / 2;
-                for (int j = start, k = 1; k <= half; j++, k++) {
-                    char tmp = chars[j];
-                    chars[j] =  chars[end - k];
-                    chars[end - k] = tmp;
+                for (int leftIdx = stack.pop(), rightIdx = end - 1; leftIdx < rightIdx; leftIdx++, rightIdx--) {
+                    char tmp = result[leftIdx];
+                    result[leftIdx] = result[rightIdx];
+                    result[rightIdx] = tmp;
                 }
             } else {
-                chars[end++] = c;
+                result[end++] = c;
             }
         }
 
-        return new String(chars, 0, end);
+        return new String(result, 0, end);
     }
 
     @Test

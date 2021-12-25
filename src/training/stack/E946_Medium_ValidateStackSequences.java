@@ -2,6 +2,8 @@ package training.stack;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.function.BiPredicate;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -26,50 +28,32 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * 解释：1 不能在 2 之前弹出。
  *
  * 约束：
- * - 0 <= pushed.length == popped.length <= 1000
+ * - 1 <= pushed.length == popped.length <= 1000
  * - 0 <= pushed[i], popped[i] < 1000
  * - pushed 是 popped 的排列。
  */
 public class E946_Medium_ValidateStackSequences {
 
-    static void test(BiPredicate<int[], int[]> method) {
+    public static void test(BiPredicate<int[], int[]> method) {
         assertTrue(method.test(new int[]{1,2,3,4,5}, new int[]{4,5,3,2,1}));
         assertFalse(method.test(new int[]{1,2,3,4,5}, new int[]{4,3,5,1,2}));
     }
 
     /**
-     * LeetCode 耗时：1 ms - 97.75%
+     * LeetCode 耗时：2 ms - 83.70%
      *          内存消耗：38.1 MB - 56.49%
      */
     public boolean validateStackSequences(int[] pushed, int[] popped) {
-        if (pushed.length == 0) {
-            return true;
-        }
-
-        int[] stack = new int[pushed.length];
-        int top = 0;
-        stack[top] = pushed[0];
-
+        Deque<Integer> stack = new ArrayDeque<>(pushed.length);
         for (int i = 0, j = 0; j < popped.length;) {
-            // 如果栈顶等于下一个弹出值
-            if (stack[top] == popped[j]) {
-                // 栈中弹出元素，并且移到下一个 pop 值
-                top--;
-                j++;
-                // 如果栈为空，压入下一个 push 值
-                if (top == -1) {
-                    // 已经没有下一个 push 值，返回是否也没有下一个 pop 值
-                    if (++i == pushed.length) {
-                        return j == popped.length;
-                    }
-                    stack[++top] = pushed[i];
-                }
-            } else {
-                // 栈顶不等于下一个弹出值，尝试压入下一个 push 值
-                if (++i == pushed.length) {
+            if (stack.isEmpty() || stack.peek() != popped[j]) {
+                if (i == pushed.length) {
                     return false;
                 }
-                stack[++top] = pushed[i];
+                stack.push(pushed[i++]);
+            } else {
+                stack.pop();
+                j++;
             }
         }
 
