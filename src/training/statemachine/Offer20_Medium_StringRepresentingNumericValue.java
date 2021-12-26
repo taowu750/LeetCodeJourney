@@ -59,7 +59,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class Offer20_Medium_StringRepresentingNumericValue {
 
-    static void test(Predicate<String> method) {
+    public static void test(Predicate<String> method) {
         assertTrue(method.test("+100"));
         assertTrue(method.test("5e2"));
         assertTrue(method.test("-123"));
@@ -76,6 +76,12 @@ public class Offer20_Medium_StringRepresentingNumericValue {
         assertFalse(method.test(" "));
         assertFalse(method.test("0e "));
         assertFalse(method.test("92e1740e91"));
+        assertFalse(method.test("."));
+        assertTrue(method.test("3. "));
+        assertTrue(method.test("0"));
+        assertFalse(method.test(". "));
+        assertFalse(method.test(" -."));
+        assertTrue(method.test("46.e3"));
     }
 
     /**
@@ -178,6 +184,233 @@ public class Offer20_Medium_StringRepresentingNumericValue {
     }
 
 
+    public enum NumberState {
+        START,
+        LEADING_SPACE,
+        LEADING_SIGN,
+        LEADING_INTEGER,
+        DOT,
+        DECIMAL,
+        E,
+        SUCCEED_SIGN,
+        SUCCEED_INTEGER,
+        SUCCEED_SPACE,
+        ERROR,
+        END
+        ;
+
+        public boolean can2End() {
+            return this == LEADING_INTEGER || this == DOT || this == DECIMAL
+                    || this == SUCCEED_INTEGER || this == SUCCEED_SPACE || this == END;
+        }
+    }
+
+    /**
+     * 状态机方法，这是后来复习题解时自己想的，其中的基本思想可以参见 {@link #betterDfmMethod(String)} 方法的注释。
+     * 后面的方法使用 EnumMap 避免了 switch 和 if/else。
+     *
+     * {@link #betterDfmMethod(String)} 方法对小数点的处理更加优雅。
+     *
+     * LeetCode 耗时：2 ms - 88.77%
+     *          内存消耗：38.3 MB - 64.59%
+     */
+    public boolean dfmMethod(String s) {
+        /*
+        有效数字符合以下模式：
+
+            前导空格(可选) 正负号(可选) 整数|数.|.数|数.数 [e/E+正负号(可选)+整数](可选) 后继空格(可选)
+
+        这些模式可以作为状态，从而构成一个状态机。
+
+        需要注意的是，小数点状态的状态转移不仅取决于输入，也取决于上一个状态。
+        我们可以在小数点状态进行处理，也可以在它的上一个状态（START、空格或正负号）进行处理。
+         */
+        NumberState state = NumberState.START;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            switch (state) {
+                /*
+                start -> 前导空格
+                      -> 前导正负号
+                      -> 前导整数
+                      -> 小数点
+                      -> ERROR
+
+                前导空格 -> 前导空格
+                        -> 前导正负号
+                        -> 前导整数
+                        -> 小数点
+                        -> ERROR
+                 */
+                case START:
+                case LEADING_SPACE:
+                    if (c == ' ') {
+                        state = NumberState.LEADING_SPACE;
+                    } else if (c == '+' || c == '-') {
+                        state = NumberState.LEADING_SIGN;
+                    } else if (Character.isDigit(c)) {
+                        state = NumberState.LEADING_INTEGER;
+                    }
+                    // 注意，当在 START 或前导空格状态遇到小数点输入时，下一个输入必须是数字才能够进行转移
+                    else if (c == '.' && (i < s.length() - 1 && Character.isDigit(s.charAt(i + 1)))) {
+                        state = NumberState.DOT;
+                    } else {
+                        state = NumberState.ERROR;
+                    }
+                    break;
+
+                /*
+                前导正负号 -> 前导整数
+                          -> 小数点
+                          -> ERROR
+                 */
+                case LEADING_SIGN:
+                    if (Character.isDigit(c)) {
+                        state = NumberState.LEADING_INTEGER;
+                    }
+                    // 注意，当在前导正负号状态遇到小数点输入时，下一个输入必须是数字才能够进行转移
+                    else if (c == '.' && (i < s.length() - 1 && Character.isDigit(s.charAt(i + 1)))) {
+                        state = NumberState.DOT;
+                    } else {
+                        state = NumberState.ERROR;
+                    }
+                    break;
+
+                /*
+                前导整数 -> 前导整数
+                        -> 小数点
+                        -> E
+                        -> 后导空格
+                        -> END
+                        -> ERROR
+                 */
+                case LEADING_INTEGER:
+                    if (Character.isDigit(c)) {
+                        continue;
+                    } else if (c == '.') {
+                        state = NumberState.DOT;
+                    } else if (c == 'e' || c == 'E') {
+                        state = NumberState.E;
+                    } else if (c == ' ') {
+                        state = NumberState.SUCCEED_SPACE;
+                    } else {
+                        state = NumberState.ERROR;
+                    }
+                    break;
+
+                /*
+                小数点 -> 小数
+                      -> 后导空格（注意这里的转移必须有前导整数）
+                      -> E（注意这里的转移必须有前导整数）
+                      -> END（注意这里的转移必须有前导整数）
+                      -> ERROR
+                 */
+                case DOT:
+                    if (Character.isDigit(c)) {
+                        state = NumberState.DECIMAL;
+                    } else if (c == ' ') {
+                        state = NumberState.SUCCEED_SPACE;
+                    } else if (c == 'e' || c == 'E') {
+                        state = NumberState.E;
+                    } else {
+                        state = NumberState.ERROR;
+                    }
+                    break;
+
+                /*
+                小数 -> 小数
+                     -> E
+                     -> 后导空格
+                     -> END
+                     -> ERROR
+                 */
+                case DECIMAL:
+                    if (Character.isDigit(c)) {
+                        continue;
+                    } else if (c == 'e' || c == 'E') {
+                        state = NumberState.E;
+                    } else if (c == ' ') {
+                        state = NumberState.SUCCEED_SPACE;
+                    } else {
+                        state = NumberState.ERROR;
+                    }
+                    break;
+
+                /*
+                E -> 后继符号
+                  -> 后继整数
+                  -> ERROR
+                 */
+                case E:
+                    if (c == '-' || c == '+') {
+                        state = NumberState.SUCCEED_SIGN;
+                    } else if (Character.isDigit(c)) {
+                        state = NumberState.SUCCEED_INTEGER;
+                    } else {
+                        state = NumberState.ERROR;
+                    }
+                    break;
+
+                /*
+                后继符号 -> 后继整数
+                        -> ERROR
+                 */
+                case SUCCEED_SIGN:
+                    if (Character.isDigit(c)) {
+                        state = NumberState.SUCCEED_INTEGER;
+                    } else {
+                        state = NumberState.ERROR;
+                    }
+                    break;
+
+                /*
+                后继整数 -> 后继整数
+                        -> 后继空格
+                        -> END
+                        -> ERROR
+                 */
+                case SUCCEED_INTEGER:
+                    if (Character.isDigit(c)) {
+                        continue;
+                    } else if (c == ' ') {
+                        state = NumberState.SUCCEED_SPACE;
+                    } else {
+                        state = NumberState.ERROR;
+                    }
+                    break;
+
+                /*
+                后继空格 -> 后继空格
+                        -> END
+                        -> ERROR
+                 */
+                case SUCCEED_SPACE:
+                    if (c == ' ') {
+                        continue;
+                    } else {
+                        state = NumberState.ERROR;
+                    }
+                    break;
+
+                case ERROR:
+                    break;
+
+                /*
+                END -> ERROR
+                 */
+                case END:
+                    state = NumberState.ERROR;
+                    break;
+            }
+            if (state == NumberState.ERROR) {
+                break;
+            }
+        }
+
+        return state.can2End();
+    }
+
+
     /**
      * 确定有限状态自动机（以下简称「自动机」）是一类计算模型。它包含一系列状态，这些状态中：
      * - 有一个特殊的状态，被称作「初始状态」。
@@ -212,7 +445,7 @@ public class Offer20_Medium_StringRepresentingNumericValue {
      * LeetCode 耗时：3 ms - 63.19%
      *          内存消耗：38.5 MB - 49.38%
      */
-    public boolean dfmMethod(String s) {
+    public boolean betterDfmMethod(String s) {
         State state = State.STATE_INITIAL;
         for (int i = 0; i < s.length(); i++) {
             CharType charType = toCharType(s.charAt(i));
@@ -248,6 +481,7 @@ public class Offer20_Medium_StringRepresentingNumericValue {
         STATE_END
     }
 
+    // 输入的字符类型
     enum CharType {
         CHAR_NUMBER,
         CHAR_EXP,
@@ -315,6 +549,7 @@ public class Offer20_Medium_StringRepresentingNumericValue {
         transferFunc.put(State.STATE_END, endTransfer);
     }
 
+    // 将字符转换为对应的输入类型
     private CharType toCharType(char ch) {
         if (ch >= '0' && ch <= '9') {
             return CharType.CHAR_NUMBER;
@@ -333,6 +568,6 @@ public class Offer20_Medium_StringRepresentingNumericValue {
 
     @Test
     public void testDfmMethod() {
-        test(this::dfmMethod);
+        test(this::betterDfmMethod);
     }
 }
