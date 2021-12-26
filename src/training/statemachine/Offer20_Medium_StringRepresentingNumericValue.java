@@ -410,6 +410,11 @@ public class Offer20_Medium_StringRepresentingNumericValue {
         return state.can2End();
     }
 
+    @Test
+    public void testDfmMethod() {
+        test(this::dfmMethod);
+    }
+
 
     /**
      * 确定有限状态自动机（以下简称「自动机」）是一类计算模型。它包含一系列状态，这些状态中：
@@ -567,7 +572,7 @@ public class Offer20_Medium_StringRepresentingNumericValue {
     }
 
     @Test
-    public void testDfmMethod() {
+    public void testBetterDfmMethod() {
         test(this::betterDfmMethod);
     }
 }
