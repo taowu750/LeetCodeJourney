@@ -1,10 +1,8 @@
-package training.prefixdiff;
+package training.slidewindow;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 import java.util.function.ToIntBiFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -44,15 +42,19 @@ public class E1004_Medium_MaxConsecutiveOnesIII {
         assertEquals(4, method.applyAsInt(new int[]{0,0,1,1,0,0,1,1,1,0,1,1,0,0,0,1,1,1,1}, 0));
         assertEquals(4, method.applyAsInt(new int[]{0,0,0,1}, 4));
         assertEquals(5, method.applyAsInt(new int[]{1,1,1,1,1}, 0));
+        assertEquals(25, method.applyAsInt(new int[]{1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 0, 1, 0, 1, 0, 0, 1, 1, 0, 1, 1},
+                8));
     }
 
     /**
+     * 前缀和+二分查找。
+     *
      * LeetCode 耗时：15 ms - 10.14%
      *          内存消耗：44.6 MB - 5.01%
      */
     public int longestOnes(int[] nums, int k) {
         // zeroPrefix[0] 存放每段连续 0 的个数，以前缀和的形式；
-        // zeroPrefix[1] 存放该段连续 0 的起始下标；zeroPrefix
+        // zeroPrefix[1] 存放该段连续 0 的起始下标；
         // zeroPrefix[2] 存放该段连续 0 的结束下标（不包含）
         List<int[]> zeroPrefix = new ArrayList<>();
         zeroPrefix.add(new int[]{0, 0, 0});
@@ -79,7 +81,7 @@ public class E1004_Medium_MaxConsecutiveOnesIII {
             maxOneCnt = Math.max(maxOneCnt, oneCnt);
         }
 
-        if (zeroPrefix.isEmpty() || k >= zeroPrefix.get(zeroPrefix.size() - 1)[0]) {
+        if (k >= zeroPrefix.get(zeroPrefix.size() - 1)[0]) {
             return nums.length;
         } else if (k == 0) {
             return maxOneCnt;
@@ -130,5 +132,132 @@ public class E1004_Medium_MaxConsecutiveOnesIII {
     @Test
     public void testLongestOnes() {
         test(this::longestOnes);
+    }
+
+
+    /**
+     * 更好的前缀和+二分查找方法，参见：
+     * https://leetcode-cn.com/problems/max-consecutive-ones-iii/solution/zui-da-lian-xu-1de-ge-shu-iii-by-leetcod-hw12/
+     *
+     * 对于任意的右端点 right，希望找到最小的左端点 left，使得 [left,right] 包含不超过 k 个 0。
+     *
+     * 我们对数组 A 的 0 的数量求出前缀和，记为数组 P，那么 [left,right] 中包含不超过 k 个 1，当且仅当二者的前缀和之差：
+     *      P[right]−P[left−1] ≤ k
+     * 这也等价于：
+     *      P[left−1] ≥ P[right]−k
+     *
+     * 因为左侧的下标是 left−1 而不是 left，那么我们在构造前缀和数组时，可以将前缀和整体向右移动一位，空出 P[0] 的位置。
+     * 此时，我们在数组 P 上二分查找到的下标即为 left 本身，同时我们也避免了原先 left=0 时 left−1=−1 不在数组合法的下标范围中的边界情况。
+     *
+     * LeetCode 耗时：15 ms - 10.05%
+     *          内存消耗：40.6 MB - 7.74%
+     */
+    public int betterPrefixMethod(int[] nums, int k) {
+        int[] prefix = new int[nums.length + 1];
+        for (int i = 1; i < prefix.length; i++) {
+            prefix[i] = prefix[i - 1] + 1 - nums[i - 1];
+        }
+
+        int result = 0;
+        for (int right = 0; right < nums.length; right++) {
+            // 有可能 prefix[right + 1] - k 小于 0，所以必须这样做
+            int start = binarySearch(prefix, prefix[right + 1] - k);
+            result = Math.max(result, right + 1 - start);
+        }
+
+        return result;
+    }
+
+    /**
+     * 找到最左边大于等于 target 的下标
+     */
+    private int binarySearch(int[] arr, int target) {
+        int lo = 0, hi = arr.length;
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (arr[mid] < target) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+
+        return lo;
+    }
+
+    @Test
+    public void testBetterPrefixMethod() {
+        test(this::betterPrefixMethod);
+    }
+
+
+    /**
+     * 滑动窗口。
+     *
+     * LeetCode 耗时：7 ms - 14.09%
+     *          内存消耗：41.1 MB - 6.74%
+     */
+    public int slideWindowMethod(int[] nums, int k) {
+        // 存放遇到的 0 的下标
+        Deque<Integer> covertZeros = new ArrayDeque<>(k);
+        int result = 0, left = 0, right = 0, remain = k;
+        while (right < nums.length) {
+            int num = nums[right++];
+            if (num == 0) {
+                // 还有剩余
+                if (remain > 0) {
+                    remain--;
+                    // 添加 0 的下标
+                    covertZeros.addLast(right - 1);
+                } else {
+                    result = Math.max(result, right - left - 1);
+                    // 当 k == 0 时，会出现 covertZeros 等于空的情况
+                    if (!covertZeros.isEmpty()) {
+                        left = covertZeros.removeFirst() + 1;
+                        // 这里也要添加 0 的下标
+                        covertZeros.addLast(right - 1);
+                    } else {
+                        left = right;
+                    }
+                }
+            }
+        }
+        result = Math.max(result, right - left);
+
+        return result;
+    }
+
+    @Test
+    public void testSlideWindowMethod() {
+        test(this::slideWindowMethod);
+    }
+
+
+    /**
+     * LeetCode 耗时：2 ms - 100.00%
+     *          内存消耗：39.5 MB - 70.90%
+     */
+    public int betterSlideWindowMethod(int[] nums, int k) {
+        int result = 0, left = 0, right = 0;
+        while (right < nums.length) {
+            int num = nums[right++];
+            if (num == 0) {
+                // 还有剩余
+                if (k > 0) {
+                    k--;
+                } else {
+                    result = Math.max(result, right - left - 1);
+                    while (nums[left++] != 0);
+                }
+            }
+        }
+        result = Math.max(result, right - left);
+
+        return result;
+    }
+
+    @Test
+    public void testBetterSlideWindowMethod() {
+        test(this::betterSlideWindowMethod);
     }
 }
