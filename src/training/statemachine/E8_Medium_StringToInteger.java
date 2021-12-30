@@ -1,7 +1,8 @@
-package training.string;
+package training.statemachine;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.EnumMap;
 import java.util.function.ToIntFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -107,6 +108,8 @@ public class E8_Medium_StringToInteger {
         assertEquals(0, method.applyAsInt("00000-42a1234"));
         assertEquals(0, method.applyAsInt("   +0 123"));
         assertEquals(0, method.applyAsInt("  +  413"));
+        assertEquals(Integer.MAX_VALUE, method.applyAsInt("9223372036854775808"));
+        assertEquals(Integer.MAX_VALUE, method.applyAsInt("2147483649"));
     }
 
     /**
@@ -168,5 +171,134 @@ public class E8_Medium_StringToInteger {
     @Test
     void testMyAtoi() {
         test(this::myAtoi);
+    }
+
+
+    public enum CharType {
+        SPACE,
+        SIGN,
+        NUMBER,
+        INVALID,
+        ;
+
+        public static CharType toCharType(char c) {
+            if (c == ' ') {
+                return SPACE;
+            } else if (c == '-' || c == '+') {
+                return SIGN;
+            } else if (Character.isDigit(c)) {
+                return NUMBER;
+            } else {
+                return INVALID;
+            }
+        }
+    }
+
+    public enum State {
+        START,
+        LEADING_SPACE,
+        SIGN,
+        NUMBER,
+        END,
+        ERROR,
+        ;
+    }
+
+    private static final EnumMap<State, EnumMap<CharType, State>> transferFunc = new EnumMap<>(State.class);
+    static {
+        /*
+        START -> 前导空格
+              -> 符号
+              -> 数字
+              -> ERROR
+        */
+        EnumMap<CharType, State> startFunc = new EnumMap<>(CharType.class);
+        startFunc.put(CharType.SPACE, State.LEADING_SPACE);
+        startFunc.put(CharType.SIGN, State.SIGN);
+        startFunc.put(CharType.NUMBER, State.NUMBER);
+        transferFunc.put(State.START, startFunc);
+
+        /*
+        前导空格 -> 前导空格
+                -> 符号
+                -> 数字
+                -> ERROR
+         */
+        EnumMap<CharType, State> leadingSpaceFunc = new EnumMap<>(CharType.class);
+        leadingSpaceFunc.put(CharType.SPACE, State.LEADING_SPACE);
+        leadingSpaceFunc.put(CharType.SIGN, State.SIGN);
+        leadingSpaceFunc.put(CharType.NUMBER, State.NUMBER);
+        transferFunc.put(State.LEADING_SPACE, leadingSpaceFunc);
+
+        /*
+        符号 -> 数字
+            -> ERROR
+         */
+        EnumMap<CharType, State> signFunc = new EnumMap<>(CharType.class);
+        signFunc.put(CharType.NUMBER, State.NUMBER);
+        transferFunc.put(State.SIGN, signFunc);
+
+        /*
+        数字 -> 数字
+            -> END
+         */
+        EnumMap<CharType, State> numberFunc = new EnumMap<>(CharType.class);
+        numberFunc.put(CharType.SPACE, State.END);
+        numberFunc.put(CharType.SIGN, State.END);
+        numberFunc.put(CharType.NUMBER, State.NUMBER);
+        numberFunc.put(CharType.INVALID, State.END);
+        transferFunc.put(State.NUMBER, numberFunc);
+    }
+
+    /**
+     * 状态机解法，参见 {@link Offer20_Medium_StringRepresentingNumericValue}。
+     *
+     * LeetCode 耗时：2 ms - 70.15%
+     *          内存消耗：38.4 MB - 64.26%
+     */
+    public int stateMachineMethod(String s) {
+        /*
+        合法的整数如下：
+            前导空格(可选) + 符号(可选) + 数字 + 结束（输入的结尾或任何非数字字符）
+
+        如果不是合法的数字序列，返回 0
+         */
+        final long max = (long) Integer.MAX_VALUE + 1;
+        long result = 0, sign = 1;
+        State state = State.START;
+        for (int i = 0; i < s.length() && state != State.END && state != State.ERROR; i++) {
+            char c = s.charAt(i);
+            state = transferFunc.get(state).getOrDefault(CharType.toCharType(c), State.ERROR);
+            if (state == State.SIGN) {
+                if (c == '-') {
+                    sign = -1;
+                }
+            } else if (state == State.NUMBER) {
+                result = result * 10 + c - '0';
+                if (result >= max) {
+                    result = max;
+                    state = State.END;
+                }
+            }
+        }
+
+        if (state == State.NUMBER) {
+            state = State.END;
+        }
+        if (state == State.END) {
+            result *= sign;
+            if (result == max) {
+                result = Integer.MAX_VALUE;
+            }
+
+            return (int) result;
+        } else {
+            return 0;
+        }
+    }
+
+    @Test
+    public void testStateMachineMethod() {
+        test(this::stateMachineMethod);
     }
 }

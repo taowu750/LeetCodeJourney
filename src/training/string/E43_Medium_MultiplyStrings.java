@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E43_Medium_MultiplyStrings {
 
-    static void test(BiFunction<String, String, String> method) {
+    public static void test(BiFunction<String, String, String> method) {
         assertEquals("6", method.apply("2", "3"));
         assertEquals("56088", method.apply("123", "456"));
         assertEquals("0", method.apply("9133", "0"));
@@ -42,46 +42,31 @@ public class E43_Medium_MultiplyStrings {
         if (num1.equals("0") || num2.equals("0"))
             return "0";
 
-        if (num1.length() < num2.length()) {
-            String tmp = num1;
-            num1 = num2;
-            num2 = tmp;
-        }
-
         int m = num1.length(), n = num2.length();
         char[] result = new char[m + n];
         Arrays.fill(result, '0');
-        int[] multiTmp = new int[n + 1];
 
-        int start = m;
-        // 将 num1 的每一位乘以 num2，并和上一次的结果相加
-        for (int i = m - 1, lastIdx = result.length - 1; i >= 0; i--, lastIdx--) {
-            int k = multiTmp.length - 1, advance = 0;
-            // 将 num1[i] 和 nums2 相乘，结果存在 multiTmp 中
-            for (int j = n - 1; j >= 0; j--, k--) {
-                int multi = (num1.charAt(i) - '0') * (num2.charAt(j) - '0') + advance;
-                advance = multi / 10;
-                multiTmp[k] = multi % 10;
-            }
-            if (advance != 0) {
-                multiTmp[k--] = advance;
-            }
+        for (int i = n - 1; i >= 0; i--) {
+            // 每次计算乘积，然后加回到 result 中，因此需要分别记录乘积的进位和和的进位
+            int n2 = num2.charAt(i) - '0', multiCarry = 0, sumCarry = 0;
+            for (int j = m - 1; j >= 0; j--) {
+                int product = n2 * (num1.charAt(j) - '0') + multiCarry;
+                multiCarry = product / 10;
+                int digit = product % 10;
 
-            advance = 0;
-            int j = lastIdx;
-            // 将相乘和结果和 result 相加
-            for (int o = multiTmp.length - 1; o > k; j--, o--) {
-                int add = result[j] - '0' + multiTmp[o] + advance;
-                advance = add / 10;
-                result[j] = (char) (add % 10 + '0');
+                int sum = result[i + j + 1] - '0' + digit + sumCarry;
+                sumCarry = sum / 10;
+                result[i + j + 1]  = (char) (sum % 10 + '0');
             }
-            if (advance != 0) {
-                result[j--] = (char) (advance + '0');
+            if (multiCarry > 0 || sumCarry > 0) {
+                result[i] = (char) (multiCarry + sumCarry + '0');
             }
-            start = j + 1;
         }
 
-        return new String(result, start, result.length - start);
+        int start = 0;
+        for (; start < result.length && result[start] == '0'; start++);
+
+        return start == result.length ? "0" : new String(result, start, result.length - start);
     }
 
     @Test
@@ -98,7 +83,7 @@ public class E43_Medium_MultiplyStrings {
         int m = num1.length(), n = num2.length();
         int[] result = new int[m + n];
         /*
-        和上面的方法不同。把个位数和另一个数相乘的步骤也进行分解，从而不需要 tmp 数组
+        和上面的方法不同。把个位数和另一个数相乘的步骤也进行分解
             1 2 3
          *    4 5
          --------
