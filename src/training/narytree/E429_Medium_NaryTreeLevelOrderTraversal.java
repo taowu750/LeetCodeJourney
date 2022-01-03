@@ -1,4 +1,4 @@
-package training.binarytree;
+package training.narytree;
 
 import org.junit.jupiter.api.Test;
 
@@ -31,47 +31,10 @@ public class E429_Medium_NaryTreeLevelOrderTraversal {
 
     public static void test(Function<Node, List<List<Integer>>> method) {
         assertEquals(asList(singletonList(1), asList(3,2,4), asList(5,6)),
-                method.apply(Node.newTree(asList(1,null,3,2,4,null,5,6))));
+                method.apply(Node.newTree(1,null,3,2,4,null,5,6)));
         assertEquals(asList(singletonList(1), asList(2,3,4,5), asList(6,7,8,9,10), asList(11,12,13), singletonList(14)),
-                method.apply(Node.newTree(asList(1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14))));
+                method.apply(Node.newTree(1,null,2,3,4,5,null,null,6,7,null,8,null,9,10,null,null,11,null,12,null,13,null,null,14)));
     }
-
-    public static class Node {
-        public int val;
-        public List<Node> children;
-
-        public Node() {
-            this.children = new ArrayList<>();
-        }
-
-        public Node(int val) {
-            this.val = val;
-            this.children = new ArrayList<>();
-        }
-
-        public static Node newTree(List<Integer> vals) {
-            if (vals.isEmpty()) {
-                return null;
-            }
-
-            Node root = new Node(vals.get(0)), parent = root;
-            Queue<Node> queue = new LinkedList<>();
-            queue.add(root);
-            for (int i = 1; i < vals.size(); i++) {
-                Integer val = vals.get(i);
-                if (val == null) {
-                    parent = queue.remove();
-                } else {
-                    Node node = new Node(val);
-                    parent.children.add(node);
-                    queue.add(node);
-                }
-            }
-
-            return root;
-        }
-    }
-
 
     /**
      * LeetCode 耗时：2 ms - 90.65%

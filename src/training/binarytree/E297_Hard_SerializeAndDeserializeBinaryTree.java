@@ -10,6 +10,8 @@ import static training.binarytree.TreeNode.newTree;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * 297. 二叉树的序列化与反序列化：https://leetcode-cn.com/problems/serialize-and-deserialize-binary-tree/
+ *
  * 序列化是将数据结构或对象转换为位序列的过程，以便可以将其存储在文件或内存缓冲区中，
  * 或者通过网络连接链接进行传输，以便稍后在相同或其他计算机环境中进行重构。
  *
@@ -45,9 +47,9 @@ import static org.junit.jupiter.api.Assertions.*;
  * - 结点数范围为 [0, 10**4]
  * - -1000 <= Node.val <= 1000
  */
-public class Review_E297_Hard_SerializeAndDeserializeBinaryTree {
+public class E297_Hard_SerializeAndDeserializeBinaryTree {
 
-    static void test(Function<TreeNode, String> serialize,
+    public static void test(Function<TreeNode, String> serialize,
                      Function<String, TreeNode> deserialize) {
         TreeNode root = newTree(1, 2, 3, null, null, 4, 5);
         assertTrue(TreeNode.equals(deserialize.apply(serialize.apply(root)),
