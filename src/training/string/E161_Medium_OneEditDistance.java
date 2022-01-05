@@ -45,43 +45,39 @@ public class E161_Medium_OneEditDistance {
      *          内存消耗：37.1 MB - 54.78%
      */
     public boolean isOneEditDistance(String s, String t) {
-        int m = s.length(), n = t.length();
-        if (Math.abs(m - n) > 1) {
+        if (Math.abs(s.length() - t.length()) > 1) {
             return false;
         }
 
-        if (m == n) {
-            int diff = 0;
-            for (int i = 0; i < m; i++) {
+        if (s.length() == t.length()) {
+            // 找到 s 和 t 不一样的一个字符
+            int cnt = 0;
+            for (int i = 0; i < s.length(); i++) {
                 if (s.charAt(i) != t.charAt(i)) {
-                    if (++diff > 1) {
+                    if (++cnt > 1) {
                         return false;
                     }
                 }
             }
 
-            return diff == 1;
+            return cnt == 1;
         } else {
-            if (m > n) {
+            // 找到 s 比 t 少的一个字符
+            // 保证 s 比 t 短
+            if (s.length() > t.length()) {
                 String tmp = s;
                 s = t;
                 t = tmp;
-
-                m = s.length();
             }
 
-            boolean meetDiff = false;
-            int i = 0, j = 0;
-            while (i < m) {
-                if (s.charAt(i) == t.charAt(j)) {
-                    i++;
-                } else {
-                    if (meetDiff) {
+            for (int i = 0, j = 0, cnt = 0; i < s.length(); j++) {
+                if (s.charAt(i) != t.charAt(j)) {
+                    if (++cnt > 1) {
                         return false;
                     }
-                    meetDiff = true;
+                } else {
+                    i++;
                 }
-                j++;
             }
 
             return true;

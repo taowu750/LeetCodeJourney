@@ -36,6 +36,8 @@ public class E306_Medium_AdditiveNumber {
         assertTrue(method.test("199100199"));
         assertTrue(method.test("011"));
         assertFalse(method.test("10"));
+        assertFalse(method.test("0"));
+        assertTrue(method.test("211738"));
     }
 
     /**

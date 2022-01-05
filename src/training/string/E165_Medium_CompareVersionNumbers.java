@@ -55,7 +55,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E165_Medium_CompareVersionNumbers {
 
-    static void test(ToIntBiFunction<String, String> method) {
+    public static void test(ToIntBiFunction<String, String> method) {
         assertEquals(0, method.applyAsInt("1.01", "1.001"));
         assertEquals(0, method.applyAsInt("1.0", "1.0.0"));
         assertEquals(-1, method.applyAsInt("0.1", "1.1"));
