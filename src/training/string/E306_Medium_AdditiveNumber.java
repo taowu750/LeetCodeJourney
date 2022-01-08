@@ -52,21 +52,28 @@ public class E306_Medium_AdditiveNumber {
         需要注意，如果一个数是 0，那么它只能单独做一个数字或者拼到前面的数字后面
          */
         char[] numChars = num.toCharArray();
+        // 取 a 的范围
         int ale = 0, ari = 0;
         while (ari < numChars.length){
+            // 取 b 的范围
             int ble = ari + 1, bri = ble;
+            // 循环不断扩大 b 的右边界
             while (bri < numChars.length){
+                // 找到递增序列，返回 true
                 if (isValid(numChars, ale, ari, ble, bri)) {
                     return true;
                 }
+                // 如果 b 的开头是 0，或者剩余的数字长度小于 max(len(a), len(b))，则无法继续取
                 if (numChars[ble] == '0' || numChars.length - bri < Math.max(ari - ale, bri - ble) + 1) {
                     break;
                 }
                 bri++;
             }
+            // 如果 a 的开头是 '0'，则无法继续取
             if (numChars[ale] == '0') {
                 break;
             }
+            // 扩大 a 的右边界
             ari++;
         }
 

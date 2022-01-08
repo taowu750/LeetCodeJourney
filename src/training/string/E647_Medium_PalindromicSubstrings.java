@@ -26,7 +26,7 @@ import java.util.function.ToIntFunction;
  */
 public class E647_Medium_PalindromicSubstrings {
 
-    static void test(ToIntFunction<String> method) {
+    public static void test(ToIntFunction<String> method) {
         Assertions.assertEquals(3, method.applyAsInt("abc"));
         Assertions.assertEquals(6, method.applyAsInt("aaa"));
         Assertions.assertEquals(15, method.applyAsInt("aaaaa"));

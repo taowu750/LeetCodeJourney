@@ -82,8 +82,6 @@ public class E459_Easy_RepeatedSubstringPattern {
 
 
     /**
-     * 双倍字符串解法。
-     *
      * LeetCode 耗时：1 ms - 100.00%
      *          内存消耗：38.8 MB - 63.00%
      */

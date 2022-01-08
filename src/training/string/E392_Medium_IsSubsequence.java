@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E392_Medium_IsSubsequence {
 
-    static void test(BiPredicate<String, String> method) {
+    public static void test(BiPredicate<String, String> method) {
         assertTrue(method.test("abc", "ahbgdc"));
         assertFalse(method.test("axc", "ahbgdc"));
         assertTrue(method.test("", "ahbgdc"));
