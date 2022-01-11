@@ -120,7 +120,7 @@ public class E459_Easy_RepeatedSubstringPattern {
      * 双倍字符串解法。参见：
      * https://leetcode-cn.com/problems/repeated-substring-pattern/solution/jian-dan-ming-liao-guan-yu-javaliang-xing-dai-ma-s/
      *
-     * 可以使用 KMP 加快字符串匹配。
+     * 可以使用 KMP 加快字符串匹配，参见 {@link util.algorithm.KMP}。
      *
      * LeetCode 耗时：1 ms - 100.00%
      *          内存消耗：38.8 MB - 63.00%

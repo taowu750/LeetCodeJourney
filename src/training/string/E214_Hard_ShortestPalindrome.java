@@ -123,4 +123,46 @@ public class E214_Hard_ShortestPalindrome {
     public void testRabinKarpMethod() {
         test(this::rabinKarpMethod);
     }
+
+
+    /**
+     * 参见：
+     * https://leetcode-cn.com/problems/shortest-palindrome/solution/shou-hua-tu-jie-cong-jian-dan-de-bao-li-fa-xiang-d/
+     *
+     * LeetCode 耗时：6 ms - 52.73%
+     *          内存消耗：38.7 MB - 24.33%
+     */
+    public String kmpMethod(String s) {
+        /*
+        我们 “制造” 出公共前后缀，去套 KMP。
+        s：abab，则 s + '#' + rev_s，得到 str ：abab#baba。
+        求出 next 数组，最后一项就是 str 的最长公共前后缀的长度，即 s 的最长回文前缀的长度。
+
+        如果不加 #，'aaa'+'aaa'得到'aaaaaa'，求出的最长公共前后缀是 6，但其实想要的是 3。
+         */
+        String reverse = new StringBuilder(s).reverse().toString();
+        String query = s + "#" + reverse;
+        // 生成 KMP 的 next 数组
+        final int n = query.length();
+        int[] next = new int[n];
+        for (int i = 1, now = 0; i < n;) {
+            if (query.charAt(now) == query.charAt(i)) {
+                now++;
+                next[i++] = now;
+            } else if (now > 0) {
+                now = next[now - 1];
+            } else {
+                i++;
+            }
+        }
+
+        // 最长回文前缀的长度
+        int maxLen = next[n - 1];
+        return reverse.substring(0, reverse.length() - maxLen) + s;
+    }
+
+    @Test
+    public void testKmpMethod() {
+        test(this::kmpMethod);
+    }
 }
