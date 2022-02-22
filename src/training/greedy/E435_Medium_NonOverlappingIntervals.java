@@ -100,6 +100,8 @@ public class E435_Medium_NonOverlappingIntervals {
      * 如果有多个区间的右端点都同样最小怎么办？由于我们选择的是首个区间，因此在左侧不会有其它的区间，那么左端点在何处是不重要的，
      * 我们只要任意选择一个右端点最小的区间即可。
      *
+     * 一个更直观的说明是 https://leetcode-cn.com/problems/non-overlapping-intervals/solution/tan-xin-jie-fa-qi-shi-jiu-shi-yi-ceng-ch-i63h/
+     *
      * LeetCode 耗时：4 ms - 44.46%
      *          内存消耗：38.5 MB - 35.96%
      */
