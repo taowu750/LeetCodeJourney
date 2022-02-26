@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E54_Medium_SpiralMatrix {
 
-    static void test(Function<int[][], List<Integer>> method) {
+    public static void test(Function<int[][], List<Integer>> method) {
         assertEquals(Arrays.asList(1,2,3,6,9,8,7,4,5),
                 method.apply(new int[][]{
                         {1,2,3},
@@ -102,28 +102,31 @@ public class E54_Medium_SpiralMatrix {
 
 
     /**
-     * 一种通用的模式，参见 {@link E59_Medium_SpiralMatrixII#generateMatrix(int)} 和
-     * {@link E48_Medium_RotateImage#betterMethod(int[][])}。
-     *
      * LeetCode 耗时：0 ms - 100.00%
      *          内存消耗：36.4 MB - 94.09%
      */
     public List<Integer> betterMethod(int[][] matrix) {
-        int m = matrix.length, n = matrix[0].length;
-        List<Integer> result = new ArrayList<>(m * n);
+        final int m = matrix.length, n = matrix[0].length;
+        // 顺时针方向就是 右->下->左->上 这样的循环
+        final int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
-        int[][] dirs = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-        for (int times = 0, w = n, h = m; w > 0 && h > 0; times++, w -= 2, h -= 2) {
-            int len = w == 1 ? h : (h == 1 ? w : (w - 1) * 2 + (h - 1) * 2);
-            for (int cnt = 0, i = times, j = times, dirIdx = 0, nextI, nextJ; cnt < len; cnt++, i = nextI, j = nextJ) {
-                result.add(matrix[i][j]);
+        List<Integer> result = new ArrayList<>(m * n);
+        for (int step = 0, circle = 0, i = 0, j = 0, nextI, nextJ, dirIdx = 0; step < m * n; step++, i = nextI, j = nextJ) {
+            result.add(matrix[i][j]);
+            // 根据当前方向计算下一步
+            nextI = i + dirs[dirIdx][0];
+            nextJ = j + dirs[dirIdx][1];
+            // 如果下一步超出了圈的范围或回到了起点
+            if (nextI < circle || nextI >= m - circle || nextJ < circle || nextJ >= n - circle || (nextI == circle && nextJ == circle)) {
+                // 如果回到起点，则切换至内圈
+                if (nextI == circle && nextJ == circle) {
+                    circle++;
+                }
+                // 改变方向
+                dirIdx = (dirIdx + 1) % 4;
+                // 重新计算下一步
                 nextI = i + dirs[dirIdx][0];
                 nextJ = j + dirs[dirIdx][1];
-                if (nextI < 0 || nextI >= m - times || nextJ < 0 || nextJ >= n - times) {
-                    dirIdx++;
-                    nextI = i + dirs[dirIdx][0];
-                    nextJ = j + dirs[dirIdx][1];
-                }
             }
         }
 

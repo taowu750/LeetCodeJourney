@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * - 1 <= nums.length <= 10**4
  * - -2**31 <= nums[i] <= 2**31 - 1
  */
-public class Review_E414_Easy_ThirdMaximumNumber {
+public class E414_Easy_ThirdMaximumNumber {
 
     static void test(ToIntFunction<int[]> method) {
         int[] nums = {3, 2, 1};

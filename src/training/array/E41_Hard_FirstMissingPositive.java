@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E41_Hard_FirstMissingPositive {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(3, method.applyAsInt(new int[]{1,2,0}));
         assertEquals(2, method.applyAsInt(new int[]{3,4,-1,1}));
         assertEquals(1, method.applyAsInt(new int[]{7,8,9,11,12}));

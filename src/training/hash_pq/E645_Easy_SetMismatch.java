@@ -1,7 +1,7 @@
 package training.hash_pq;
 
 import org.junit.jupiter.api.Test;
-import training.array.Review_E448_Easy_FindAllNumbersDisappearedInAnArray;
+import training.array.E448_Easy_FindAllNumbersDisappearedInAnArray;
 
 import java.util.function.UnaryOperator;
 
@@ -39,7 +39,7 @@ public class E645_Easy_SetMismatch {
     }
 
     /**
-     * 此题类似于 {@link Review_E448_Easy_FindAllNumbersDisappearedInAnArray}。
+     * 此题类似于 {@link E448_Easy_FindAllNumbersDisappearedInAnArray}。
      *
      * LeetCode 耗时：2 ms - 90.88%
      *          内存消耗：40.1 MB - 43.71%

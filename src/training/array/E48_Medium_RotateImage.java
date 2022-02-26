@@ -52,7 +52,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E48_Medium_RotateImage {
 
-    public void test(Consumer<int[][]> method) {
+    public static void test(Consumer<int[][]> method) {
         int[][] matrix = new int[][]{
                 {1, 2, 3},
                 {4, 5, 6},
@@ -166,22 +166,22 @@ public class E48_Medium_RotateImage {
      *          内存消耗：38.4 MB - 79.22%
      */
     public void betterMethod(int[][] matrix) {
-        int n = matrix.length;
-        // 由外向内顺时针旋转，总共需要旋转 n/2 次。
-        // 每次旋转一圈都是从左上角旋转，也就是 (times, times)，也就是移动的下标会和次数相关
-        for (int times = 0; times < (n >>> 1); times++) {
-            int len = n - (times << 1);
-            for (int i = 0; i < len - 1; i++) {
-                // 保存右
-                int temp = matrix[times + i][n - times - 1];
-                // 上移到右
-                matrix[times + i][n - times - 1] = matrix[times][times + i];
-                // 左移到上
-                matrix[times][times + i] = matrix[times + len - i - 1][times];
-                // 下移到左
-                matrix[times + len - i - 1][times] = matrix[times + len - 1][times + len - i - 1];
-                // 右移到下
-                matrix[times + len - 1][times + len - i - 1] = temp;
+        final int n = matrix.length;
+        // 要移动 n/2 圈的元素
+        // 每次旋转一圈都是从左上角旋转，也就是 (i,i)，也就是移动的下标会和次数相关
+        for (int i = 0; i < n / 2; i++) {
+            // 一圈要移动 n-2*i-1 次，每次移动上、下、左、右四个元素
+            for (int j = 0; j < n - 2 * i - 1; j++) {
+                // 先保存上
+                int top = matrix[i][i + j];
+                // 将左移到上
+                matrix[i][i + j] = matrix[n - i - j - 1][i];
+                // 将下移到左
+                matrix[n - i - j - 1][i] = matrix[n - i - 1][n - i - j - 1];
+                // 将右移到下
+                matrix[n - i - 1][n - i - j - 1] = matrix[i + j][n - i - 1];
+                // 将上移到右
+                matrix[i + j][n - i - 1] = top;
             }
         }
     }

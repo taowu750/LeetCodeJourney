@@ -21,7 +21,7 @@ import java.util.stream.Stream;
  * Output:
  * [5,6]
  */
-public class Review_E448_Easy_FindAllNumbersDisappearedInAnArray {
+public class E448_Easy_FindAllNumbersDisappearedInAnArray {
 
     static void test(Function<int[], List<Integer>> method) {
         int[] nums = {4, 3, 2, 7, 8, 2, 3, 1};
