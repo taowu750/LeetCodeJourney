@@ -39,7 +39,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E73_Medium_SetMatrixZeroes {
 
-    static void test(Consumer<int[][]> method) {
+    public static void test(Consumer<int[][]> method) {
         int[][] matrix = {{1,1,1},{1,0,1},{1,1,1}};
         method.accept(matrix);
         assertArrayEquals(new int[][]{{1,0,1},{0,0,0},{1,0,1}}, matrix);
@@ -98,69 +98,56 @@ public class E73_Medium_SetMatrixZeroes {
 
 
     /**
-     * LeetCode 耗时：1 ms - 98.62%
+     * LeetCode 耗时：0 ms - 100%
      *          内存消耗：39.6 MB - 90.34%
      */
     public void o1Method(int[][] matrix) {
         // 我们可以使用第一个遇到的 0 的行和列作为标志位，记录需要置 0 的行和列
-        int flagI = -1, flagJ = -1;
-        int m = matrix.length, n = matrix[0].length;
-
-        // matrix[flagI][..] 所在行的元素用来表示对应列是否需要被置为 0；
-        // matrix[..][flagJ] 所在列的元素用来表示对应行是否需要被置为 0；
-        // 当标志位为 0 时，所在行/列需要置为 0
+        final int m = matrix.length, n = matrix[0].length;
+        int zeroI = -1, zeroJ = -1;
         for (int i = 0; i < m; i++) {
             for (int j = 0; j < n; j++) {
-                if (matrix[i][j] == 0) {
-                    flagI = i;
-                    flagJ = j;
-                }
-            }
-        }
-
-        if (flagI == -1) {
-            return;
-        }
-
-        // 遍历矩阵，记录需要置为 0 的行/列
-        for (int i = 0; i < m; i++) {
-            if (i == flagI) {
-                continue;
-            }
-            for (int j = 0; j < n; j++) {
-                if (j == flagJ) {
+                if (matrix[i][j] != 0) {
                     continue;
                 }
-                if (matrix[i][j] == 0) {
-                    matrix[flagI][j] = 0;
-                    matrix[i][flagJ] = 0;
+                if (zeroI == -1) {
+                    zeroI = i;
+                    zeroJ = j;
+                } else {
+                    // matrix[zeroI][..] 所在行的元素用来表示对应列是否需要被置为 0；
+                    // matrix[..][zeroJ] 所在列的元素用来表示对应行是否需要被置为 0；
+                    // 当标志位为 0 时，所在行/列需要置为 0
+                    matrix[zeroI][j] = 0;
+                    matrix[i][zeroJ] = 0;
                 }
             }
         }
 
-        // 将行置为 0，注意标志位所在行列暂时不要动
-        for (int k = 0; k < m; k++) {
-            if (matrix[k][flagJ] == 0 && k != flagI) {
+        if (zeroI == -1) {
+            return;
+        }
+        // 将列置为 0，注意标志位所在行列暂时不要动
+        for (int i = 0; i < m; i++) {
+            if (i != zeroI && matrix[i][zeroJ] == 0) {
                 for (int j = 0; j < n; j++) {
-                    matrix[k][j] = 0;
+                    matrix[i][j] = 0;
                 }
             }
         }
-        // 将列置为 0
-        for (int k = 0; k < n; k++) {
-            if (matrix[flagI][k] == 0 && k != flagJ) {
+        // 将行置为 0
+        for (int j = 0; j < n; j++) {
+            if (j != zeroJ && matrix[zeroI][j] == 0) {
                 for (int i = 0; i < m; i++) {
-                    matrix[i][k] = 0;
+                    matrix[i][j] = 0;
                 }
             }
         }
-
         // 将标志所在行列置 0
-        for (int k = 0; k < m; k++) {
-            matrix[k][flagJ] = 0;
+        for (int j = 0; j < n; j++) {
+            matrix[zeroI][j] = 0;
         }
-        for (int k = 0; k < n; k++) {
-            matrix[flagI][k] = 0;
+        for (int i = 0; i < m; i++) {
+            matrix[i][zeroJ] = 0;
         }
     }
 

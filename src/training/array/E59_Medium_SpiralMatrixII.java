@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 /**
  * 59. 螺旋矩阵 II: https://leetcode-cn.com/problems/spiral-matrix-ii/
  *
- * 给你一个正整数 n ，生成一个包含 1 到 n2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix 。
+ * 给你一个正整数 n ，生成一个包含 1 到 n^2 所有元素，且元素按顺时针顺序螺旋排列的 n x n 正方形矩阵 matrix 。
  *
  * 例 1：
  * 输入：n = 3
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E59_Medium_SpiralMatrixII {
 
-    static void test(IntFunction<int[][]> method) {
+    public static void test(IntFunction<int[][]> method) {
         assertArrayEquals(new int[][]{{1,2,3}, {8,9,4}, {7,6,5}}, method.apply(3));
         assertArrayEquals(new int[][]{{1}}, method.apply(1));
         assertArrayEquals(new int[][]{{1,2,3,4}, {12,13,14,5}, {11,16,15,6}, {10,9,8,7}}, method.apply(4));

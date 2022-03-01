@@ -43,7 +43,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E240_Medium_Search2DMatrixII {
 
-    static void test(BiPredicate<int[][], Integer> method) {
+    public static void test(BiPredicate<int[][], Integer> method) {
         assertTrue(method.test(new int[][]{
                 {1, 4, 7, 11, 15},
                 {2, 5, 8, 12, 19},

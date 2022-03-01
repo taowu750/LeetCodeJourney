@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E85_Hard_MaximalRectangle {
 
-    static void test(ToIntFunction<char[][]> method) {
+    public static void test(ToIntFunction<char[][]> method) {
         assertEquals(6, method.applyAsInt(new char[][]{
                 {'1','0','1','0','0'},
                 {'1','0','1','1','1'},

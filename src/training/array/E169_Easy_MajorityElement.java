@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E169_Easy_MajorityElement {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(3, method.applyAsInt(new int[]{3,2,3}));
         assertEquals(2, method.applyAsInt(new int[]{2,2,1,1,1,2,2}));
     }
