@@ -1,6 +1,7 @@
 package util;
 
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.stream.IntStream;
 
@@ -53,6 +54,34 @@ public class ArrayUtil {
         }
 
         return true;
+    }
+
+    public static void equalsIgnoreOutOrder(int[][] expected, int[][] actual) {
+        if (expected.length != actual.length)
+            throw new AssertionError("expected and actual do not match in length");
+        expected = expected.clone();
+        actual = actual.clone();
+        Comparator<int[]> comparator = (a, b) -> {
+            int cmp = Integer.compare(a.length, b.length);
+            if (cmp != 0) {
+                return cmp;
+            }
+            for (int i = 0; i < a.length; i++) {
+                cmp = Integer.compare(a[i], b[i]);
+                if (cmp != 0) {
+                    return cmp;
+                }
+            }
+            return 0;
+        };
+        Arrays.sort(expected, comparator);
+        Arrays.sort(actual, comparator);
+
+        for (int i = 0; i < expected.length; i++) {
+            if (comparator.compare(expected[i], actual[i]) != 0)
+                throw new AssertionError("\nexpected=" + Arrays.deepToString(expected)
+                        + "\nactual=" + Arrays.deepToString(actual));
+        }
     }
 
     public static boolean isAscending(int[] array) {
