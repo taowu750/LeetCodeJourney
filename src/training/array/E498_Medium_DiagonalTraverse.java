@@ -41,37 +41,38 @@ public class E498_Medium_DiagonalTraverse {
      *          内存消耗：40.3 MB - 69.62%
      */
     public int[] findDiagonalOrder(int[][] mat) {
-        int m = mat.length, n = mat[0].length;
+        final int m = mat.length, n = mat[0].length;
         int[] result = new int[m * n];
-        // di、dj 表示 i、j 方向的增量
-        for (int cnt = 0, i = 0, j = 0, di = -1, dj = 1; cnt < result.length; cnt++) {
-            result[cnt] = mat[i][j];
-            i += di;
-            j += dj;
-            // 当遇到边界时，则需要改变方向了
-            if (i < 0 || i >= m || j < 0 || j >= n) {
-                // 如果之前是向右上的方向
-                if (di == -1) {
-                    // 先放到上一个元素右边试试看
-                    i++;
-                    if (j >= n) {
-                        // 不行再放到下边
-                        i++;
-                        j--;
+        // dirs[0] 往右上，dirs[1] 往左下
+        int[][] dirs = {{-1, 1}, {1, -1}};
+        for (int k = 0, i = 0, j = 0, nextI, nextJ, dirIdx = 0; k < result.length; k++, i = nextI, j = nextJ) {
+            result[k] = mat[i][j];
+            nextI = i + dirs[dirIdx][0];
+            nextJ = j + dirs[dirIdx][1];
+            // 如果越界了，表示需要找的新的位置，并且要变换方向
+            if (nextI < 0 || nextI >= m || nextJ < 0 || nextJ >= n) {
+//                nextI = i + dirs[(dirIdx + 1) % 2][0];
+//                nextJ = j + dirs[(dirIdx + 1) % 2][1];
+                // 如果是往右上时越界了
+                if (dirIdx == 0) {
+                    // 往右上越界有两种情况，一是突破了右边界
+                    if (nextJ >= n) {
+                        nextI = i + 1;
+                        nextJ = j;
+                    } else {  // 二是突破了上边界
+                        nextI = i;
                     }
-                } else {  // 否则之前是向左下的方向
-                    // 先放到上一个元素下边试试看
-                    j++;
-                    if (i >= m) {
-                        // 不行再放到右边
-                        i--;
-                        j++;
+                } else {  //否则是往左下时越界了
+                    // 往左下越界有两种情况，一是突破了下边界
+                    if (nextI >= m) {
+                        nextI = i;
+                        nextJ = j + 1;
+                    } else {  // 二是突破了左边界
+                        nextJ = j;
                     }
                 }
-                // 反转方向
-                int tmp = di;
-                di = dj;
-                dj = tmp;
+                // 改变方向
+                dirIdx = (dirIdx + 1) % 2;
             }
         }
 
