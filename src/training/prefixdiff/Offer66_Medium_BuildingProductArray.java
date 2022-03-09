@@ -1,4 +1,4 @@
-package training.array;
+package training.prefixdiff;
 
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class Offer66_Medium_BuildingProductArray {
 
-    static void test(UnaryOperator<int[]> method) {
+    public static void test(UnaryOperator<int[]> method) {
         assertArrayEquals(new int[]{120,60,40,30,24}, method.apply(new int[]{1,2,3,4,5}));
         assertArrayEquals(new int[]{3}, method.apply(new int[]{3}));
         assertArrayEquals(new int[]{2,5}, method.apply(new int[]{5,2}));

@@ -1,7 +1,6 @@
-package training.array;
+package training.math;
 
 import org.junit.jupiter.api.Test;
-import training.math.E31_Medium_NextPermutation;
 
 import java.util.function.IntUnaryOperator;
 
@@ -33,6 +32,7 @@ public class E556_Medium_NextGreaterElementIII {
         assertEquals(-1, method.applyAsInt(21));
         assertEquals(-1, method.applyAsInt(Integer.MAX_VALUE));
         assertEquals(-1, method.applyAsInt(11));
+        assertEquals(13124, method.applyAsInt(12431));
     }
 
     /**
@@ -56,15 +56,25 @@ public class E556_Medium_NextGreaterElementIII {
             return -1;
         } else {
             // 反转后面的降序序列
-            for (int cnt = 0, half = (s.length - i) / 2; cnt < half; cnt++) {
-                char tmp = s[i + cnt];
-                s[i + cnt] = s[s.length - cnt - 1];
-                s[s.length - cnt - 1] = tmp;
+            for (int j = i, k = s.length - 1; j < k; j++, k--) {
+                char tmp = s[j];
+                s[j] = s[k];
+                s[k] = tmp;
+            }
+            // 找到刚好大于 s[i - 1] 的数
+            int lo = i, hi = s.length;
+            while (lo < hi) {
+                int mid = (lo + hi) >>> 1;
+                if (s[mid] <= s[i - 1]) {
+                    lo = mid + 1;
+                } else {
+                    hi = mid;
+                }
             }
             // 交换
             char tmp = s[i - 1];
-            s[i - 1] = s[s.length - 1];
-            s[s.length - 1] = tmp;
+            s[i - 1] = s[lo];
+            s[lo] = tmp;
 
             long result = Long.parseLong(String.valueOf(s));
             return result <= Integer.MAX_VALUE ? (int) result : -1;

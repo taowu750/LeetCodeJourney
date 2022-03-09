@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E31_Medium_NextPermutation {
 
-    static void test(Consumer<int[]> method) {
+    public static void test(Consumer<int[]> method) {
         int[] nums = {1,2,3};
         method.accept(nums);
         assertArrayEquals(new int[]{1,3,2}, nums);
@@ -56,6 +56,10 @@ public class E31_Medium_NextPermutation {
         nums = new int[]{1, 2, 3, 2};
         method.accept(nums);
         assertArrayEquals(new int[]{1, 3, 2, 2}, nums);
+
+        nums = new int[]{1, 2, 4, 3, 1};
+        method.accept(nums);
+        assertArrayEquals(new int[]{1, 3, 1, 2, 4}, nums);
     }
 
     /**
@@ -75,10 +79,20 @@ public class E31_Medium_NextPermutation {
                     nums[i + j] = nums[n - 1 - j];
                     nums[n - 1 - j] = tmp;
                 }
+                // 找到刚好大于 nums[i - 1] 的数
+                int lo = i, hi = nums.length;
+                while (lo < hi) {
+                    int mid = (lo + hi) >>> 1;
+                    if (nums[mid] <= nums[i - 1]) {
+                        lo = mid + 1;
+                    } else {
+                        hi = mid;
+                    }
+                }
                 // 交换值，得到下一个最大排列
                 int num = nums[i - 1];
-                nums[i - 1] = nums[nums.length - 1];
-                nums[nums.length - 1] = num;
+                nums[i - 1] = nums[lo];
+                nums[lo] = num;
                 break;
             }
         }
