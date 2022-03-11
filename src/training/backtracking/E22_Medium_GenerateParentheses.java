@@ -1,15 +1,14 @@
 package training.backtracking;
 
 import org.junit.jupiter.api.Test;
-import util.CollectionUtil;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.IntFunction;
 
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static util.CollectionUtil.equalsIgnoreOrder;
 
 /**
  * 22. 括号生成: https://leetcode-cn.com/problems/generate-parentheses/
@@ -29,20 +28,12 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E22_Medium_GenerateParentheses {
 
-    static void test(IntFunction<List<String>> method) {
-        List<String> result = method.apply(3);
-        System.out.println(result);
-        assertTrue(CollectionUtil.setEquals(result,
-                Arrays.asList("((()))","(()())","(())()","()(())","()()()")));
-
-        assertTrue(CollectionUtil.setEquals(method.apply(1),
-                singletonList("()")));
-
-        result = method.apply(4);
-        System.out.println(result);
-        assertTrue(CollectionUtil.setEquals(result,
-                Arrays.asList("(())(())","(((())))","((()()))","((())())","((()))()","(()(()))","(()()())",
-                        "(()())()","(())()()","()((()))","()(()())","()(())()","()()(())","()()()()")));
+    public static void test(IntFunction<List<String>> method) {
+        equalsIgnoreOrder(asList("((()))","(()())","(())()","()(())","()()()"), method.apply(3));
+        equalsIgnoreOrder(singletonList("()"), method.apply(1));
+        equalsIgnoreOrder(asList("(())(())","(((())))","((()()))","((())())","((()))()","(()(()))","(()()())",
+                "(()())()","(())()()","()((()))","()(()())","()(())()","()()(())","()()()()"),
+                method.apply(4));
     }
 
     /**
