@@ -120,6 +120,8 @@ public class KMP {
 
             if (pos == m) {
                 result.add(target - m);
+                // 找到了一个匹配，让 pos 退一步继续查找
+                pos = next[pos - 1];
             }
         }
 
