@@ -1,9 +1,10 @@
 package training.backtracking;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Consumer;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
  * 37. 解数独：https://leetcode-cn.com/problems/sudoku-solver/
@@ -22,7 +23,7 @@ import java.util.function.Consumer;
  */
 public class E37_Hard_SudokuSolver {
 
-    static void test(Consumer<char[][]> method) {
+    public static void test(Consumer<char[][]> method) {
         char[][] board = new char[][]{
                 "53..7....".toCharArray(),
                 "6..195...".toCharArray(),
@@ -44,7 +45,7 @@ public class E37_Hard_SudokuSolver {
                 "287419635".toCharArray(),
                 "345286179".toCharArray()};
         method.accept(board);
-        Assertions.assertArrayEquals(result, board);
+        assertArrayEquals(result, board);
     }
 
     /**

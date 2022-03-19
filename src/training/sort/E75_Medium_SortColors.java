@@ -56,7 +56,8 @@ public class E75_Medium_SortColors {
     }
 
     /**
-     * 三指针法。
+     * 三指针法。参见：
+     * https://leetcode-cn.com/problems/sort-colors/solution/kuai-su-pai-xu-partition-guo-cheng-she-ji-xun-huan/
      *
      * LeetCode 耗时：0ms - 100%
      *          内存消耗：37.8MS - 48%

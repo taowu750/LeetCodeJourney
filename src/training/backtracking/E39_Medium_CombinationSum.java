@@ -47,7 +47,7 @@ import static util.CollectionUtil.deepEqualsIgnoreOrder;
  */
 public class E39_Medium_CombinationSum {
 
-    static void test(BiFunction<int[], Integer, List<List<Integer>>> method) {
+    public static void test(BiFunction<int[], Integer, List<List<Integer>>> method) {
         deepEqualsIgnoreOrder(asList(singletonList(7), asList(2,2,3)),
                 method.apply(new int[]{2,3,6,7}, 7));
 

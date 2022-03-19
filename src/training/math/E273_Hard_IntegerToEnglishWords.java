@@ -1,4 +1,4 @@
-package training.string;
+package training.math;
 
 import org.junit.jupiter.api.Test;
 
