@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E96_Medium_UniqueBinarySearchTrees {
 
-    static void test(IntUnaryOperator method) {
+    public static void test(IntUnaryOperator method) {
         assertEquals(5, method.applyAsInt(3));
         assertEquals(1, method.applyAsInt(1));
         assertEquals(14, method.applyAsInt(4));
@@ -45,9 +45,7 @@ public class E96_Medium_UniqueBinarySearchTrees {
     }
 
     private int dfs(int lo, int hi, Map<Integer, Integer> cache) {
-        if (lo > hi) {
-            return 0;
-        } else if (lo == hi) {
+        if (lo >= hi) {
             return 1;
         }
 
@@ -62,12 +60,7 @@ public class E96_Medium_UniqueBinarySearchTrees {
             int left = dfs(lo, i - 1, cache);
             // 右子树的数量
             int right = dfs(i + 1, hi, cache);
-
-            if (left == 0 || right == 0) {
-                sum += Math.max(left, right);
-            } else {
-                sum += left * right;
-            }
+            sum += left * right;
         }
         cache.put(hi - lo, sum);
 

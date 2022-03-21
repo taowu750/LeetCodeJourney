@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E79_Medium_WordSearch {
 
-    static void test(BiPredicate<char[][], String> method) {
+    public static void test(BiPredicate<char[][], String> method) {
         assertTrue(method.test(new char[][]{
                         {'A', 'B', 'C', 'E'},
                         {'S', 'F', 'C', 'S'},

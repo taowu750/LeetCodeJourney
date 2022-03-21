@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E77_Medium_Combinations {
 
-    static void test(BiFunction<Integer, Integer, List<List<Integer>>> method) {
+    public static void test(BiFunction<Integer, Integer, List<List<Integer>>> method) {
         assertTrue(CollectionUtil.deepEqualsIgnoreOrder(method.apply(4, 2),
                 Arrays.asList(Arrays.asList(2, 4), Arrays.asList(3, 4), Arrays.asList(2, 3),
                         Arrays.asList(1, 2), Arrays.asList(1, 3), Arrays.asList(1, 4))));

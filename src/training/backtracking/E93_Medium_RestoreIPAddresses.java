@@ -49,7 +49,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E93_Medium_RestoreIPAddresses {
 
-    static void test(Function<String, List<String>> method) {
+    public static void test(Function<String, List<String>> method) {
         CollectionUtil.equalsIgnoreOrder(asList("255.255.11.135","255.255.111.35"),
                 method.apply("25525511135"));
 

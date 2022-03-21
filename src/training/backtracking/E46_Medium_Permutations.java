@@ -1,12 +1,14 @@
 package training.backtracking;
 
 import org.junit.jupiter.api.Test;
-import util.CollectionUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static util.CollectionUtil.deepEqualsIgnoreOutOrder;
 
 /**
  * 46. 全排列：https://leetcode-cn.com/problems/permutations/
@@ -27,10 +29,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E46_Medium_Permutations {
 
-    static void test(Function<int[], List<List<Integer>>> method) {
-        assertTrue(CollectionUtil.deepEqualsIgnoreOutOrder(method.apply(new int[]{1,2,3}),
-                Arrays.asList(Arrays.asList(1,2,3), Arrays.asList(1,3,2), Arrays.asList(2,1,3)
-                        , Arrays.asList(2,3,1), Arrays.asList(3,1,2), Arrays.asList(3,2,1))));
+    public static void test(Function<int[], List<List<Integer>>> method) {
+        deepEqualsIgnoreOutOrder(method.apply(new int[]{1,2,3}),
+                Arrays.asList(Arrays.asList(1,2,3), Arrays.asList(1,3,2), Arrays.asList(2,1,3), Arrays.asList(2,3,1),
+                        Arrays.asList(3,1,2), Arrays.asList(3,2,1)));
     }
 
     /**

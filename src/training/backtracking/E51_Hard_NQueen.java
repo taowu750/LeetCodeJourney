@@ -1,14 +1,15 @@
 package training.backtracking;
 
 import org.junit.jupiter.api.Test;
-import util.CollectionUtil;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.IntFunction;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static util.CollectionUtil.deepEqualsIgnoreOutOrder;
 
 /**
  * 51. N 皇后: https://leetcode-cn.com/problems/n-queens/
@@ -34,12 +35,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E51_Hard_NQueen {
 
-    static void test(IntFunction<List<List<String>>> method) {
-        assertTrue(CollectionUtil.deepEqualsIgnoreOutOrder(method.apply(4),
-                Arrays.asList(Arrays.asList(".Q..", "...Q", "Q...", "..Q."),
-                        Arrays.asList("..Q.", "Q...", "...Q", ".Q.."))));
-
-        assertEquals(method.apply(1), singletonList(singletonList("Q")));
+    public static void test(IntFunction<List<List<String>>> method) {
+        deepEqualsIgnoreOutOrder(Arrays.asList(Arrays.asList(".Q..", "...Q", "Q...", "..Q."),
+                Arrays.asList("..Q.", "Q...", "...Q", ".Q..")),
+                method.apply(4));
+        assertEquals(singletonList(singletonList("Q")), method.apply(1));
     }
 
     /**
