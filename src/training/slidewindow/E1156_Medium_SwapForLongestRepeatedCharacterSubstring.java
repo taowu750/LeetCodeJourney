@@ -1,8 +1,9 @@
-package training.string;
+package training.slidewindow;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.ToIntFunction;
 
@@ -119,5 +120,76 @@ public class E1156_Medium_SwapForLongestRepeatedCharacterSubstring {
     @Test
     public void testMaxRepOpt1() {
         test(this::maxRepOpt1);
+    }
+
+
+    /**
+     * 参见：https://leetcode-cn.com/problems/swap-for-longest-repeated-character-substring/solution/hen-e-xin-de-hua-dong-chuang-kou-lao-mei-u312/
+     *
+     * LeetCode 耗时：4 ms - 71.96%
+     *          内存消耗：39.9 MB - 33.64%
+     */
+    public int slideWindowMethod(String text) {
+        // 记录字符出现的最早位置
+        int[] prev = new int[26];
+        // 记录字符出现的最晚位置
+        int[] after = new int[26];
+        Arrays.fill(prev, -1);
+        Arrays.fill(after, -1);
+
+        final int n = text.length();
+        for (int i = 0; i < n; i++) {
+            int num = text.charAt(i) - 'a';
+            if (prev[num] == -1) {
+                prev[num] = i;
+            }
+            after[text.charAt(i) - 'a'] = i;
+        }
+
+        // windowNum 表示当前窗口 [left, right) 内的主要字符
+        int result = 0, left = 0, right = 0, windowNum = text.charAt(0) - 'a';
+        // windowUnMatchCnt 表示窗口扩充时，和 windowNum 不一样的字符个数
+        // windowUnMatchPos 记录第一次遇到不一样字符的位置
+        // windowSwapPos 表示使用窗口外字符进行填补，该字符的位置
+        // windowCanSwapUseOutOf 表示使用窗口外字符的个数。由于只能交换一次，因此它只有 0 和 1 两个值
+        int windowUnMatchCnt = 0, windowUnMatchPos = 0, windowSwapPos = -1, windowCanSwapUseOutOf = 0;
+        while (right < n) {
+            int num = text.charAt(right) - 'a';
+            // 向右扩充时遇到了不一样的字符，也就是失配
+            if (num != windowNum) {
+                // 如果失配字符数量大于 1
+                if (++windowUnMatchCnt > 1) {
+                    // 需要重置窗口，定位到第一次失配的位置
+                    left = right = windowUnMatchPos;
+                    windowNum = text.charAt(left) - 'a';
+                    windowUnMatchCnt = 0;
+                    windowCanSwapUseOutOf = 0;
+                    windowSwapPos = -1;
+                } else {  // 否则首次出现失配
+                    // 记录第一次失配位置
+                    windowUnMatchPos = right;
+                    // 如果可以用窗口外的字符填补
+                    if (prev[windowNum] < left || after[windowNum] > right) {
+                        windowCanSwapUseOutOf = 1;
+                        windowSwapPos = prev[windowNum] < left ? prev[windowNum] : after[windowNum];
+                        result = Math.max(result, right - left + 1);
+                    }
+                }
+            } else {
+                // 如果失配，是不是使用窗口内的字符填补的
+                int unMatchHappenInsideWindow = windowSwapPos >= left && windowSwapPos <= right ? 1 : 0;
+                // 当前单字符重复子串长度 = 窗口长度 - 失配字符数量 + 使用窗口外字符填补数量 - 使用窗口内的字符填补数量
+                result = Math.max(result, right - left + 1 - windowUnMatchCnt + windowCanSwapUseOutOf - unMatchHappenInsideWindow);
+            }
+            right++;
+        }
+        // 运行结束时，我们还可以从窗口外获取一个字符增加长度
+        windowCanSwapUseOutOf = prev[windowNum] < left || after[windowNum] > right ? 1 : 0;
+        return Math.max(result, right - left - windowUnMatchCnt + windowCanSwapUseOutOf);
+    }
+
+    @Test
+    public void testSlideWindowMethod() {
+        test(this::slideWindowMethod);
     }
 }
