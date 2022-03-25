@@ -37,7 +37,7 @@ import static util.CollectionUtil.equalsIgnoreOrder;
  */
 public class E301_Hard_RemoveInvalidParentheses {
 
-    static void test(Function<String, List<String>> method) {
+    public static void test(Function<String, List<String>> method) {
         equalsIgnoreOrder(asList("(a())()", "(a)()()"), method.apply("(a)())()"));
         equalsIgnoreOrder(asList("(())()", "()()()"), method.apply("()())()"));
         equalsIgnoreOrder(singletonList(""), method.apply(")("));
@@ -142,56 +142,51 @@ public class E301_Hard_RemoveInvalidParentheses {
 
         StringBuilder sb = new StringBuilder(s.length());
         Set<String> result = new HashSet<>();
-        betterDfs(s, 0, result, sb, 0, 0, leftRemove, rightRemove, leftCnt, rightCnt);
+        betterDfs(s, 0, result, sb, 0, leftCnt, rightCnt, leftRemove, rightRemove);
 
         return new ArrayList<>(result);
     }
 
     /**
-     * cnt 表示已添加的括号数量，remove 表示待删除的括号数量，remain 表示 [idx, len) 中剩余的括号数量。
+     * lrDiff 表示已添加的左括号数量-右括号数量，remove 表示待删除的括号数量，remain 表示 [i, len) 中剩余的括号数量。
      */
-    private void betterDfs(String s, int idx, Set<String> result, StringBuilder sb,
-                           int leftCnt, int rightCnt, int leftRemove, int rightRemove, int leftRemain, int rightRemain) {
-        if (idx == s.length()) {
-            result.add(sb.toString());
+    private void betterDfs(String s, int i, Set<String> result, StringBuilder path,
+                           int lrDiff, int leftRemain, int rightRemain, int leftRemove, int rightRemove) {
+        if (i >= s.length()) {
+            result.add(path.toString());
             return;
         }
-
-        char ch = s.charAt(idx);
-        switch (ch) {
-            case '(':
-                // 剪枝操作
-                // 保证剩下的括号数量要足够减，才能添加括号到路径中
-                if (leftRemain - 1 >= leftRemove) {
-                    sb.append(ch);
-                    betterDfs(s, idx + 1, result, sb, leftCnt + 1, rightCnt, leftRemove, rightRemove,
-                            leftRemain - 1, rightRemain);
-                    sb.deleteCharAt(sb.length() - 1);
-                }
-                if (leftRemove >= 1) {
-                    betterDfs(s, idx + 1, result, sb, leftCnt, rightCnt, leftRemove - 1, rightRemove,
-                            leftRemain - 1, rightRemain);
-                }
-                break;
-
-            case ')':
-                // 右括号除了保证剩下的括号数量要足够减，还要保证当前右括号数量小于左括号数量
-                if (rightRemain - 1 >= rightRemove && leftCnt >= rightCnt + 1) {
-                    sb.append(ch);
-                    betterDfs(s, idx + 1, result, sb, leftCnt, rightCnt + 1, leftRemove, rightRemove,
-                            leftRemain, rightRemain - 1);
-                    sb.deleteCharAt(sb.length() - 1);
-                }
-                if (rightRemove >= 1) {
-                    betterDfs(s, idx + 1, result, sb, leftCnt, rightCnt, leftRemove, rightRemove - 1,
-                            leftRemain, rightRemain - 1);
-                }
-                break;
-
-            default:
-                sb.append(ch);
-                betterDfs(s, idx + 1, result, sb, leftCnt, rightCnt, leftRemove, rightRemove, leftRemain, rightRemain);
-                sb.deleteCharAt(sb.length() - 1);
+        char c = s.charAt(i);
+        if (c == '(') {
+            // 当还需要删除 (，则可以删除当前 (
+            if (leftRemove > 0) {
+                betterDfs(s, i + 1, result, path, lrDiff, leftRemain - 1, rightRemain,
+                        leftRemove - 1, rightRemove);
+            }
+            // 当剩余 ( 数量仍然够删，则可以添加当前 (
+            if (leftRemain > leftRemove) {
+                path.append(c);
+                betterDfs(s, i + 1, result, path, lrDiff + 1, leftRemain - 1, rightRemain,
+                        leftRemove, rightRemove);
+                path.deleteCharAt(path.length() - 1);
+            }
+        } else if (c == ')') {
+            // 当还需要删除 )，则可以删除当前 )
+            if (rightRemove > 0) {
+                betterDfs(s, i + 1, result, path, lrDiff, leftRemain, rightRemain - 1,
+                        leftRemove, rightRemove - 1);
+            }
+            // 当前已添加 ( 数量多余 )，并且剩余 ) 数量仍然够删，则可以添加当前 )
+            if (lrDiff > 0 && rightRemain > rightRemove) {
+                path.append(c);
+                betterDfs(s, i + 1, result, path, lrDiff - 1, leftRemain, rightRemain - 1,
+                        leftRemove, rightRemove);
+                path.deleteCharAt(path.length() - 1);
+            }
+        } else {
+            path.append(c);
+            betterDfs(s, i + 1, result, path, lrDiff, leftRemain, rightRemain, leftRemove, rightRemove);
+            path.deleteCharAt(path.length() - 1);
         }
     }
 

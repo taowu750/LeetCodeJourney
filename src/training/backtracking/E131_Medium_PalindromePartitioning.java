@@ -29,7 +29,7 @@ import static util.CollectionUtil.deepEqualsIgnoreOutOrder;
  */
 public class E131_Medium_PalindromePartitioning {
 
-    static void test(Function<String, List<List<String>>> method) {
+    public static void test(Function<String, List<List<String>>> method) {
         deepEqualsIgnoreOutOrder(asList(asList("a","a","b"), asList("aa","b")), method.apply("aab"));
         deepEqualsIgnoreOutOrder(singletonList(singletonList("a")), method.apply("a"));
         deepEqualsIgnoreOutOrder(asList(asList("b", "a", "b", "a", "d"), asList("b", "aba", "d"), asList("bab", "a", "d")),

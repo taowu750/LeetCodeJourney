@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E139_Medium_WordBreak {
 
-    static void test(BiPredicate<String, List<String>> method) {
+    public static void test(BiPredicate<String, List<String>> method) {
         assertTrue(method.test("leetcode", Arrays.asList("leet", "code")));
         assertTrue(method.test("applepenapple", Arrays.asList("apple", "pen")));
         assertFalse(method.test("catsandog", Arrays.asList("cats", "dog", "sand", "and", "cat")));
