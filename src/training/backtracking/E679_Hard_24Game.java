@@ -2,6 +2,7 @@ package training.backtracking;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -37,6 +38,9 @@ public class E679_Hard_24Game {
         assertTrue(method.test(new int[]{1, 2, 3, 4}));
         assertTrue(method.test(new int[]{1, 3, 4, 6}));
         assertFalse(method.test(new int[]{1, 1, 7, 7}));
+        assertTrue(method.test(new int[]{1, 7, 4, 5}));
+        assertTrue(method.test(new int[]{1, 9, 1, 2}));
+        assertTrue(method.test(new int[]{3, 3, 8, 8}));
     }
 
     /**
@@ -195,5 +199,82 @@ public class E679_Hard_24Game {
     @Test
     public void testJudgePoint24() {
         test(this::judgePoint24);
+    }
+
+
+    /**
+     * LeetCode 耗时：3 ms - 71.59%
+     *          内存消耗：41 MB - 40.65%
+     */
+    public boolean useDouble(int[] cards) {
+        List<Double> list = new ArrayList<>(cards.length);
+        for (int card : cards) {
+            list.add((double) card);
+        }
+
+        return dfs1(list);
+    }
+
+    private boolean dfs1(List<Double> cards) {
+        if (cards.size() == 1) {
+            // 使用 double 需要注意精度
+            return Math.abs(cards.get(0) - 24) < 1e-8;
+        }
+        for (int i = 0; i < cards.size() - 1; i++) {
+            double a = cards.remove(i);
+            for (int j = i; j < cards.size(); j++) {
+                double b = cards.remove(j);
+
+                cards.add(i, a + b);
+                if (dfs1(cards)) {
+                    return true;
+                }
+                cards.remove(i);
+
+                cards.add(i, a - b);
+                if (dfs1(cards)) {
+                    return true;
+                }
+                cards.remove(i);
+
+                cards.add(i, b - a);
+                if (dfs1(cards)) {
+                    return true;
+                }
+                cards.remove(i);
+
+                cards.add(i, a * b);
+                if (dfs1(cards)) {
+                    return true;
+                }
+                cards.remove(i);
+
+                if (b != 0) {
+                    cards.add(i, a / b);
+                    if (dfs1(cards)) {
+                        return true;
+                    }
+                    cards.remove(i);
+                }
+
+                if (a != 0) {
+                    cards.add(i, b / a);
+                    if (dfs1(cards)) {
+                        return true;
+                    }
+                    cards.remove(i);
+                }
+
+                cards.add(j, b);
+            }
+            cards.add(i, a);
+        }
+
+        return false;
+    }
+
+    @Test
+    public void testUseDouble() {
+        test(this::useDouble);
     }
 }

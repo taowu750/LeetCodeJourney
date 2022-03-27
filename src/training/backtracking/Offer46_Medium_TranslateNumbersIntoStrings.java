@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class Offer46_Medium_TranslateNumbersIntoStrings {
 
-    static void test(IntUnaryOperator method) {
+    public static void test(IntUnaryOperator method) {
         assertEquals(5, method.applyAsInt(12258));
         assertEquals(2, method.applyAsInt(18580));
         assertEquals(1, method.applyAsInt(506));
