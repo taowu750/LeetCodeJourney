@@ -1,4 +1,4 @@
-package training.math;
+package training.number_code;
 
 import org.junit.jupiter.api.Test;
 

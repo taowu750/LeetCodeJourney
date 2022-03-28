@@ -1,4 +1,4 @@
-package training.thinkstraight;
+package training.number_code;
 
 import org.junit.jupiter.api.Test;
 
