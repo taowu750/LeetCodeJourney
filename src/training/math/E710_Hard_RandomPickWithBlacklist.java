@@ -56,22 +56,22 @@ public class E710_Hard_RandomPickWithBlacklist {
 
         solution = factory.apply(2, new int[0]);
         for (int i = 0; i < 10000; i++) {
-            assertTrue(Util.in(solution.pick(), 0, 1));
+            assertTrue(Util.assertIn(solution.pick(), 0, 1));
         }
 
         solution = factory.apply(3, new int[]{1});
         for (int i = 0; i < 10000; i++) {
-            assertTrue(Util.in(solution.pick(), 0, 2));
+            assertTrue(Util.assertIn(solution.pick(), 0, 2));
         }
 
         solution = factory.apply(4, new int[]{0, 2});
         for (int i = 0; i < 10000; i++) {
-            assertTrue(Util.in(solution.pick(), 1, 3));
+            assertTrue(Util.assertIn(solution.pick(), 1, 3));
         }
 
         solution = factory.apply(4, new int[]{0, 3});
         for (int i = 0; i < 10000; i++) {
-            assertTrue(Util.in(solution.pick(), 1, 2));
+            assertTrue(Util.assertIn(solution.pick(), 1, 2));
         }
     }
 

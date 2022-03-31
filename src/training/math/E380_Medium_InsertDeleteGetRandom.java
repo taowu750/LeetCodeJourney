@@ -41,7 +41,7 @@ public class E380_Medium_InsertDeleteGetRandom {
         assertTrue(randomSet.insert(1));
         assertFalse(randomSet.remove(2));
         assertTrue(randomSet.insert(2));
-        assertTrue(Util.in(randomSet.getRandom(), 1, 2));
+        assertTrue(Util.assertIn(randomSet.getRandom(), 1, 2));
         assertTrue(randomSet.remove(1));
         assertFalse(randomSet.insert(2));
         assertEquals(2, randomSet.getRandom());

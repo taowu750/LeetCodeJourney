@@ -37,11 +37,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class E5_Medium_LongestPalindromicSubstring {
 
     static void test(Function<String, String> method) {
-        assertTrue(Util.in(method.apply("babad"), "bab", "aba"));
+        assertTrue(Util.assertIn(method.apply("babad"), "bab", "aba"));
         assertEquals(method.apply("cbbd"), "bb");
         assertEquals(method.apply("a"), "a");
-        assertTrue(Util.in(method.apply("ac"), "a", "c"));
-        assertTrue(Util.in(method.apply("aacabdkacaa"), "aca"));
+        assertTrue(Util.assertIn(method.apply("ac"), "a", "c"));
+        assertTrue(Util.assertIn(method.apply("aacabdkacaa"), "aca"));
     }
 
     /**
