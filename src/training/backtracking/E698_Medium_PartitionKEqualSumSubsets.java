@@ -55,10 +55,14 @@ public class E698_Medium_PartitionKEqualSumSubsets {
 
     public boolean dfs(int[] nums, int i, int[] sub, int subSum) {
         if (i < 0) {
-            for (int s : sub) {
+            /*
+            这里不需要下面的检查，因为只要遍历完了数组，说明放置了所有的数字；
+            并且所有 s[i] <= subSum (i ∈ [0, n))，则每个 s[i] 一定等于 subSum
+             */
+            /*for (int s : sub) {
                 if (s != subSum)
                     return false;
-            }
+            }*/
             return true;
         }
 

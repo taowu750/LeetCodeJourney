@@ -1,4 +1,4 @@
-package training.binarysearch;
+package training.math;
 
 import org.junit.jupiter.api.Test;
 
@@ -7,6 +7,8 @@ import java.util.function.ToDoubleBiFunction;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 50. Pow(x, n): https://leetcode-cn.com/problems/powx-n/
+ *
  * 实现 pow(x，n)，计算 x 的 n 次幂。
  *
  * 例 1：
@@ -28,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E50_Medium_Powxn {
 
-    static void test(ToDoubleBiFunction<Double, Integer> method) {
+    public static void test(ToDoubleBiFunction<Double, Integer> method) {
         assertEquals(method.applyAsDouble(2.0, 10), 1024.0);
 
         assertEquals(method.applyAsDouble(2.1, 3), 9.261, 0.00001);
@@ -116,5 +118,38 @@ public class E50_Medium_Powxn {
     @Test
     public void testRecursiveMethod() {
         test(this::recursiveMethod);
+    }
+
+
+    /**
+     * 参见：https://leetcode-cn.com/problems/powx-n/solution/powx-n-by-leetcode-solution/
+     *
+     * n 的二进制表示。
+     *
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：40.5 MB - 37.07%
+     */
+    public double betterIterMethod(double x, int n) {
+        long N = n;
+        return N >= 0 ? pow(x, N) : 1. / pow(x, -N);
+    }
+
+    private double pow(double x, long n) {
+        double result = 1.;
+        double xContribute = x;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                result *= xContribute;
+            }
+            xContribute *= xContribute;
+            n /= 2;
+        }
+
+        return result;
+    }
+
+    @Test
+    public void testBetterIterMethod() {
+        test(this::betterIterMethod);
     }
 }

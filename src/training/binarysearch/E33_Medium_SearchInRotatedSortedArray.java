@@ -1,10 +1,11 @@
 package training.binarysearch;
 
-import training.binarysearch.E704_Easy_BinarySearch.SearchMethod;
 import org.junit.jupiter.api.Test;
 import util.ArrayUtil;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Random;
+import java.util.function.ToIntBiFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -43,12 +44,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E33_Medium_SearchInRotatedSortedArray {
 
-    static void test(SearchMethod method) {
-        assertEquals(method.search(new int[]{4,5,6,7,0,1,2}, 0), 4);
-
-        assertEquals(method.search(new int[]{4,5,6,7,0,1,2}, 3), -1);
-
-        assertEquals(method.search(new int[]{1}, 0), -1);
+    public static void test(ToIntBiFunction<int[], Integer> method) {
+        assertEquals(method.applyAsInt(new int[]{4,5,6,7,0,1,2}, 0), 4);
+        assertEquals(method.applyAsInt(new int[]{4,5,6,7,0,1,2}, 3), -1);
+        assertEquals(method.applyAsInt(new int[]{1}, 0), -1);
 
         int[] arr = new int[10001];
         Arrays.parallelSetAll(arr, i -> i);
@@ -61,15 +60,15 @@ public class E33_Medium_SearchInRotatedSortedArray {
                 int target = random.nextInt(arr.length);
                 int idx = target - pivot >= 0 ? target - pivot :
                         arr.length + target - pivot;
-                assertEquals(method.search(tmp, target), idx);
+                assertEquals(method.applyAsInt(tmp, target), idx);
             }
 
             for (int i = -1; i >= -100; i--) {
-                assertEquals(method.search(tmp, i), -1);
+                assertEquals(method.applyAsInt(tmp, i), -1);
             }
 
             for (int i = arr.length; i <= arr.length + 100; i++) {
-                assertEquals(method.search(tmp, i), -1);
+                assertEquals(method.applyAsInt(tmp, i), -1);
             }
         }
     }

@@ -7,6 +7,8 @@ import java.util.function.IntUnaryOperator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 69. x 的平方根：https://leetcode-cn.com/problems/sqrtx/
+ *
  * 给定一个非负整数 x，计算并返回 x 的平方根。
  * 由于返回类型是整数，因此十进制数字将被截断，并且仅返回结果的整数部分。
  *
@@ -23,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E69_Easy_Sqrtx {
 
-    static void test(IntUnaryOperator method) {
+    public static void test(IntUnaryOperator method) {
         int limit = 1000000;
         for (int i = 0; i <= limit; i++) {
             assertEquals(method.applyAsInt(i), (int) Math.sqrt(i));
