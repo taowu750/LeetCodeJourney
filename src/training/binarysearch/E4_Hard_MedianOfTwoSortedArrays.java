@@ -44,7 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E4_Hard_MedianOfTwoSortedArrays {
 
-    static void test(ToDoubleBiFunction<int[], int[]> method) {
+    public static void test(ToDoubleBiFunction<int[], int[]> method) {
         assertEquals(method.applyAsDouble(new int[]{1, 3}, new int[]{2}), 2.0);
 
         assertEquals(method.applyAsDouble(new int[]{1, 2}, new int[]{3, 4}), 2.5);
@@ -157,5 +157,49 @@ public class E4_Hard_MedianOfTwoSortedArrays {
     @Test
     public void testFindMedianSortedArrays() {
         test(this::findMedianSortedArrays);
+    }
+
+
+    /**
+     * 和上面的方法类似，注意到只要找到使 max(left_part) <= min(right_part) 满足的 i、j 就可以得到最终答案。
+     * 如果当前 i、j 使得 max(left_part) > min(right_part)，则：
+     * - 如果 a[i-1] == max(left_part)，那么需要收缩右边界到 i-1
+     * - 否则 b[j-1] == max(left_part)，那么需要收缩左边界到 i+1
+     *
+     * LeetCode 耗时：1 ms - 100.00%
+     *          内存消耗：42.2 MB - 42.33%
+     */
+    public double understandMethod(int[] nums1, int[] nums2) {
+        if (nums1.length > nums2.length) {
+            int[] tmp = nums1;
+            nums1 = nums2;
+            nums2 = tmp;
+        }
+        final int m = nums1.length, n = nums2.length;
+        int leftMax, rightMin;
+        for (int lo = 0, hi = m, i, j;;) {
+            i = (lo + hi) >>> 1;
+            j = (m + n + 1) / 2 - i;
+            int ai_1 = i > 0 ? nums1[i - 1] : Integer.MIN_VALUE;
+            int bj_1 = j > 0 ? nums2[j - 1] : Integer.MIN_VALUE;
+            int ai = i < m ? nums1[i] : Integer.MAX_VALUE;
+            int bj = j < n ? nums2[j] : Integer.MAX_VALUE;
+            leftMax = Math.max(ai_1, bj_1);
+            rightMin = Math.min(ai, bj);
+            if (leftMax <= rightMin) {
+                break;
+            } else if (ai_1 == leftMax) {
+                hi = i - 1;
+            } else {
+                lo = i + 1;
+            }
+        }
+
+        return (m + n) % 2 == 0 ? (leftMax + rightMin) / 2. : leftMax;
+    }
+
+    @Test
+    public void testUnderstandMethod() {
+        test(this::understandMethod);
     }
 }
