@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E153_Medium_FindMinimumInRotatedSortedArray {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{3,4,5,1,2}), 1);
 
         assertEquals(method.applyAsInt(new int[]{4,5,6,7,0,1,2}), 0);

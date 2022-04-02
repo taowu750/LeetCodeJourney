@@ -11,18 +11,24 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  *
  * 假设以升序排序的数组在事先未知的某个元素上旋转。例如[0,1,2,4,5,6,7]可能会变成[4,5,6,7,0,1,2]。
  * 找到最小的元素。注意数组可能包含重复值。
- * <p>
+ *
  * 例 1：
  * Input: [1,3,5]
  * Output: 1
- * <p>
+ *
  * 例 2：
  * Input: [2,2,2,0,1]
  * Output: 0
+ *
+ * 说明：
+ * - n == nums.length
+ * - 1 <= n <= 5000
+ * - -5000 <= nums[i] <= 5000
+ * - nums 原来是一个升序排序的数组，并进行了 1 至 n 次旋转
  */
 public class E154_Hard_FindMinimumInRotatedSortedArrayII {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{1, 3, 5}), 1);
 
         assertEquals(method.applyAsInt(new int[]{2, 2, 2, 0, 1}), 0);
