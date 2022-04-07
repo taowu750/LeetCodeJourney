@@ -30,7 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E461_Easy_HammingDistance {
 
-    static void test(IntBinaryOperator method) {
+    public static void test(IntBinaryOperator method) {
         assertEquals(2, method.applyAsInt(1, 4));
         assertEquals(1, method.applyAsInt(3, 1));
     }

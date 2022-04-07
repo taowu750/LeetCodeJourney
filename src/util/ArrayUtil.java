@@ -49,8 +49,7 @@ public class ArrayUtil {
         Arrays.sort(actual);
         for (int i = 0; i < expected.length; i++) {
             if (expected[i] != actual[i])
-                throw new AssertionError("expected=" + expected[i]
-                        + ", but actual=" + actual[i]);
+                throw new AssertionError("actual=" + Arrays.toString(actual));
         }
 
         return true;

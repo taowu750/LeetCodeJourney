@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  *
  * 给你一个整数 n，请你判断该整数是否是 2 的幂次方。如果是，返回 true ；否则，返回 false 。
  *
- * 如果存在一个整数 x 使得 n == 2x ，则认为 n 是 2 的幂次方。
+ * 如果存在一个整数 x 使得 n == 2^x ，则认为 n 是 2 的幂次方。
  *
  * 例 1：
  * 输入：n = 1
@@ -51,25 +51,13 @@ public class E231_Easy_PowerOfTwo {
     }
 
     /**
-     * 更好的方法参见：
-     * https://leetcode-cn.com/problems/power-of-two/solution/2de-mi-by-leetcode-solution-rny3/
+     * 用到了 n & (n - 1) 的技巧。
      *
-     * 用到了 n & (n - 1) 和 n & -n 的技巧。
-     *
-     * LeetCode 耗时：1 ms - 88.39%
-     *          内存消耗：35.6 MB - 10.65%
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：38.5 MB - 56.91%
      */
     public boolean isPowerOfTwo(int n) {
-        if (n <= 0) {
-            return false;
-        }
-
-        int pow2 = 1;
-        while ((n & pow2) == 0) {
-            pow2 <<= 1;
-        }
-
-        return n == pow2;
+        return n > 0 && (n & n - 1) == 0;
     }
 
     @Test

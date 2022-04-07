@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E338_Easy_CountingBits {
 
-    static void test(IntFunction<int[]> method) {
+    public static void test(IntFunction<int[]> method) {
         assertArrayEquals(new int[]{0, 1, 1}, method.apply(2));
         assertArrayEquals(new int[]{0,1,1,2,1,2}, method.apply(5));
     }

@@ -65,7 +65,7 @@ public class E421_Medium_MaximumXOROfTwoNumbersInArray {
      * 「判断 x 的某一位是否能取到 1」这一步骤并不容易。下面是一种方法，哈希表法，参见：
      * https://leetcode-cn.com/problems/maximum-xor-of-two-numbers-in-an-array/solution/shu-zu-zhong-liang-ge-shu-de-zui-da-yi-h-n9m9/
      *
-     * 哈希表法用到了前缀异或的思想，假设我们已经确定了 x 最高的若干个二进制位，当前正在确定第 k 个二进制位。根据「前言」部分的分析，
+     * 哈希表法用到了「前缀异或」的思想，假设我们已经确定了 x 最高的若干个二进制位，当前正在确定第 k 个二进制位。根据「前言」部分的分析，
      * 我们希望第 k 个二进制位能够取到 1。
      *
      * 我们用 prek(x) 表示 x 从最高位第 30 个二进制位开始，到第 k 个二进制位为止的数，那么 aj = x ^ ai 蕴含着：

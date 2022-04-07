@@ -7,6 +7,8 @@ import java.util.function.IntUnaryOperator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
+ * 191. 位1的个数：https://leetcode-cn.com/problems/number-of-1-bits/
+ *
  * 编写一个函数，输入是一个无符号整数（以二进制串的形式），返回其二进制表达式中数字位数为 '1' 的个数（也被称为汉明权重）。
  *
  * 请注意，在某些语言（如 Java）中，没有无符号整数类型。在这种情况下，输入和输出都将被指定为有符号整数类型，
@@ -31,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E191_Easy_NumberOf1Bits {
 
-    static void test(IntUnaryOperator method) {
+    public static void test(IntUnaryOperator method) {
         assertEquals(method.applyAsInt(0b00000000000000000000000000001011), 3);
         assertEquals(method.applyAsInt(0b00000000000000000000000010000000), 1);
         assertEquals(method.applyAsInt(0b11111111111111111111111111111101), 31);

@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E137_Medium_SingleNumberII {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(3, method.applyAsInt(new int[]{2,2,3,2}));
         assertEquals(99, method.applyAsInt(new int[]{0,1,0,1,0,1,99}));
     }
@@ -72,12 +72,46 @@ public class E137_Medium_SingleNumberII {
      * 有限状态自动机，参见：
      * https://leetcode-cn.com/problems/single-number-ii/solution/single-number-ii-mo-ni-san-jin-zhi-fa-by-jin407891/
      *
+     * 考虑数字的二进制形式，对于出现三次的数字，各二进制位出现的次数都是 3 的倍数。
+     * 因此，统计所有数字的各二进制位中 1 的出现次数，并对 3 求余，结果则为只出现一次的数字。
+     *
+     * 有限状态自动机:00-(1)>01-(1)>10-(1)>00->...满足(num=1改变,num=0保持原状)
+     * 以count[i]%3=0,1,2为状态标定,有三种状态:00,01,10
+     * 设高位为twos,低位为ones,设每次加进来的位为num(0,1)
+     *
+     * ones的分析方法:
+     *         if(twos == 0) {
+     *             if(num == 0) ones = ones;
+     *             if(num == 1) ones = ~ones;
+     *             // 可以合并为:ones = ones ^ num
+     *         }
+     *         if(twos = 1) {
+     *             // 两种状态num=0或1均为0
+     *             ones = 0;
+     *         }
+     * 两种进一步可以合并为:ones = ones ^ num & ~twos
+     *
+     * twos的分析方法类似,不过注意是在ones确定之后进行状态获取的:
+     *         if(ones == 0) {
+     *             if(num == 0) twos = twos;
+     *             if(num == 1) twos = ~twos;
+     *             // 可以合并为:twos = twos ^ num
+     *         }
+     *         if(ones = 1) {
+     *             twos = 0;
+     *         }
+     * 两种进一步可以合并为:twos = twos ^ num & ~ones
+     *
+     * 遍历完所有数字后，各二进制位都处于状态 0000 和状态 0101 （取决于 “只出现一次的数字” 的各二进制位是 11 还是 00 ），
+     * 而此两状态是由 oneone 来记录的（此两状态下 twostwos 恒为 00 ），因此返回 onesones 即可。
+     *
      * LeetCode 耗时：0ms - 100%
      *          内存消耗：38.3 MB - 43.13%
      */
     public int fsm(int[] nums) {
         int ones = 0, twos = 0;
         for (int num : nums) {
+            // 注意 & 优先级高于 ^
             ones = ones ^ num & ~twos;
             twos = twos ^ num & ~ones;
         }
