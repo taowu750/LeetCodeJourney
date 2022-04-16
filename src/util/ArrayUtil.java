@@ -3,6 +3,7 @@ package util;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 import java.util.stream.IntStream;
 
 public class ArrayUtil {
@@ -15,6 +16,42 @@ public class ArrayUtil {
         }
 
         return arr;
+    }
+
+    public static char[] toCharArray(List<Character> list) {
+        char[] result = new char[list.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = list.get(i);
+        }
+
+        return result;
+    }
+
+    public static char[] toCharArray(Character[] arr) {
+        char[] result = new char[arr.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = arr[i];
+        }
+
+        return result;
+    }
+
+    public static int[] toIntArray(List<Integer> list) {
+        int[] result = new int[list.size()];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = list.get(i);
+        }
+
+        return result;
+    }
+
+    public static int[] toIntArray(Integer[] arr) {
+        int[] result = new int[arr.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = arr[i];
+        }
+
+        return result;
     }
 
     public static boolean setEquals(int[] expected, int[] actual) {

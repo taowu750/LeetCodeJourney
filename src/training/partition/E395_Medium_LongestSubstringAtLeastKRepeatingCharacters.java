@@ -105,45 +105,40 @@ public class E395_Medium_LongestSubstringAtLeastKRepeatingCharacters {
     public int partitionMethod(String s, int k) {
         if (k > s.length()) {
             return 0;
-        }
-        if (k == 1) {
+        } else if (k == 1) {
             return s.length();
         }
 
-        return partition(s, k, 0, s.length() - 1);
+        return partition(s, k, 0, s.length());
     }
 
-    private int partition(String s, int k, int left, int right) {
-        if (left >= right) {
+    private int partition(String s, int k, int lo, int hi) {
+        if (lo >= hi) {
             return 0;
         }
 
-        int[] count = new int[26];
-        for (int i = left; i <= right; i++) {
-            count[s.charAt(i) - 'a']++;
+        // 先统计字符个数
+        char[] ch2cnt = new char[26];
+        for (int i = lo; i < hi; i++) {
+            ch2cnt[s.charAt(i) - 'a']++;
         }
 
-        // split 表示切分点，即上一个不满足 k 的字符位置
-        int split = -1, result = 0;
-        for (int i = left; i <= right; i++) {
-            // 找到了切分点
-            if (count[s.charAt(i) - 'a'] < k) {
-                // 第一个切分点左边的字符
-                if (split != -1) {
-                    result = Math.max(result, partition(s, k, split + 1, i - 1));
-                } else {  // 两个切分点之间的字符
-                    result = Math.max(result, partition(s, k, left, i - 1));
-                }
-                split = i;
+        // 循环，找到小于 k 的字符，就递归 [last, i) 的子串
+        int result = 0, last = lo;
+        for (int i = lo; i < hi; i++) {
+            if (ch2cnt[s.charAt(i) - 'a'] < k) {
+                result = Math.max(result, partition(s, k, last, i));
+                last = i + 1;
             }
         }
-
-        // 最后一个切分点右边的字符
-        if (split != -1) {
-            return Math.max(result, partition(s, k, split + 1, right));
-        } else {  // 没有切分点时的情况
-            return right - left + 1;
+        // 如果 [lo, hi) 都大于 k
+        if (last == lo) {
+            result = hi - lo;
+        } else {  // 否则处理最后一个子串
+            result = Math.max(result, partition(s, k, last, hi));
         }
+
+        return result;
     }
 
     @Test
@@ -154,7 +149,7 @@ public class E395_Medium_LongestSubstringAtLeastKRepeatingCharacters {
 
     /**
      * 枚举+滑动窗口方法，参见：
-     * https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/solution/zhi-shao-you-kge-zhong-fu-zi-fu-de-zui-c-o6ww/
+     * https://leetcode-cn.com/problems/longest-substring-with-at-least-k-repeating-characters/solution/xiang-jie-mei-ju-shuang-zhi-zhen-jie-fa-50ri1/
      *
      * 对于给定的字符种类数量 t（从 1 枚举到 26），我们维护滑动窗口的左右边界 l,r 滑动窗口内部每个字符出现的次数 cnt，
      * 以及滑动窗口内的字符种类数目 total。
@@ -173,6 +168,11 @@ public class E395_Medium_LongestSubstringAtLeastKRepeatingCharacters {
      * 只会让某个字符的出现次数加一或者减一。
      *
      *
+     *
+     * 滑动窗口本质上来源于单调性，一般可以理解为，随着左端点位置的增加，其最优决策的右端点位置单调不减。
+     * 也就是说，当滑动窗口不满足条件，需要收缩左端点时，右端点的位置不应该减少。
+     * 例如 s=baaacbb, k=3，当滑动窗口为 [0,4] 遇到 c 时，需要收缩左端点，而左移右端点可以得到一个符合条件的子串 [1,3]，
+     * 所以此题无法使用常规的滑动窗口。
      *
      * 进一步分析，此题为什么要用「枚举」的方法呢？因为这个题目不满足「二分」的性质。
      * 也就是假设有长度 t 的一段区间满足要求的话，t + 1 长度的区间是否「一定满足」或者「一定不满足」呢？
