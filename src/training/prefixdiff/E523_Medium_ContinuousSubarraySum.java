@@ -43,11 +43,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E523_Medium_ContinuousSubarraySum {
 
-    public void test(BiPredicate<int[], Integer> method) {
+    public static void test(BiPredicate<int[], Integer> method) {
         assertTrue(method.test(new int[]{23,2,4,6,7}, 6));
         assertTrue(method.test(new int[]{23,2,6,4,7}, 6));
         assertFalse(method.test(new int[]{23,2,6,4,7}, 13));
         assertTrue(method.test(new int[]{1,2,0,0,2}, 6));
+        assertTrue(method.test(new int[]{23,2,4,6,6}, 7));
+        assertFalse(method.test(new int[]{1,2,12}, 6));
     }
 
     /**

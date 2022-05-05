@@ -11,26 +11,25 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * 862. 和至少为 K 的最短子数组: https://leetcode-cn.com/problems/shortest-subarray-with-sum-at-least-k/
  *
- * 返回 A 的最短的非空连续子数组的长度，该子数组的和至少为 K 。
- *
- * 如果没有和至少为 K 的非空子数组，返回 -1 。
+ * 给你一个整数数组 nums 和一个整数 k，找出 nums 中和至少为 k 的「最短非空子数组」，并返回该子数组的长度。
+ * 如果不存在这样的子数组，返回 -1。
  *
  * 例 1：
- * 输入：A = [1], K = 1
+ * 输入：nums = [1], k = 1
  * 输出：1
  *
  * 例 2：
- * 输入：A = [1,2], K = 4
+ * 输入：nums = [1,2], k = 4
  * 输出：-1
  *
  * 例 3：
- * 输入：A = [2,-1,2], K = 3
+ * 输入：nums = [2,-1,2], k = 3
  * 输出：3
  *
  * 说明：
- * - 1 <= A.length <= 50000
- * - -10 ^ 5 <= A[i] <= 10 ^ 5
- * - 1 <= K <= 10 ^ 9
+ * - 1 <= nums.length <= 50000
+ * - -10 ^ 5 <= nums[i] <= 10 ^ 5
+ * - 1 <= k <= 10 ^ 9
  */
 public class E862_Hard_ShortestSubarrayWithSumAtLeastK {
 
@@ -72,7 +71,7 @@ public class E862_Hard_ShortestSubarrayWithSumAtLeastK {
 
 
     /**
-     * 前缀和+单调队列+二分查找
+     * 前缀和+单调栈+二分查找
      *
      * LeetCode 耗时：49 ms - 9.73%
      *          内存消耗：54.9 MB - 5.19%
