@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E162_Medium_FindPeakElement {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{1, 2, 3, 1}), 2);
 
         assertTrue(new HashSet<>(Arrays.asList(1, 5)).contains(
@@ -75,30 +75,11 @@ public class E162_Medium_FindPeakElement {
 
 
     /**
-     * 设 lo = 0, hi = nums.length - 1。我们使用如下的不等式：
-     *      nums[lo - 1] < num[lo] && nums[hi] > nums[hi + 1]
-     *
-     * [lo, hi] 将向中间缩小。[lo, hi] 之间的情况分为以下 3 类：
-     * - nums[lo] > nums[lo + 1]。根据 nums[lo - 1] < nums[lo] 不等式，lo 是峰值。
-     * - [lo, hi] 是个递增序列。那么根据 nums[hi] > nums[hi + 1] 不等式，hi 是峰值。
-     * - [lo, hi] 先增加一段然后降低，那么它开始降低之前的点就是一个峰值，例如 2 5 6 3（6 是峰值）
-     *
-     * 如果上述不等式成立，则 [left，right] 之间至少存在一个峰值。现在我们需要显示两件事：
-     * - 初始状态满足不等式。因为 nums[-1] = nums[n] = -∞
-     * - 在循环的每个步骤中，不等式都会重新建立。mid = (lo + hi)/2，考虑循环中的代码，
-     *   有以下 2 种情况：
-     *   - nums[mid] < nums[mid + 1]。这样 [mid + 1，hi] 又满足不等式
-     *   - nums[mid] > nums [mid + 1]。同样，[lo，mid] 满足不变式
-     *
-     * 结果，不等式被重新建立，并且在退出循环时也将保持不变。最后，我们有一个长度为 2 的间隔，
-     * 即 hi = lo + 1。如果 nums[lo] > nums[hi]，我们得到 lo 是峰值；否则，hi 是峰值。
+     * 参见 https://leetcode.cn/problems/find-peak-element/solution/gong-shui-san-xie-noxiang-xin-ke-xue-xi-qva7v/
      */
-    public int invariantMethod(int[] nums) {
-        if (nums.length == 1)
-            return 0;
-
+    public int betterMethod(int[] nums) {
         int lo = 0, hi = nums.length - 1;
-        while (hi - lo > 1) {
+        while (lo < hi) {
             int mid = (lo + hi) >>> 1;
             if (nums[mid] < nums[mid + 1])
                 lo = mid + 1;
@@ -106,11 +87,11 @@ public class E162_Medium_FindPeakElement {
                 hi = mid;
         }
 
-        return (lo == nums.length - 1 || nums[lo] > nums[lo + 1]) ? lo : hi;
+        return lo;
     }
 
     @Test
-    public void testInvariantMethod() {
-        test(this::invariantMethod);
+    public void testBetterMethod() {
+        test(this::betterMethod);
     }
 }

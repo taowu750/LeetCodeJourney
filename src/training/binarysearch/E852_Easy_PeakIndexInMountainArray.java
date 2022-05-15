@@ -108,4 +108,30 @@ public class E852_Easy_PeakIndexInMountainArray {
     public void testBetterMethod() {
         test(this::betterMethod);
     }
+
+
+    /**
+     * 三分法。
+     *
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：41.9 MB - 5.05%
+     */
+    public int triMethod(int[] arr) {
+        int lo = 1, hi = arr.length - 2;
+        while (lo < hi) {
+            int lmid = (lo + hi) >>> 1, rmid = lmid + 1;
+            if (arr[lmid] <= arr[rmid]) {
+                lo = rmid;
+            } else {
+                hi = lmid;
+            }
+        }
+
+        return lo;
+    }
+
+    @Test
+    public void testTriMethod() {
+        test(this::triMethod);
+    }
 }
