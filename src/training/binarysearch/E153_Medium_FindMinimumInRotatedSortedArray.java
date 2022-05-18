@@ -86,17 +86,10 @@ public class E153_Medium_FindMinimumInRotatedSortedArray {
      *   因此 high = mid 将确保间隔在缩小。
      * - 否则，最小值应在右侧，因此我们移动 low。由于 nums[mid] > nums[high]，nums[mid] 不会是最小值，
      *   因此我们可以安全地设置 low = mid + 1，这也可以确保间隔在缩小。
+     *
+     * 注意，上面的收缩方式可以同时应对旋转次数大于 0 和旋转次数等于 0 这两种情况。
      */
     public int invariantMethod(int[] nums) {
-        /*
-        下面的循环和 README 中的“寻找右侧边界的二分查找”很类似，只不过 high 取在数值下标范围内。
-        因为所需要寻找的下标范围就在 [0, len - 1] 中，所以 high 需要这样选取。
-
-        最小值在左半部分的时候，mid 还有可能是最后的目标（因为 mid 有可能等于 lo），所以 high = mid；
-        最小值在右半部分的时候，mid 不可能是最后的目标了（因为此时 nums[mid] > nums[high]），因此 low = mid + 1
-
-        这种模式的核心想法就是 mid 这个元素在左半边和右半边还用得上吗？
-         */
         int low = 0, high = nums.length - 1;
         while (low < high) {
             int mid = (low + high) >>> 1;

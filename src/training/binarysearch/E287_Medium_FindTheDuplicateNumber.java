@@ -41,7 +41,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E287_Medium_FindTheDuplicateNumber {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{1, 3, 4, 2, 2}), 2);
 
         assertEquals(method.applyAsInt(new int[]{3, 1, 3, 4, 2}), 3);
@@ -54,6 +54,8 @@ public class E287_Medium_FindTheDuplicateNumber {
     }
 
     /**
+     * 快慢指针法。
+     *
      * 此题的解题思路和 {@link Review_E142_Medium_LinkedListCycleHead}（寻找环开头）类似。
      * 如果数组中没有重复项，我们可以将每个索引映射到该数组中的每个数字。
      *
@@ -63,11 +65,11 @@ public class E287_Medium_FindTheDuplicateNumber {
      * LeetCode 耗时：0ms - 100%
      */
     public int findDuplicate(int[] nums) {
-        int slow = nums[0], fast = nums[nums[0]];
-        while (slow != fast) {
+        int slow = 0, fast = 0;
+        do {
             slow = nums[slow];
             fast = nums[nums[fast]];
-        }
+        } while (slow != fast);
         slow = 0;
         while (slow != fast) {
             slow = nums[slow];
@@ -84,10 +86,39 @@ public class E287_Medium_FindTheDuplicateNumber {
 
 
     /**
-     * 二分查找方法。令 count 为 1...mid 范围内的元素数。
+     * 修改数组的方法，参见 {@link training.array.E448_Easy_FindAllNumbersDisappearedInAnArray}。
      *
-     * 如果 cnt > mid，那么在 lo...mid 范围内有不止 mid 个元素，因此该范围包含重复项。
-     * 如果 cnt <= mid，则在 mid+1...hi 范围内有不止 n-mid 个元素，因此该范围包含重复项。
+     * LeetCode 耗时：6 ms - 43.98%
+     *          内存消耗：58.7 MB - 43.61%
+     */
+    public int modifyMethod(int[] nums) {
+        for (int i = 0; i < nums.length; i++) {
+            while (i + 1 != nums[i] && nums[i] != nums[nums[i] - 1]) {
+                int tmp = nums[i];
+                nums[i] = nums[tmp - 1];
+                nums[tmp - 1] = tmp;
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (i + 1 != nums[i]) {
+                return nums[i];
+            }
+        }
+
+        return -1;
+    }
+
+    @Test
+    public void testModifyMethod() {
+        test(this::modifyMethod);
+    }
+
+
+    /**
+     * 二分查找方法。令 cnt 为 [1,mid] 范围内的元素数。
+     *
+     * 如果 cnt > mid，那么在 [lo,mid] 范围内有不止 mid 个元素，因此该范围包含重复项。
+     * 如果 cnt <= mid，则在 [mid+1,hi] 范围内有不止 n-mid 个元素，因此该范围包含重复项。
      */
     public int binarySearch(int[] nums) {
         /*
