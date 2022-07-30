@@ -36,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E658_Medium_FindKClosestElements {
 
-    static void test(TriFunction<int[], Integer, Integer, List<Integer>> method) {
+    public static void test(TriFunction<int[], Integer, Integer, List<Integer>> method) {
         assertEquals(method.apply(new int[]{1, 2, 3, 4, 5}, 4, 3), asList(1, 2, 3, 4));
 
         assertEquals(method.apply(new int[]{1, 2, 3, 4, 5}, 4, -1), asList(1, 2, 3, 4));
