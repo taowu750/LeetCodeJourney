@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 /**
  * 最短 Hamilton 路径：https://ac.nowcoder.com/acm/contest/996/D
  *
- * 给定一张 n(n≤20) 个点的带权无向图 a，点从0∼n−1标号，求起点 0 到终点 n-1 的最短Hamilton路径。
+ * 给定一张 n(n≤20) 个点的「带权完全无向」图 a，点从0∼n−1标号，求起点 0 到终点 n-1 的最短Hamilton路径。
  * Hamilton路径的定义是从 0 到 n-1 不重不漏地经过每个点恰好一次。
  *
  * 例 1：
@@ -58,7 +58,7 @@ public class G003_ShortestHamiltonPath {
                     if (((i ^ 1 << j) & 1 << k) == 0) {
                         continue;
                     }
-                    dp[i][j] = Math.min(dp[i][j], dp[i ^ (1 << j)][k] + a[k][j]);
+                    dp[i][j] = Math.min(dp[i][j], dp[i ^ 1 << j][k] + a[k][j]);
                 }
             }
         }
