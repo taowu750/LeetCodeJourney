@@ -51,6 +51,7 @@ public class E201_Medium_BitwiseANDOfNumbersRange {
      *          内存消耗：40.8 MB - 23.31%
      */
     public int rangeBitwiseAnd(int left, int right) {
+        // 逆向思维，缩减 right 来逼近前缀
         while (left < right) {
             right &= right - 1;
         }
