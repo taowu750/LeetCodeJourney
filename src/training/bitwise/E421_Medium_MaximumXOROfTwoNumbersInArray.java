@@ -71,8 +71,8 @@ public class E421_Medium_MaximumXOROfTwoNumbersInArray {
      * 我们用 prek(x) 表示 x 从最高位第 30 个二进制位开始，到第 k 个二进制位为止的数，那么 aj = x ^ ai 蕴含着：
      *      prek(aj) = prek(x) ^ prek(ai)
      *
-     * 由于 prek(x) 对我们来说是已知的，因此我们将所有的 prek(aj) 放入哈希表中，随后枚举 i 并计算 prek(x) ^ prek(ai)。
-     * 如果其出现在哈希表中，那么说明第 k 个二进制位能够取到 1，否则第 k 个二进制位只能为 0。
+     * 由于 prek-1(x) 对我们来说是已知的，因此我们将所有的 prek(aj) 放入哈希表中，随后枚举 i 并计算 prek(x) ^ prek(ai)，
+     * 其中 x 第 k 位暂时设为 1。如果其出现在哈希表中，那么说明第 k 个二进制位能够取到 1，否则第 k 个二进制位只能为 0。
      *
      * LeetCode 耗时：209 ms - 24.83%
      *          内存消耗：63 MB - 21.38%
@@ -88,22 +88,20 @@ public class E421_Medium_MaximumXOROfTwoNumbersInArray {
 
             // 目前 x 包含从最高位开始到第 k+1 个二进制位为止的部分
             // 我们将 x 的第 k 个二进制位置为 1，即为 x = x*2+1
-            int next = 2 * x + 1;
+            x = x * 2 + 1;
             boolean found = false;
             // 枚举 i
             for (int num : nums) {
-                if (set.contains(next ^ (num >> k))) {
+                if (set.contains(x ^ (num >> k))) {
                     found = true;
                     break;
                 }
             }
 
-            if (found) {
-                x = next;
-            } else {
-                // 如果没有找到满足等式的 a_i 和 a_j，那么 x 的第 k 个二进制位只能为 0
-                // 即为 x = x*2
-                x = next - 1;
+            // 如果没有找到满足等式的 a_i 和 a_j，那么 x 的第 k 个二进制位只能为 0
+            // 即为 x = x*2
+            if (!found) {
+                x -= 1;
             }
         }
 
@@ -122,7 +120,7 @@ public class E421_Medium_MaximumXOROfTwoNumbersInArray {
      *
      * 根据 x = ai ^ aj，我们枚举 ai, 并将 a0, a1, ..., a(i-1) 作为 aj 放入 trie 中，希望找出使得 x 达到最大值的 aj。
      *
-     * 如何求出 x 呢？我们可以从字典树的根节点开始进行遍历，遍历的「参照对象」为 ai。在遍历的过程中，我们根据 ai 的第 x 个二进制位是 0 还是 1，
+     * 如何求出 x 呢？我们可以从字典树的根节点开始进行遍历，遍历的「参照对象」为 ai。在遍历的过程中，我们根据 ai 的二进制位是 0 还是 1，
      * 确定我们应当走向哪个子节点以继续遍历。假设我们当前遍历到了第 k 个二进制位：
      * - 如果 ai 的第 k 个二进制位为 0，那么我们应当往表示 1 的子节点走，这样 0^1=1，可以使得 x 的第 k 个二进制位为 1。
      *   如果不存在表示 1 的子节点，那么我们只能往表示 0 的子节点走，x 的第 k 个二进制位为 0；
