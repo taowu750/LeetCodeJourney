@@ -94,6 +94,49 @@ public class G014_IncDecSequence {
     }
 
 
+    /**
+     * 和上面算法一样，只是更容易写。
+     */
+    public long[] conciseMethod(int[] nums) {
+        for (int i = nums.length - 1; i > 0; i--) {
+            nums[i] -= nums[i - 1];
+        }
+        long opCnt = 0, typCnt = 1;
+        int posi = 1, negi = 1;
+        for (;;) {
+            while (posi < nums.length && nums[posi] <= 0) {
+                posi++;
+            }
+            while (negi < nums.length && nums[negi] >= 0) {
+                negi++;
+            }
+            if (posi == nums.length && negi == nums.length) {
+                break;
+            } else if (posi == nums.length) {
+                opCnt -= nums[negi];
+                typCnt -= nums[negi];
+                nums[negi++] = 0;
+            } else if (negi == nums.length) {
+                opCnt += nums[posi];
+                typCnt += nums[posi];
+                nums[posi++] = 0;
+            } else {
+                int min = Math.min(nums[posi], -nums[negi]);
+                opCnt += min;
+                nums[posi] -= min;
+                nums[negi] += min;
+            }
+        }
+
+        return new long[]{opCnt, typCnt};
+    }
+
+    @Test
+    public void testConciseMethod() {
+        test(this::conciseMethod);
+    }
+
+
     public long[] betterMethod(int[] nums) {
         final int n = nums.length;
         int[] diff = new int[n];

@@ -41,27 +41,21 @@ public class E525_Medium_ContiguousArray {
      *          内存消耗：48 MB - 67.16%
      */
     public int findMaxLength(int[] nums) {
-        // zSubO 表示前缀中 0 减去 1 的数量
-        int zSubO = 0, result = 0;
-        // prefix2end 记录 zSubO 及其对应终点下标
-        Map<Integer, Integer> prefix2end = new HashMap<>();
-        for (int i = 0; i < nums.length; i++) {
-            zSubO += nums[i] == 0 ? 1 : -1;
-            if (zSubO == 0) {
-                if (i + 1 > result) {
-                    result = i + 1;
-                }
-            } else if (prefix2end.containsKey(zSubO)) {
-                int len = i - prefix2end.get(zSubO);
-                if (len > result) {
-                    result = len;
-                }
+        int ans = 0;
+        // diff 记录1的数量减去0的数量
+        // prefix 记录不同diff值及其对应的最小下标
+        Map<Integer, Integer> prefix = new HashMap<>();
+        prefix.put(0, 0);
+        for (int i = 0, diff = 0; i < nums.length; i++) {
+            diff += nums[i] == 1 ? 1 : -1;
+            if (prefix.containsKey(diff)) {
+                ans = Math.max(ans, i + 1 - prefix.get(diff));
             } else {
-                prefix2end.put(zSubO, i);
+                prefix.put(diff, i + 1);
             }
         }
 
-        return result;
+        return ans;
     }
 
     @Test

@@ -34,7 +34,9 @@ public class E974_Medium_SubarraySumsDivisibleByK {
     public static void test(ToIntBiFunction<int[], Integer> method) {
         assertEquals(7, method.applyAsInt(new int[]{4,5,0,-2,-3,1}, 5));
         assertEquals(0, method.applyAsInt(new int[]{5}, 9));
+        // -1 1 0
         assertEquals(2, method.applyAsInt(new int[]{-1,2,9}, 2));
+        // 2 0 2 -2
         assertEquals(2, method.applyAsInt(new int[]{2,-2,2,-4}, 6));
         assertEquals(11, method.applyAsInt(new int[]{7,-5,5,-8,-6,6,-4,7,-8,-7}, 7));
     }
@@ -104,6 +106,21 @@ public class E974_Medium_SubarraySumsDivisibleByK {
         }
 
         return ans;
+
+        /*
+        和上面类似的写法：
+        int ans = 0;
+        int[] prefix = new int[k];
+        prefix[0] = 1;
+        for (int i = 0, sum = 0; i < nums.length; i++) {
+            sum += nums[i];
+            int modulo = sum % k < 0 ? k + sum % k : sum % k;
+            ans += prefix[modulo];
+            prefix[modulo]++;
+        }
+
+        return ans;
+         */
     }
 
     @Test
