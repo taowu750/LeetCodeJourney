@@ -70,7 +70,7 @@ public class E540_Medium_SingleElementInSortedArray {
 
 
     /**
-     * 更加简洁的方法，只检查偶数下标。
+     * 更加简洁的方法，只检查偶数下标。将两种情况化简到一种情况
      */
     public int conciseMethod(int[] nums) {
         int lo = 0, hi = nums.length - 1;
