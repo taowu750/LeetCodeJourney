@@ -1,4 +1,4 @@
-package training.binarysearch;
+package training.pointer;
 
 import org.junit.jupiter.api.Test;
 import training.linkedlist.Review_E142_Medium_LinkedListCycleHead;

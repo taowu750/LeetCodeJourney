@@ -89,19 +89,19 @@ public class E852_Easy_PeakIndexInMountainArray {
      *          内存消耗：41.9 MB - 5.05%
      */
     public int betterMethod(int[] arr) {
-        int lo = 1, hi = arr.length - 2;
-        while (lo <= hi) {
-            int mid = (lo + hi) >>> 1;
-            if (arr[mid] > arr[mid - 1] && arr[mid] > arr[mid + 1]) {
-                return mid;
-            } else if (arr[mid] > arr[mid - 1]) {
-                lo = mid + 1;
+        final int n = arr.length;
+        int l = 0, r = n - 1;
+        // 不断缩小范围，找最大的数即可
+        while (l < r) {
+            int mid = (l + r) >>> 1;
+            if (arr[mid] < arr[mid + 1]) {
+                l = mid + 1;
             } else {
-                hi = mid - 1;
+                r = mid;
             }
         }
 
-        return -1;
+        return l;
     }
 
     @Test

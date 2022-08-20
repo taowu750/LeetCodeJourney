@@ -105,6 +105,7 @@ public class E378_Medium_KthSmallestElementInSortedMatrix {
         int n = matrix.length, lo = matrix[0][0], hi = matrix[n - 1][n - 1];
 
         while (lo < hi) {
+            // 注意，因为可能为负数，所以不能用 (lo+hi)>>>1，可以用下面的式子或者 (lo+hi)>>1
             int mid = lo + (hi - lo) / 2;
             /*
             计算小于等于 mid 的元素数量。因为是排序矩阵，所有小于等于 mid 的元素都在左上部分。

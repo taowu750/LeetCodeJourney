@@ -27,7 +27,7 @@ import java.util.function.UnaryOperator;
  */
 public class E1044_Hard_LongestDuplicateSubstring {
 
-    static void test(UnaryOperator<String> method) {
+    public static void test(UnaryOperator<String> method) {
         Assertions.assertEquals("ana", method.apply("banana"));
         Assertions.assertEquals("", method.apply("abcd"));
         Assertions.assertEquals("a", method.apply("aa"));
@@ -127,7 +127,7 @@ public class E1044_Hard_LongestDuplicateSubstring {
     }
 
     /**
-     * Radin-Karp 算法。
+     * Radin-Karp 算法，滚动哈希。
      *
      * @param sequence 序列
      * @param searchLen 要查找的子序列长度

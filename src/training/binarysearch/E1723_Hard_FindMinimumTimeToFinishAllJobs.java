@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E1723_Hard_FindMinimumTimeToFinishAllJobs {
 
-    static void test(ToIntBiFunction<int[], Integer> method) {
+    public static void test(ToIntBiFunction<int[], Integer> method) {
         assertEquals(3, method.applyAsInt(new int[]{3,2,3}, 3));
         assertEquals(11, method.applyAsInt(new int[]{1,2,4,7,8}, 2));
     }

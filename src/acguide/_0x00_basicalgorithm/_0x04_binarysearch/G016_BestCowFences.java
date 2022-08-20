@@ -40,14 +40,11 @@ public class G016_BestCowFences {
             r = Math.max(r, j);
         }
 
-        double[] b = new double[n], sum = new double[n + 1];
+        double[] sum = new double[n + 1];
         while (r - l > 1e-5) {
             double mid = (l + r) / 2;
             for (int i = 0; i < n; i++) {
-                b[i] = a[i] - mid;
-            }
-            for (int i = 0; i < n; i++) {
-                sum[i + 1] = b[i] + sum[i];
+                sum[i + 1] = a[i] - mid + sum[i];
             }
             double max = Double.NEGATIVE_INFINITY, minSumJ = Double.POSITIVE_INFINITY;
             for (int i = L; i <= n; i++) {

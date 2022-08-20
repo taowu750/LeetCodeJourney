@@ -30,8 +30,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E719_Hard_FindKthSmallestPairDistance {
 
-    static void test(BiFunction<int[], Integer, Integer> method) {
-        assertEquals(method.apply(new int[]{1,3,1}, 1), 0);
+    public static void test(BiFunction<int[], Integer, Integer> method) {
+        assertEquals(0, method.apply(new int[]{1,3,1}, 1));
+        assertEquals(58, method.apply(new int[]{62, 100, 4}, 2));
     }
 
     /**
