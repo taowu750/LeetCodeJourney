@@ -40,27 +40,29 @@ public class E540_Medium_SingleElementInSortedArray {
      *          内存消耗：43.6 MB - 5.01%
      */
     public int singleNonDuplicate(int[] nums) {
-        int lo = 0, hi = nums.length - 1;
-        while (lo < hi) {
-            int mid = (lo + hi) >>> 1;
-            if (mid > 0 && nums[mid - 1] == nums[mid]) {
-                if ((mid - lo + 1) % 2 == 0) {
-                    lo = mid + 1;
+        int l = 0, r = nums.length - 1;
+        while (l < r) {
+            int mid = (l + r) / 2;
+            // 如果 mid 是奇数，那么 [0,mid] 的子数组长度是偶数，并且 mid-1 一定存在
+            // 所以检查 nums[mid] 和 nums[mid-1] 是否相等确定结果在哪一半边
+            if ((mid & 1) == 1) {
+                if (nums[mid] == nums[mid - 1]) {
+                    l = mid + 1;
                 } else {
-                    hi = mid - 2;
-                }
-            } else if (mid < nums.length - 1 && nums[mid] == nums[mid + 1]) {
-                if ((mid - lo + 2) % 2 == 0) {
-                    lo = mid + 2;
-                } else {
-                    hi = mid - 1;
+                    r = mid - 1;
                 }
             } else {
-                return nums[mid];
+                // 如果 mid 是奇数，那么 [0,mid] 的子数组长度是奇数，并且 mid+1 一定存在（l != r）
+                // 所以检查 nums[mid] 和 nums[mid+1] 是否相等确定结果在哪一半边
+                if (nums[mid] == nums[mid + 1]) {
+                    l = mid + 2;
+                } else {
+                    r = mid;
+                }
             }
         }
 
-        return nums[lo];
+        return nums[l];
     }
 
     @Test
