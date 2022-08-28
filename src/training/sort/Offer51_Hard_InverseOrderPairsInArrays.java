@@ -19,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class Offer51_Hard_InverseOrderPairsInArrays {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{7,5,6,4}), 5);
     }
 
