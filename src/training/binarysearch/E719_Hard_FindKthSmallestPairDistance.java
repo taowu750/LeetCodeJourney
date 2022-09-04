@@ -92,6 +92,7 @@ public class E719_Hard_FindKthSmallestPairDistance {
             // 此循环同样计算小于等于 mid 的距离数量。不过这里计算的是从 right 到 left 的数量，从右到左。
             // 而 smallestDistancePair 中则是从左到右。相比较而言，此实现内循环无需查找，仅仅调整 left 指针即可，
             // 因此此实现更快
+            // 固定一个指针，计算另一个
             for (int right = 0; right < n; ++right) {
                 // 不断循环直到差绝对值小于等于 mid
                 while (nums[right] - nums[left] > mid) left++;

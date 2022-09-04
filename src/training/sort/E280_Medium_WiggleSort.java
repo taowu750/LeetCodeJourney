@@ -48,6 +48,10 @@ public class E280_Medium_WiggleSort {
         nums = new int[]{6,6,5,6,3,8};
         method.accept(nums);
         assertWiggle(nums);
+
+        nums = new int[]{1};
+        method.accept(nums);
+        assertWiggle(nums);
     }
 
     /**
@@ -57,15 +61,30 @@ public class E280_Medium_WiggleSort {
      *          内存消耗：42.3 MB - 5.16%
      */
     public void wiggleSort(int[] nums) {
+        /*
+        不需要完全排序，只需要区分出一半小的、一半大的即可
+         */
         quick3waySelect(nums);
-        // 将 [mid, n) 依次穿插到 [lo, mid) 中
-        final int n = nums.length, mid = (n & 1) == 0 ? n / 2: n / 2 + 1;
-        int[] aux = nums.clone();
-        for (int i = 0, step = 0; i < mid; i++, step++) {
-            nums[i + step] = aux[i];
+        // 将 [mid+1, n) 依次穿插到 [lo, mid] 中
+        final int n = nums.length, mid = (n + 1) / 2 - 1;
+        // 复制后半段
+        int[] after = new int[n / 2];
+        System.arraycopy(nums, mid + 1, after, 0, after.length);
+        // 安排前半部分的位置
+        for (int i = mid; i > 0; i--) {
+            /*
+            123456
+            1_2_3_
+             */
+            nums[i * 2] = nums[i];
         }
-        for (int i = n - 1, step = n & 1; i >= mid; i--, step++) {
-            nums[i - step] = aux[i];
+        // 安排后半部分的位置
+        for (int i = 0; i < after.length; i++) {
+            /*
+            123456
+            _4_5_6
+             */
+            nums[(i + 1) * 2 - 1] = after[i];
         }
     }
 
@@ -75,7 +94,7 @@ public class E280_Medium_WiggleSort {
      * 其中三向切分参见 {@link E75_Medium_SortColors}
      */
     private void quick3waySelect(int[] nums) {
-        final int n = nums.length, mid = (n & 1) == 0 ? n / 2 - 1: n / 2;
+        final int n = nums.length, mid = (n + 1) / 2 - 1;
         for (int lo = 0, hi = n - 1;;) {
             int pivot = median3(nums, lo, hi);
             // [lo, i) < pivot, [i, j) == pivot, (k, hi] > pivot
@@ -104,16 +123,7 @@ public class E280_Medium_WiggleSort {
 
     private int median3(int[] nums, int lo, int hi) {
         int mid = (lo + hi) >>> 1;
-        if (nums[lo] > nums[mid]) {
-            swap(nums, lo, mid);
-        }
-        if (nums[mid] > nums[hi]) {
-            swap(nums, mid, hi);
-        }
-        if (nums[lo] > nums[mid]) {
-            swap(nums, lo, mid);
-        }
-        return nums[mid];
+        return Math.min(nums[lo], Math.max(nums[mid], nums[hi]));
     }
 
     private void swap(int[] nums, int i, int j) {
@@ -131,6 +141,10 @@ public class E280_Medium_WiggleSort {
     /**
      * 可以只用一遍完成任务。当我们遍历整个数组，比较当前元素与下一个元素。若顺序不正确，则交换之。参见：
      * https://leetcode-cn.com/problems/wiggle-sort/solution/bai-dong-pai-xu-by-leetcode/
+     *
+     * 用数学归纳法可以证明。假设 [0,1, ..., k] 均已满足摆动排序，而 k+1 不满足，记此时 nums[k-1]，nums[k]，nums[k+1] 分别为 a，b，c
+     * - 若不满足的是降序，则可知：c > b，同时 b>=a，此时三个数状态是 a <= b < c，交换 b 和 c 后变成：a < c > b，满足小大小
+     * - 若不满足的是升序，则可知：c < b，同时 b<=a，此时三个数状态是 a >= b > c，交换 b 和 c 后变成：a > c < b，满足大小大
      *
      * LeetCode 耗时：0 ms - 100.00%
      *          内存消耗：42.1 MB - 17.86%
