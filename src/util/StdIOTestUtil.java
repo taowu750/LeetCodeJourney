@@ -1,6 +1,10 @@
 package util;
 
 import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.function.BiConsumer;
 
 public class StdIOTestUtil {
 
@@ -36,6 +40,27 @@ public class StdIOTestUtil {
                 throw new AssertionError("The actual is already null");
             else if (actualReader.readLine() != null)
                 throw new AssertionError("The expect is already null");
+        } catch (IOException e) {
+            throw new AssertionError(e);
+        }
+
+        System.setIn(stdIn);
+        System.setOut(stdOut);
+    }
+
+    public static void test(Runnable method, String inPath, BiConsumer<String, ByteArrayInputStream> resultChecker) {
+        InputStream redirectIn = StdIOTestUtil.class.getClassLoader().getResourceAsStream(inPath);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        PrintStream redirectOut = new PrintStream(out);
+
+        System.setIn(redirectIn);
+        System.setOut(redirectOut);
+        redirectOut.flush();
+
+        method.run();
+        //noinspection ConstantConditions
+        try (ByteArrayInputStream actualInput = new ByteArrayInputStream(out.toByteArray())) {
+            resultChecker.accept(new String(Files.readAllBytes(Paths.get(StdIOTestUtil.class.getClassLoader().getResource(inPath).getPath())), StandardCharsets.UTF_8), actualInput);
         } catch (IOException e) {
             throw new AssertionError(e);
         }

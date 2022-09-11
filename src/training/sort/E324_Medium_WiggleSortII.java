@@ -67,6 +67,14 @@ public class E324_Medium_WiggleSortII {
         nums = new int[]{1,4,3,4,1,2,1,3,1,3,2,3,3};
         method.accept(nums);
         assertWiggle(nums);
+
+        nums = new int[]{1};
+        method.accept(nums);
+        assertWiggle(nums);
+
+        nums = new int[]{4,5,5,6};
+        method.accept(nums);
+        assertWiggle(nums);
     }
 
     /**
@@ -84,7 +92,7 @@ public class E324_Medium_WiggleSortII {
      * 不会出现这一现象，只有当这一数字个数达到原数组元素总数的一半，才会在穿插后的出现在相邻位置。
      *
      * 出现这一问题是因为重复数在A和B中的位置决定的，因为r在A尾部，B头部，所以如果r个数太多（大于等于(length(nums) + 1)/2），
-     * 就可能在穿插后相邻。要解决这一问题，我们需要使A的r和B的r在穿插后尽可能分开。一种可行的办法是将A和B反序。
+     * 就可能在穿插后相邻。要解决这一问题，我们需要使A的r和B的r在穿插后尽可能分开。一种可行的办法是「将A和B反序」。
      *
      * 当然，这只能解决r的个数等于(length(nums) + 1)/2的情况，如果r的个数大于(length(nums) + 1)/2，还是会出现相邻。
      * 但实际上，这种情况是不存在有效解的，也就是说，这种数组对于本题来说是非法的。
@@ -149,51 +157,51 @@ public class E324_Medium_WiggleSortII {
             return;
         }
 
-        // 1 4 3 4 1 2 1 3 1 3 2 3 3
-        // 1 1 1 1 2 2 3 3 3 3 3 4 4
         int n = nums.length;
-        int[] aux = nums.clone();
-        // 其实可以在快速选择后马上在找出中位数并移动，会快一点
-        int median = quickSelectMedian(aux);
+        // 先快速选择、再三向切分，比快速三向选择要快很多
+        int median = quickSelectMedian(nums);
         /*
         三向切分，分成小于、等于、大于中位数的三部分。
-        left 指向等于部分的开头，mid 指向等于部分的结尾+1，right 指向大于部分的开头-1
+        lo 指向等于部分的开头，mi 指向等于部分的结尾+1，ri 指向大于部分的开头-1
          */
-        int left = 0, mid = 0, right = n - 1;
-        while (mid < right) {
-            if (aux[mid] > median) {
-                swap(aux, mid, right);
-                right--;
-            } else if (aux[mid] < median) {
-                swap(aux, left, mid);
-                left++;
-                mid++;
+        int lo = 0, mi = 0, ri = n - 1;
+        while (mi < ri) {
+            if (nums[mi] > median) {
+                swap(nums, mi, ri);
+                ri--;
+            } else if (nums[mi] < median) {
+                swap(nums, lo, mi);
+                lo++;
+                mi++;
             } else {
-                mid++;
+                mi++;
             }
         }
 
-        // 下面的步骤和解法1一样
-        mid = (n & 1) == 0 ? n / 2 - 1 : n / 2;
-        if (aux[mid] == aux[mid + 1]) {
-            for (int i = 0, half = (mid + 1) / 2; i < half; i++) {
-                int tmp = aux[i];
-                aux[i] = aux[mid - i];
-                aux[mid - i] = tmp;
-            }
-            for (int i = mid + 1, half = n - (n - mid - 1) / 2; i < half; i++) {
-                int tmp = aux[i];
-                aux[i] = aux[n - i + mid];
-                aux[n - i + mid] = tmp;
-            }
+        int leftLen = (nums.length + 1) / 2;
+        // 复制后半段
+        int[] right = new int[nums.length - leftLen];
+        System.arraycopy(nums, leftLen, right, 0, right.length);
+        // 前半段先反序，再穿插
+        for (int i = 0, j = leftLen - 1; i < j; i++, j--) {
+            int tmp = nums[i];
+            nums[i] = nums[j];
+            nums[j] = tmp;
         }
-
-        for (int i = 0, j = mid + 1, k = 0; j < n; i++, j++, k++) {
-            nums[k] = aux[i];
-            nums[++k] = aux[j];
+        for (int i = leftLen - 1; i > 0; i--) {
+            /*
+            123456
+            1_2_3_
+             */
+            nums[i * 2] = nums[i];
         }
-        if ((n & 1) == 1) {
-            nums[n - 1] = aux[mid];
+        // 后半段反序穿插到前半段的空隙中
+        for (int i = 0; i < right.length; i++) {
+            /*
+            123456
+            _4_5_6
+             */
+            nums[(i + 1) * 2 - 1] = right[right.length - i - 1];
         }
     }
 
