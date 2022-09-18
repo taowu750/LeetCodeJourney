@@ -42,23 +42,17 @@ public class E55_Medium_JumpGame {
      *          内存消耗：39.5 MB - 83.09%
      */
     public boolean canJump(int[] nums) {
-        for (int i = 0; i < nums.length;) {
-            if (i + nums[i] >= nums.length - 1) {
-                return true;
+        final int n = nums.length;
+        // 当前能到达的最大距离
+        int end = 0;
+        for (int i = 0; i < n - 1; i++) {
+            end = Math.max(end, i + nums[i]);
+            if (end >= n - 1 || end == i) {
+                break;
             }
-            if (nums[i] == 0) {
-                return false;
-            }
-            int nextStep = 1;
-            for (int j = 2; j <= nums[i]; j++) {
-                if (i + j + nums[i + j] > i + nextStep + nums[i + nextStep]) {
-                    nextStep = j;
-                }
-            }
-            i += nextStep;
         }
 
-        return false;
+        return end >= n - 1;
     }
 
     @Test
