@@ -2,7 +2,9 @@ package training.greedy;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
@@ -64,6 +66,10 @@ public class E44_Hard_WildcardMatching {
         assertFalse(method.test("cb", "?a"));
         assertTrue(method.test("adceb", "*a*b"));
         assertFalse(method.test("acdcb", "a*c?b"));
+        assertTrue(method.test("abcabczzzde", "*abc???de*"));
+        assertTrue(method.test("abefcdgiescdfimde", "ab*cd?i*de"));
+        assertTrue(method.test("ab", "*?*?*"));
+        assertFalse(method.test("mississippi", "m??*ss*?i*pi"));
     }
 
     static class Tuple {
@@ -290,5 +296,81 @@ public class E44_Hard_WildcardMatching {
     @Test
     public void testGreedyMethod() {
         test(this::greedyMethod);
+    }
+
+
+    /**
+     * 和上面的方法类似，只不过更加容易理解
+     *
+     * LeetCode 耗时：2 ms - 93.67%
+     *          内存消耗：41.7 MB - 69.09%
+     */
+    public boolean easyGreedyMethod(String s, String p) {
+        // 合并连续的 *
+        char[] chars = p.toCharArray();
+        int l = 0;
+        boolean isSerialSign = false;
+        for (int i = 0; i < chars.length; i++) {
+            if (chars[i] == '*') {
+                if (!isSerialSign) {
+                    isSerialSign = true;
+                    chars[l++] = chars[i];
+                }
+            } else {
+                isSerialSign = false;
+                chars[l++] = chars[i];
+            }
+        }
+        p = new String(chars, 0, l);
+        // 记录所有 * 下标
+        List<Integer> signIndices = new ArrayList<>();
+        for (int i = 0; i < p.length(); i++) {
+            if (p.charAt(i) == '*') {
+                signIndices.add(i);
+            }
+        }
+
+        // 没有 *，则比对所有内容
+        if (signIndices.size() == 0) {
+            return s.length() == p.length() && match(s, 0, p, 0, s.length());
+        }
+        // 对比第一个 * 之前的内容
+        if (s.length() < signIndices.get(0) || !match(s, 0, p, 0, signIndices.get(0))) {
+            return false;
+        }
+        // 对比两个 * 之间的内容
+        int i = signIndices.get(0);
+        for (int j = 0; j < signIndices.size() - 1; j++) {
+            int k = i, interval = signIndices.get(j + 1) - signIndices.get(j) - 1;
+            // 找到第一次匹配的地方
+            for (; k <= s.length() - interval; k++) {
+                if (match(s, k, p, signIndices.get(j) + 1, interval)) {
+                    break;
+                }
+            }
+            if (k > s.length() - interval) {
+                return false;
+            } else {
+                i = k + interval;
+            }
+        }
+        // 对比最后一个 * 之后的内容
+        int interval = p.length() - signIndices.get(signIndices.size() - 1) - 1;
+        return s.length() - i >= interval && match(s, s.length() - interval, p, signIndices.get(signIndices.size() - 1) + 1, interval);
+    }
+
+    private boolean match(String s, int si, String p, int pi, int len) {
+        for (int i = 0; i < len; i++) {
+            if (s.charAt(si + i) != p.charAt(pi + i) && p.charAt(pi + i) != '?') {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Test
+    public void testEasyGreedyMethod() {
+        test(this::easyGreedyMethod);
     }
 }
