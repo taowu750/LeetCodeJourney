@@ -30,10 +30,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E53_Easy_MaximumSubarray {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(method.applyAsInt(new int[]{-2, 1, -3, 4, -1, 2, 1, -5, 4}), 6);
         assertEquals(method.applyAsInt(new int[]{1}), 1);
         assertEquals(method.applyAsInt(new int[]{5, 4, -1, 7, 8}), 23);
+        assertEquals(method.applyAsInt(new int[]{-2, -1, -6, -3}), -1);
     }
 
     /**
