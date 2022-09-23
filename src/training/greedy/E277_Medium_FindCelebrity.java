@@ -50,7 +50,7 @@ public class E277_Medium_FindCelebrity {
 
     private static int[][] graph;
 
-    private static boolean knows(int a, int b) {
+    public static boolean knows(int a, int b) {
         return graph[a][b] == 1;
     }
 
@@ -76,7 +76,7 @@ public class E277_Medium_FindCelebrity {
      *
      * n 轮淘汰下来，淘汰 n-1 个，剩下 1 个，而题目给出名人最多 1 个，再检查这个剩下的候选名人即可
      *
-     * LeetCode 耗时：19 ms - 95.70%
+     * LeetCode 耗时：16 ms - 95.70%
      *          内存消耗：38.9 MB - 10.75%
      */
     public int findCelebrity(int n) {
@@ -89,10 +89,7 @@ public class E277_Medium_FindCelebrity {
 
         for (int i = 0; i < n; i++) {
             if (i != result) {
-                if (!knows(i, result)) {
-                    return -1;
-                }
-                if (knows(result, i)) {
+                if (knows(result, i) || !knows(i, result)) {
                     return -1;
                 }
             }

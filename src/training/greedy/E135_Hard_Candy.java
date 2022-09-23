@@ -2,6 +2,7 @@ package training.greedy;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.function.ToIntFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -43,28 +44,33 @@ public class E135_Hard_Candy {
      *          内存消耗：39.4 MB - 66.71%
      */
     public int candy(int[] ratings) {
-        int n = ratings.length;
-        // 记录 i 大于它的左边的连续数的个数
-        int[] prefix = new int[n];
-        for (int i = 1, cnt = 1; i < n; i++) {
+        /*
+        单增或单减的序列分配的糖果数会变化，所以从左边遍历，找出所有单增的序列，并分配糖果；再从右边遍历，
+        找出单增的序列（相对于左边单减），并分配糖果。
+        最后对每个位置，计算两次遍历的最大值。
+         */
+
+        final int n = ratings.length;
+        int[] candies = new int[n];
+        Arrays.fill(candies, 1);
+
+        for (int i = 1; i < n; i++) {
             if (ratings[i] > ratings[i - 1]) {
-                prefix[i] = cnt++;
-            } else {
-                cnt = 1;
+                candies[i] = candies[i - 1] + 1;
             }
         }
-        // suffix 表示 i 大于它的左边的连续数的个数
-        int result = prefix[n - 1] + 1;
-        for (int i = n - 2, suffix = 0; i >= 0; i--) {
+        for (int i = n - 2; i >= 0; i--) {
             if (ratings[i] > ratings[i + 1]) {
-                suffix++;
-            } else {
-                suffix = 0;
+                candies[i] = Math.max(candies[i], candies[i + 1] + 1);
             }
-            result += Math.max(prefix[i], suffix) + 1;
         }
 
-        return result;
+        int sum = 0;
+        for (int candy : candies) {
+            sum += candy;
+        }
+
+        return sum;
     }
 
     @Test
