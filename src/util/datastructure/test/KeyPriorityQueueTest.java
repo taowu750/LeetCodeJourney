@@ -1,34 +1,29 @@
 package util.datastructure.test;
 
 import org.junit.jupiter.api.Test;
-import util.datastructure.IntKeyHeap;
+import util.datastructure.KeyPriorityQueue;
 
 import java.util.Arrays;
 import java.util.Comparator;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class IntKeyHeapTest {
+public class KeyPriorityQueueTest {
 
     @Test
     public void testNew() {
-        assertThrows(IllegalArgumentException.class, () -> new IntKeyHeap<Integer>(0));
-        assertThrows(IllegalArgumentException.class, () -> new IntKeyHeap<Integer>(-5));
+        assertThrows(IllegalArgumentException.class, () -> new KeyPriorityQueue<Integer, Integer>(-5));
 
-        IntKeyHeap<Integer> heap = new IntKeyHeap<>(10);
+        KeyPriorityQueue<Integer, Integer> heap = new KeyPriorityQueue<>(10);
         assertEquals(0, heap.size());
-        assertEquals(10, heap.capacity());
-        heap = new IntKeyHeap<>();
-        assertEquals(16, heap.capacity());
     }
 
     @Test
     public void testPush() {
-        IntKeyHeap<Integer> heap = new IntKeyHeap<>(1);
+        KeyPriorityQueue<Integer, Integer> heap = new KeyPriorityQueue<>(1);
         heap.push(0, 1);
         heap.push(1, 2);
         assertEquals(2, heap.size());
-        assertEquals(2, heap.capacity());
 
         for (int i = 2; i < 1000; i++) {
             int finalI = i;
@@ -38,7 +33,7 @@ public class IntKeyHeapTest {
 
     @Test
     public void testPushPeek() {
-        IntKeyHeap<Integer> heap = new IntKeyHeap<>(1);
+        KeyPriorityQueue<Integer, Integer> heap = new KeyPriorityQueue<>(1);
         int[] numbers = {-9, 20, 1, 4, 2, 7, 9, 20, 4, 2, 3, 2, 5, 100};
         for (int i = 0; i < numbers.length; i++) {
             heap.push(i, numbers[i]);
@@ -53,7 +48,7 @@ public class IntKeyHeapTest {
 
     @Test
     public void testPoll() {
-        IntKeyHeap<Integer> heap = new IntKeyHeap<>(1);
+        KeyPriorityQueue<Integer, Integer> heap = new KeyPriorityQueue<>(1);
         int[] numbers = {-9, 20, 1, 4, 2, 7, 9, 20, 4, 2, 3, 2, 5, 100};
         for (int i = 0; i < numbers.length; i++) {
             heap.push(i, numbers[i]);
@@ -77,7 +72,7 @@ public class IntKeyHeapTest {
 
     @Test
     public void testOrder() {
-        IntKeyHeap<Integer> heap = new IntKeyHeap<>(1, Comparator.comparing(i -> -i));
+        KeyPriorityQueue<Integer, Integer> heap = new KeyPriorityQueue<>(1, Comparator.comparing(i -> -i));
         int[] numbers = {-9, 20, 1, 4, 2, 7, 9, 20, 4, 2, 3, 2, 5, 100};
         for (int i = 0; i < numbers.length; i++) {
             heap.push(i, numbers[i]);
@@ -88,5 +83,22 @@ public class IntKeyHeapTest {
         }
         assertNull(heap.poll(0));
         assertEquals(0, heap.size());
+    }
+
+    @Test
+    public void testPut() {
+        KeyPriorityQueue<Integer, Integer> pq = new KeyPriorityQueue<>();
+        pq.push(0, 10);
+        pq.push(1, -3);
+        pq.push(2, 4);
+        pq.push(3, 1);
+        pq.push(1, 6);
+        assertEquals(6, pq.peek(1));
+
+        int[] actual = {1, 4, 6, 10};
+        int i = 0;
+        while (!pq.isEmpty()) {
+            assertEquals(actual[i++], pq.poll());
+        }
     }
 }

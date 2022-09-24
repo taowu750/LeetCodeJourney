@@ -1,40 +1,50 @@
 package util.datastructure;
 
 import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 /**
- * 带有整数键的优先队列，可以使用整数键在 O(1) 时间内查找元素，O(logN) 时间内删除、更新元素。
- * 注意整数键的大小范围为 [0, {@link #size()}]。
+ * 带有 key 的优先队列，可以使用 key 在 O(1) 时间内查找元素，O(logN) 时间内删除、更新元素。
  */
-public class IntKeyHeap<V> {
+public class KeyPriorityQueue<K, V> {
 
     private static final int INITIAL_CAPACITY = 16;
 
 
     private final Comparator<V> comparator;
-    private int[] key2idx;
-    private int[] idx2key;
+    private final Map<K, Integer> key2idx;
+    private K[] idx2key;
     private V[] elements;
     private int size;
 
 
-    public IntKeyHeap() {
-        this(INITIAL_CAPACITY, null);
+    public KeyPriorityQueue() {
+        this(INITIAL_CAPACITY, null, INITIAL_CAPACITY);
     }
 
-    public IntKeyHeap(int capacity) {
-        this(capacity, null);
+    public KeyPriorityQueue(int capacity) {
+        this(capacity, null, INITIAL_CAPACITY);
     }
 
-    public IntKeyHeap(Comparator<V> comparator) {
-        this(INITIAL_CAPACITY, comparator);
+    public KeyPriorityQueue(Comparator<V> comparator) {
+        this(INITIAL_CAPACITY, comparator, INITIAL_CAPACITY);
     }
 
-    public IntKeyHeap(int capacity, Comparator<V> comparator) {
+    public KeyPriorityQueue(int capacity, Comparator<V> comparator) {
+        this(capacity, comparator, INITIAL_CAPACITY);
+    }
+
+    @SuppressWarnings("unchecked")
+    public KeyPriorityQueue(int capacity, Comparator<V> comparator, int keyCapacity) {
         if (capacity <= 0) {
             throw new IllegalArgumentException("capacity=" + capacity);
         }
+        if (keyCapacity <= 0) {
+            throw new IllegalArgumentException("keyCapacity=" + keyCapacity);
+        }
+
         if (comparator != null) {
             this.comparator = comparator;
         } else {
@@ -42,11 +52,9 @@ public class IntKeyHeap<V> {
             this.comparator = (a, b) -> ((Comparable<V>) a).compareTo(b);
         }
 
-        // 0 表示未设置 key
-        key2idx = new int[capacity + 1];
+        key2idx = new HashMap<>(keyCapacity);
         // idx=0 不使用，所以容量+1
-        idx2key = new int[capacity + 1];
-        //noinspection unchecked
+        idx2key = (K[]) new Object[capacity + 1];
         elements = (V[]) new Object[capacity + 1];
     }
 
@@ -58,34 +66,19 @@ public class IntKeyHeap<V> {
         return size == 0;
     }
 
-    public int capacity() {
-        return elements.length - 1;
-    }
 
-    public boolean isFull() {
-        return size == elements.length - 1;
-    }
-
-    /**
-     * 将 elem 入队，并关联整数键 key，key 的必须在 [0, {@link #size()}]。
-     * 如果 key 已存在则替换元素。
-     *
-     * @param key 整数键
-     * @param elem 入队的元素
-     */
-    public void push(int key, V elem) {
-        checkKey(key);
+    public void push(K key, V elem) {
         Objects.requireNonNull(elem, "elem is null");
 
         // 没有设置过这个 key，就添加到队列最后面再上浮
-        if (key2idx[key] == 0) {
+        if (!key2idx.containsKey(key)) {
             ensureCapacity();
             elements[++size] = elem;
-            key2idx[key] = size;
+            key2idx.put(key, size);
             idx2key[size] = key;
             swim(size);
         } else {  // 已经设置过 key，则覆盖原有元素，并尝试上浮/下沉
-            int idx = key2idx[key];
+            int idx = key2idx.get(key);
             elements[idx] = elem;
             if (!swim(idx)) {
                 sink(idx);
@@ -94,12 +87,11 @@ public class IntKeyHeap<V> {
     }
 
     public V peek() {
-        return size > 0 ? elements[1] : null;
+        return elements[1];
     }
 
-    public V peek(int key) {
-        checkKey(key);
-        return key2idx[key] != 0 ? elements[key2idx[key]] : null;
+    public V peek(K key) {
+        return elements[key2idx.getOrDefault(key, 0)];
     }
 
     public V poll() {
@@ -110,10 +102,8 @@ public class IntKeyHeap<V> {
         return poll(idx2key[1], 1);
     }
 
-    public V poll(int key) {
-        checkKey(key);
-
-        int idx = key2idx[key];
+    public V poll(K key) {
+        int idx = key2idx.getOrDefault(key, 0);
         if (idx == 0) {
             return null;
         }
@@ -122,17 +112,17 @@ public class IntKeyHeap<V> {
     }
 
 
-    private V poll(int key, int idx) {
+    private V poll(K key, int idx) {
         // 用队尾的元素覆盖 idx，再下沉
         V elem = elements[idx], tail = elements[size];
         // 防止内存泄露
         elements[size] = null;
         elements[idx] = tail;
-        key2idx[key] = 0;
-        int tailKey = idx2key[size--];
+        key2idx.remove(key);
+        K tailKey = idx2key[size--];
         // 还有元素才下沉
         if (size > 0) {
-            key2idx[tailKey] = idx;
+            key2idx.put(tailKey, idx);
             idx2key[idx] = tailKey;
             sink(idx);
         }
@@ -140,31 +130,26 @@ public class IntKeyHeap<V> {
         return elem;
     }
 
-    private void checkKey(int key) {
-        if (key < 0 || key > size) {
-            throw new IllegalArgumentException("key=" + key + " exceed range [0," + key2idx.length + "]");
-        }
-    }
-
     private boolean swim(int idx) {
         // 当 idx 处的元素比父元素要小时，进行上浮
-        int oldIdx = idx, key = idx2key[idx];
+        int oldIdx = idx;
+        K key = idx2key[idx];
         V elem = elements[idx];
         for (int parentIdx = idx / 2;
              idx > 1 && comparator.compare(elem, elements[parentIdx]) < 0;
              idx = parentIdx, parentIdx = idx / 2) {
             // 更新 parent 的位置和映射关系
             elements[idx] = elements[parentIdx];
-            int parentKey = idx2key[parentIdx];
+            K parentKey = idx2key[parentIdx];
             idx2key[idx] = parentKey;
-            key2idx[parentKey] = idx;
+            key2idx.put(parentKey, idx);
         }
 
         // 如果上浮成功，更新 elem 的位置和映射关系
         if (oldIdx != idx) {
             elements[idx] = elem;
             idx2key[idx] = key;
-            key2idx[key] = idx;
+            key2idx.put(key, idx);
 
             return true;
         }
@@ -174,7 +159,8 @@ public class IntKeyHeap<V> {
 
     private void sink(int idx) {
         // 当 idx 处的元素比子元素要大时，进行下沉
-        int oldIdx = idx, key = idx2key[idx];
+        int oldIdx = idx;
+        K key = idx2key[idx];
         V elem = elements[idx];
         for (int childIdx = idx * 2; childIdx <= size; idx = childIdx, childIdx = idx * 2) {
             // 选择最小的子元素
@@ -187,16 +173,16 @@ public class IntKeyHeap<V> {
             }
             // 更新 child 的位置和映射关系
             elements[idx] = elements[childIdx];
-            int childKey = idx2key[childIdx];
+            K childKey = idx2key[childIdx];
             idx2key[idx] = childKey;
-            key2idx[childKey] = idx;
+            key2idx.put(childKey, idx);
         }
 
         // 如果下沉成功，更新 elem 的位置和映射关系
         if (oldIdx != idx) {
             elements[idx] = elem;
             idx2key[idx] = key;
-            key2idx[key] = idx;
+            key2idx.put(key, idx);
         }
     }
 
@@ -218,16 +204,10 @@ public class IntKeyHeap<V> {
         }
 
         V[] newElements = (V[]) new Object[newCap];
-        int[] newKey2idx = new int[newCap];
-        int[] newIdx2Key = new int[newCap];
-
+        K[] newIdx2Key = (K[]) new Object[newCap];
         System.arraycopy(elements, 1, newElements, 1, size);
-        // 注意，key2idx [0, size] 都可用
-        System.arraycopy(key2idx , 0, newKey2idx, 0, size + 1);
         System.arraycopy(idx2key, 1, newIdx2Key, 1, size);
-
         elements = newElements;
-        key2idx = newKey2idx;
         idx2key = newIdx2Key;
     }
 }
