@@ -2,9 +2,7 @@ package training.greedy;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 
@@ -70,6 +68,7 @@ public class E44_Hard_WildcardMatching {
         assertTrue(method.test("abefcdgiescdfimde", "ab*cd?i*de"));
         assertTrue(method.test("ab", "*?*?*"));
         assertFalse(method.test("mississippi", "m??*ss*?i*pi"));
+        assertFalse(method.test("mississippi", "m*issi*iss*"));
     }
 
     static class Tuple {
@@ -229,7 +228,7 @@ public class E44_Hard_WildcardMatching {
          */
         int sRight = s.length(), pRight = p.length();
         while (sRight > 0 && pRight > 0 && p.charAt(pRight - 1) != '*') {
-            if (charMatch(s.charAt(sRight - 1), p.charAt(pRight - 1))) {
+            if (isMatch(s.charAt(sRight - 1), p.charAt(pRight - 1))) {
                 --sRight;
                 --pRight;
             } else {
@@ -258,7 +257,7 @@ public class E44_Hard_WildcardMatching {
                 ++pIndex;
                 sRecord = sIndex;
                 pRecord = pIndex;
-            } else if (charMatch(s.charAt(sIndex), p.charAt(pIndex))) {
+            } else if (isMatch(s.charAt(sIndex), p.charAt(pIndex))) {
                 // 如果两个字符可以匹配，就继续寻找 u_i 的下一个字符
                 ++sIndex;
                 ++pIndex;
@@ -289,7 +288,7 @@ public class E44_Hard_WildcardMatching {
         return true;
     }
 
-    public boolean charMatch(char u, char v) {
+    public boolean isMatch(char u, char v) {
         return u == v || v == '?';
     }
 
@@ -300,72 +299,73 @@ public class E44_Hard_WildcardMatching {
 
 
     /**
-     * 和上面的方法类似，只不过更加容易理解
+     * 和上面的方法类似，只不过没有合并冗余的情况，将所有逻辑都展示出来
      *
-     * LeetCode 耗时：2 ms - 93.67%
+     * LeetCode 耗时：1 ms - 100%
      *          内存消耗：41.7 MB - 69.09%
      */
     public boolean easyGreedyMethod(String s, String p) {
-        // 合并连续的 *
-        char[] chars = p.toCharArray();
-        int l = 0;
-        boolean isSerialSign = false;
-        for (int i = 0; i < chars.length; i++) {
-            if (chars[i] == '*') {
-                if (!isSerialSign) {
-                    isSerialSign = true;
-                    chars[l++] = chars[i];
-                }
+        final int m = s.length(), n = p.length();
+        int sLo = 0, sHi = m - 1;
+        int pLo = 0, pHi = n - 1;
+        // 比对第一个 * 之前的序列是否相同
+        while (pLo < n && sLo < m && p.charAt(pLo) != '*') {
+            if (isMatch(s.charAt(sLo), p.charAt(pLo))) {
+                sLo++;
+                pLo++;
             } else {
-                isSerialSign = false;
-                chars[l++] = chars[i];
+                break;
             }
         }
-        p = new String(chars, 0, l);
-        // 记录所有 * 下标
-        List<Integer> signIndices = new ArrayList<>();
-        for (int i = 0; i < p.length(); i++) {
-            if (p.charAt(i) == '*') {
-                signIndices.add(i);
+        if (pLo == n) { // p 遍历结束，则 s 必须也遍历结束
+            return sLo == m;
+        } else if (sLo == m) { // s 遍历结束，则 p 后面必须都是 *
+            for (; pLo < n; pLo++) {
+                if (p.charAt(pLo) != '*') {
+                    return false;
+                }
             }
-        }
-
-        // 没有 *，则比对所有内容
-        if (signIndices.size() == 0) {
-            return s.length() == p.length() && match(s, 0, p, 0, s.length());
-        }
-        // 对比第一个 * 之前的内容
-        if (s.length() < signIndices.get(0) || !match(s, 0, p, 0, signIndices.get(0))) {
+            return true;
+        } else if (p.charAt(pLo) != '*') { // 循环因为字符不匹配退出
             return false;
         }
-        // 对比两个 * 之间的内容
-        int i = signIndices.get(0);
-        for (int j = 0; j < signIndices.size() - 1; j++) {
-            int k = i, interval = signIndices.get(j + 1) - signIndices.get(j) - 1;
-            // 找到第一次匹配的地方
-            for (; k <= s.length() - interval; k++) {
-                if (match(s, k, p, signIndices.get(j) + 1, interval)) {
-                    break;
-                }
-            }
-            if (k > s.length() - interval) {
-                return false;
+
+        // 比对最后一个 * 之后的序列是否相同
+        while (sHi >= sLo && pHi > pLo && p.charAt(pHi) != '*') {
+            if (isMatch(s.charAt(sHi), p.charAt(pHi))) {
+                sHi--;
+                pHi--;
             } else {
-                i = k + interval;
+                break;
             }
         }
-        // 对比最后一个 * 之后的内容
-        int interval = p.length() - signIndices.get(signIndices.size() - 1) - 1;
-        return s.length() - i >= interval && match(s, s.length() - interval, p, signIndices.get(signIndices.size() - 1) + 1, interval);
-    }
+        if (p.charAt(pHi) != '*') { // 循环因为字符不匹配退出
+            return false;
+        }
 
-    private boolean match(String s, int si, String p, int pi, int len) {
-        for (int i = 0; i < len; i++) {
-            if (s.charAt(si + i) != p.charAt(pi + i) && p.charAt(pi + i) != '?') {
+        // 比对 * 之间的字符序列
+        int i = sLo, j = ++pLo;
+        while (i <= sHi && j < pHi) {
+            if (p.charAt(j) == '*') {
+                sLo = i;
+                pLo = ++j;
+            } else if (isMatch(s.charAt(i), p.charAt(j))) {
+                i++;
+                j++;
+            } else if (sLo < sHi) {
+                j = pLo;
+                i = ++sLo;
+            } else {
                 return false;
             }
         }
 
+        // p 后面必须都是 *
+        for (; j < pHi; j++) {
+            if (p.charAt(j) != '*') {
+                return false;
+            }
+        }
         return true;
     }
 
