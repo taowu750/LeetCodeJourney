@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 /**
  * 659. 分割数组为连续子序列: https://leetcode-cn.com/problems/split-array-into-consecutive-subsequences/
  *
- * 给你一个按升序排序的整数数组 num（可能包含重复数字），请你将它们分割成一个或多个长度至少为 3 的子序列，
+ * 给你一个「按升序排序」的整数数组 num（可能包含重复数字），请你将它们分割成一个或多个长度至少为 3 的子序列，
  * 其中每个子序列都由「连续整数」组成。
  * 如果可以完成上述分割，则返回 true ；否则，返回 false 。
  *
