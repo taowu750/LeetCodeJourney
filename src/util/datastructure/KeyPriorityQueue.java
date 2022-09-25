@@ -79,9 +79,13 @@ public class KeyPriorityQueue<K, V> {
             swim(size);
         } else {  // 已经设置过 key，则覆盖原有元素，并尝试上浮/下沉
             int idx = key2idx.get(key);
+            V old = elements[idx];
             elements[idx] = elem;
-            if (!swim(idx)) {
+            int cmp = comparator.compare(old, elem);
+            if (cmp < 0) {
                 sink(idx);
+            } else if (cmp > 0) {
+                swim(idx);
             }
         }
     }
@@ -130,7 +134,7 @@ public class KeyPriorityQueue<K, V> {
         return elem;
     }
 
-    private boolean swim(int idx) {
+    private void swim(int idx) {
         // 当 idx 处的元素比父元素要小时，进行上浮
         int oldIdx = idx;
         K key = idx2key[idx];
@@ -150,11 +154,7 @@ public class KeyPriorityQueue<K, V> {
             elements[idx] = elem;
             idx2key[idx] = key;
             key2idx.put(key, idx);
-
-            return true;
         }
-
-        return false;
     }
 
     private void sink(int idx) {
