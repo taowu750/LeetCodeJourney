@@ -101,4 +101,23 @@ public class KeyPriorityQueueTest {
             assertEquals(actual[i++], pq.poll());
         }
     }
+
+    @Test
+    public void testGetKey() {
+        KeyPriorityQueue<Integer, Integer> heap = new KeyPriorityQueue<>(1);
+        int[] numbers = {-9, 20, 1, 4, 2, 7, 9, 3, 5, 100};
+        for (int i = 0; i < numbers.length; i++) {
+            heap.push(i, numbers[i]);
+        }
+        assertEquals(-9, heap.peekEntry().value);
+        assertEquals(0, heap.peekEntry().key);
+
+        int[] indices = {0, 2, 4, 7, 3, 8, 5, 6, 1, 9};
+        int i = 0;
+        while (!heap.isEmpty()) {
+            final KeyPriorityQueue.Entry<Integer, Integer> entry = heap.pollEntry();
+            assertEquals(numbers[indices[i]], entry.value);
+            assertEquals(indices[i++], entry.key);
+        }
+    }
 }

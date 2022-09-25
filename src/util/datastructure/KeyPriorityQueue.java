@@ -20,6 +20,17 @@ public class KeyPriorityQueue<K, V> {
     private int size;
 
 
+    public static class Entry<K, V> {
+        public final K key;
+        public final V value;
+
+        public Entry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+
     public KeyPriorityQueue() {
         this(INITIAL_CAPACITY, null, INITIAL_CAPACITY);
     }
@@ -94,16 +105,20 @@ public class KeyPriorityQueue<K, V> {
         return elements[1];
     }
 
+    public Entry<K, V> peekEntry() {
+        return size > 0 ? new Entry<>(idx2key[1], elements[1]) : null;
+    }
+
     public V peek(K key) {
         return elements[key2idx.getOrDefault(key, 0)];
     }
 
     public V poll() {
-        if (size == 0) {
-            return null;
-        }
+        return size > 0 ? poll(idx2key[1], 1) : null;
+    }
 
-        return poll(idx2key[1], 1);
+    public Entry<K, V> pollEntry() {
+        return size > 0 ? new Entry<>(idx2key[1], poll(idx2key[1], 1)) : null;
     }
 
     public V poll(K key) {
@@ -121,11 +136,12 @@ public class KeyPriorityQueue<K, V> {
         V elem = elements[idx], tail = elements[size];
         // 防止内存泄露
         elements[size] = null;
+        K tailKey = idx2key[size];
+        idx2key[size] = null;
         elements[idx] = tail;
         key2idx.remove(key);
-        K tailKey = idx2key[size--];
         // 还有元素才下沉
-        if (size > 0) {
+        if (--size > 0) {
             key2idx.put(tailKey, idx);
             idx2key[idx] = tailKey;
             sink(idx);
