@@ -48,25 +48,23 @@ public class G029_ColorATree {
     public static void test(Runnable method) {
         StdIOTestUtil.test(method, "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_input.txt",
                 "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_expect.txt");
+        StdIOTestUtil.test(method, "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_input2.txt",
+                "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_expect2.txt");
+        StdIOTestUtil.test(method, "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_input3.txt",
+                "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_expect3.txt");
     }
 
     public static class Union {
-        private int count;
-        private int[] roots;
-        private double[] weights;
-        private Map<Integer, List<Integer>> rid2path;
+        private final int[] roots;
+        private final double[] weights;
+        private final int[] size;
 
         public Union(int n, double[] weights) {
-            count = n;
             roots = new int[n + 1];
             Arrays.setAll(roots, i -> i);
-
             this.weights = weights;
-            // path: 从根到尾的路径
-            rid2path = new HashMap<>((int) (n / 0.75) + 1);
-            for (int i = 1; i <= n; i++) {
-                rid2path.put(i, new ArrayList<>(Collections.singletonList(i)));
-            }
+            size = new int[n + 1];
+            Arrays.fill(size, 1);
         }
 
         public int connect(int child, int parent) {
@@ -76,15 +74,9 @@ public class G029_ColorATree {
             }
 
             roots[p] = q;
-            int sizeP = rid2path.get(p).size(), sizeQ = rid2path.get(q).size();
-            rid2path.get(q).addAll(rid2path.remove(p));
-
-            double weight = (weights[p] * sizeP + weights[q] * sizeQ) / (sizeP + sizeQ);
-            for (int id : rid2path.get(q)) {
-                weights[id] = weight;
-            }
-
-            count--;
+            int sizeP = size[p], sizeQ = size[q];
+            weights[q] = (weights[p] * sizeP + weights[q] * sizeQ) / (sizeP + sizeQ);
+            size[q] += size[p];
 
             return q;
         }
@@ -97,19 +89,12 @@ public class G029_ColorATree {
             return roots[id];
         }
 
-        public double weight(int id) {
-            return weights[id];
+        public double weight(int rid) {
+            return weights[rid];
         }
 
-        public List<Integer> path() {
-            for (List<Integer> p : rid2path.values()) {
-                return p;
-            }
-            return Collections.emptyList();
-        }
-
-        public int count() {
-            return count;
+        public int size(int rid) {
+            return size[rid];
         }
     }
 
@@ -127,38 +112,38 @@ public class G029_ColorATree {
 
 
         伪代码如下：
-        // 更好的方法是实现一个关联键的优先队列
+        // ws 是每个等价权值节点对应的权值和，weights 是每个等价权值节点的平均权值
+        ans = sum(ws)
         sortMap<weight, set<nodeId>> map
         for max(weight, set) in map:
             id = set.removeOne()
-            if pid = parent[id]; pid == 0:
-                goto ②
+            if pid = rid(parent[id]); pid == 0:
+                goto ①
 
-            pw = weights[pid]   ①
+            ans += ws[pid] * size(id)
+            pw = weights[pid]
             map.remove(pw, pid)
 
-            // rid 是合并路径的根节点
-            rid, uw = union(id, pid)
-            // path(id) 的根，接到 path(rid) 的尾后
-            path(id).connect(path(rid))
-            // 路径上每个节点的权值都要更新，否则 ① 处会出错
-            weights[path(rid)] = uw
+            // pid 是合并路径的根节点
+            uw = union(id, pid)
+            map.add(uw, pid)
+            ws[pid] += ws[id]
 
-            map.add(uw, rid)
-            if set.isEmpty:  ②
+            if set.isEmpty:  ①
                 map.remove(weight)
 
-         return path
+         return ans
          */
 
         Scanner in = new Scanner(System.in);
-        int n = in.nextInt(), r = in.nextInt();
+        int n = in.nextInt(), r = in.nextInt(), ans = 0;
         int[] ws = new int[n + 1];
         double[] weights = new double[n + 1];
         // 记录权值-路径根节点的映射
         TreeMap<Double, Set<Integer>> w2i = new TreeMap<>();
         for (int i = 1; i <= n; i++) {
             ws[i] = in.nextInt();
+            ans += ws[i];
             weights[i] = ws[i];
             w2i.computeIfAbsent(weights[i], k -> new HashSet<>(2)).add(i);
         }
@@ -168,11 +153,15 @@ public class G029_ColorATree {
             parents[child] = parent;
         }
 
+        StringBuilder sb = new StringBuilder();
         Union union = new Union(n, weights);
-        while (union.count() > 1) {
+        int k = 0;
+        while (!w2i.isEmpty()) {
             final Map.Entry<Double, Set<Integer>> entry = w2i.lastEntry();
             double weight = entry.getKey();
             final Set<Integer> ids = entry.getValue();
+            sb.append(String.format("%.2f", weight)).append(' ');
+            k++;
             int id = 0;
             for (int i : ids) {
                 id = i;
@@ -181,18 +170,20 @@ public class G029_ColorATree {
             ids.remove(id);
 
             try {
-                int pid = parents[id];
+                int pid = union.rid(parents[id]);
                 if (pid == 0) {
                     continue;
                 }
 
+                ans += union.size(pid) * ws[id];
                 w2i.computeIfPresent(union.weight(pid), (w, s) -> {
                     s.remove(pid);
                     return s.isEmpty() ? null : s;
                 });
 
-                int rid = union.connect(id, pid);
-                w2i.computeIfAbsent(union.weight(rid), w -> new HashSet<>(2)).add(rid);
+                union.connect(id, pid);
+                w2i.computeIfAbsent(union.weight(pid), w -> new HashSet<>(2)).add(pid);
+                ws[pid] += ws[id];
             } finally {
                 if (ids.isEmpty()) {
                     w2i.remove(weight);
@@ -200,10 +191,9 @@ public class G029_ColorATree {
             }
         }
 
-        int ans = 0, i = 1;
-        for (int id : union.path()) {
-            ans += i++ * ws[id];
-        }
+//        if (r == 549) {
+//            System.out.println(sb);
+//        }
 
         System.out.println(ans);
     }
