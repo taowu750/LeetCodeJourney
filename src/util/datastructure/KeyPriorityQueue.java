@@ -64,9 +64,8 @@ public class KeyPriorityQueue<K, V> {
         }
 
         key2idx = new HashMap<>(keyCapacity);
-        // idx=0 不使用，所以容量+1
-        idx2key = (K[]) new Object[capacity + 1];
-        elements = (V[]) new Object[capacity + 1];
+        idx2key = (K[]) new Object[capacity];
+        elements = (V[]) new Object[capacity];
     }
 
     public int size() {
@@ -84,10 +83,10 @@ public class KeyPriorityQueue<K, V> {
         // 没有设置过这个 key，就添加到队列最后面再上浮
         if (!key2idx.containsKey(key)) {
             ensureCapacity();
-            elements[++size] = elem;
+            elements[size] = elem;
             key2idx.put(key, size);
             idx2key[size] = key;
-            swim(size);
+            swim(size++);
         } else {  // 已经设置过 key，则覆盖原有元素，并尝试上浮/下沉
             int idx = key2idx.get(key);
             V old = elements[idx];
@@ -102,46 +101,47 @@ public class KeyPriorityQueue<K, V> {
     }
 
     public V peek() {
-        return elements[1];
+        return elements[0];
     }
 
     public Entry<K, V> peekEntry() {
-        return size > 0 ? new Entry<>(idx2key[1], elements[1]) : null;
+        return size > 0 ? new Entry<>(idx2key[0], elements[0]) : null;
     }
 
     public V peek(K key) {
-        return elements[key2idx.getOrDefault(key, 0)];
+        int idx = key2idx.getOrDefault(key, -1);
+        return idx != -1 ? elements[idx] : null;
     }
 
     public V poll() {
-        return size > 0 ? poll(idx2key[1], 1) : null;
+        return size > 0 ? poll(idx2key[0], 0) : null;
     }
 
     public Entry<K, V> pollEntry() {
-        return size > 0 ? new Entry<>(idx2key[1], poll(idx2key[1], 1)) : null;
+        return size > 0 ? new Entry<>(idx2key[0], poll(idx2key[0], 0)) : null;
     }
 
     public V poll(K key) {
-        int idx = key2idx.getOrDefault(key, 0);
-        if (idx == 0) {
-            return null;
-        }
-
-        return poll(key, idx);
+        int idx = key2idx.getOrDefault(key, -1);
+        return idx != -1 ? poll(key, idx) : null;
     }
 
 
     private V poll(K key, int idx) {
         // 用队尾的元素覆盖 idx，再下沉
-        V elem = elements[idx], tail = elements[size];
-        // 防止内存泄露
+        V elem = elements[idx], tail = elements[--size];
+        // 释放原有队尾
         elements[size] = null;
         K tailKey = idx2key[size];
         idx2key[size] = null;
-        elements[idx] = tail;
         key2idx.remove(key);
+        // 如果删除的就是队尾元素，则直接返回
+        if (idx == size) {
+            return tail;
+        }
         // 还有元素才下沉
-        if (--size > 0) {
+        if (size > 0) {
+            elements[idx] = tail;
             key2idx.put(tailKey, idx);
             idx2key[idx] = tailKey;
             sink(idx);
@@ -155,9 +155,9 @@ public class KeyPriorityQueue<K, V> {
         int oldIdx = idx;
         K key = idx2key[idx];
         V elem = elements[idx];
-        for (int parentIdx = idx / 2;
-             idx > 1 && comparator.compare(elem, elements[parentIdx]) < 0;
-             idx = parentIdx, parentIdx = idx / 2) {
+        for (int parentIdx = (idx - 1) / 2;
+             idx > 0 && comparator.compare(elem, elements[parentIdx]) < 0;
+             idx = parentIdx, parentIdx = (idx - 1) / 2) {
             // 更新 parent 的位置和映射关系
             elements[idx] = elements[parentIdx];
             K parentKey = idx2key[parentIdx];
@@ -178,9 +178,9 @@ public class KeyPriorityQueue<K, V> {
         int oldIdx = idx;
         K key = idx2key[idx];
         V elem = elements[idx];
-        for (int childIdx = idx * 2; childIdx <= size; idx = childIdx, childIdx = idx * 2) {
+        for (int childIdx = idx * 2 + 1; childIdx < size; idx = childIdx, childIdx = idx * 2 + 1) {
             // 选择最小的子元素
-            if (childIdx < size && comparator.compare(elements[childIdx], elements[childIdx + 1]) > 0) {
+            if (childIdx < size - 1 && comparator.compare(elements[childIdx], elements[childIdx + 1]) > 0) {
                 childIdx++;
             }
             // 当前元素 <= 子元素，则终止下沉
@@ -204,7 +204,7 @@ public class KeyPriorityQueue<K, V> {
 
     @SuppressWarnings("unchecked")
     private void ensureCapacity() {
-        if (size < elements.length - 1) {
+        if (size < elements.length) {
             return;
         }
         if (elements.length == Integer.MAX_VALUE) {
@@ -212,17 +212,17 @@ public class KeyPriorityQueue<K, V> {
         }
 
         int newCap;
-        if (Integer.MAX_VALUE - elements.length / 2 <= elements.length) {
+        if (Integer.MAX_VALUE - (elements.length + 1) / 2 <= elements.length) {
             newCap = Integer.MAX_VALUE;
         } else {
-            // 因为 elements 长度至少为 2（0 不使用），所以 elements.length / 2 至少为 1
-            newCap = elements.length + elements.length / 2;
+            // 因为 elements 长度可能为 1，所以这里加 1 防止计算结果为 0
+            newCap = elements.length + (elements.length + 1) / 2;
         }
 
         V[] newElements = (V[]) new Object[newCap];
         K[] newIdx2Key = (K[]) new Object[newCap];
-        System.arraycopy(elements, 1, newElements, 1, size);
-        System.arraycopy(idx2key, 1, newIdx2Key, 1, size);
+        System.arraycopy(elements, 0, newElements, 0, size);
+        System.arraycopy(idx2key, 0, newIdx2Key, 0, size);
         elements = newElements;
         idx2key = newIdx2Key;
     }
