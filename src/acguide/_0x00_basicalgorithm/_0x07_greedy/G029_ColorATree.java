@@ -2,6 +2,7 @@ package acguide._0x00_basicalgorithm._0x07_greedy;
 
 import org.junit.jupiter.api.Test;
 import util.StdIOTestUtil;
+import util.datastructure.KeyPriorityQueue;
 
 import java.util.*;
 
@@ -45,13 +46,20 @@ import java.util.*;
  */
 public class G029_ColorATree {
 
+    public static int whichCase = 1;
+
     public static void test(Runnable method) {
         StdIOTestUtil.test(method, "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_input.txt",
                 "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_expect.txt");
+        whichCase++;
+
         StdIOTestUtil.test(method, "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_input2.txt",
                 "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_expect2.txt");
+        whichCase++;
+
         StdIOTestUtil.test(method, "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_input3.txt",
                 "acguide/_0x00_basicalgorithm/_0x07_greedy/data/G029_expect3.txt");
+        whichCase++;
     }
 
     public static class Union {
@@ -153,15 +161,11 @@ public class G029_ColorATree {
             parents[child] = parent;
         }
 
-        StringBuilder sb = new StringBuilder();
         Union union = new Union(n, weights);
-        int k = 0;
         while (!w2i.isEmpty()) {
             final Map.Entry<Double, Set<Integer>> entry = w2i.lastEntry();
             double weight = entry.getKey();
             final Set<Integer> ids = entry.getValue();
-            sb.append(String.format("%.2f", weight)).append(' ');
-            k++;
             int id = 0;
             for (int i : ids) {
                 id = i;
@@ -191,15 +195,108 @@ public class G029_ColorATree {
             }
         }
 
-//        if (r == 549) {
-//            System.out.println(sb);
-//        }
-
         System.out.println(ans);
     }
 
     @Test
     public void testColor() {
         test(this::color);
+    }
+
+
+    public static class UF {
+        private final int[] roots;
+        private final int[] size;
+
+        public UF(int n) {
+            roots = new int[n + 1];
+            Arrays.setAll(roots, i -> i);
+            size = new int[n + 1];
+            Arrays.fill(size, 1);
+        }
+
+        public int connect(int child, int parent) {
+            int p = rid(child), q = rid(parent);
+            if (p == q) {
+                return p;
+            }
+
+            roots[p] = q;
+            size[q] += size[p];
+
+            return q;
+        }
+
+        public int rid(int id) {
+            if (roots[id] != id) {
+                roots[id] = rid(roots[id]);
+            }
+
+            return roots[id];
+        }
+
+        public int size(int rid) {
+            return size[rid];
+        }
+    }
+
+    /**
+     * 使用 {@link KeyPriorityQueue} 的方法
+     */
+    public void keyPriorityQueueMethod() {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt(), r = in.nextInt(), ans = 0;
+        int[] weights = new int[n + 1];
+        KeyPriorityQueue<Integer, Double> pq = new KeyPriorityQueue<>(n, (a, b) -> -Double.compare(a, b), n);
+        for (int i = 1; i <= n; i++) {
+            weights[i] = in.nextInt();
+            ans += weights[i];
+            pq.push(i, (double) weights[i]);
+        }
+        int[] parents = new int[n + 1];
+        for (int i = 0; i < n - 1; i++) {
+            int parent = in.nextInt(), child = in.nextInt();
+            parents[child] = parent;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        double rootWeight = 0;
+        UF uf = new UF(n);
+        while (!pq.isEmpty()) {
+            // 取最大权值的节点
+            final KeyPriorityQueue.Entry<Integer, Double> e = pq.pollEntry();
+            sb.append(String.format("%.2f", e.value)).append(' ');
+            // 如果取的是根节点
+            if (e.key == r) {
+                rootWeight = e.value;
+                continue;
+            }
+            // 取它的父节点
+            int id = e.key, pid = uf.rid(parents[id]);
+            // 这里如果用 pollOrDefault，在第 3 个测试用例就会报错
+            double weight = e.value, parentWeight = pq.peekOrDefault(pid, rootWeight);
+            int size = uf.size(id), parentSize = uf.size(pid);
+            // 更新权值，计算结果
+            ans += parentSize * weights[id];
+            // 计算等价权值
+            double mergeWeight = (weight * size + parentWeight * parentSize) / (size + parentSize);
+            // 进行合并
+            pq.push(uf.connect(id, pid), mergeWeight);
+            if (pid == r) {
+                rootWeight = mergeWeight;
+            }
+            weights[pid] += weights[id];
+        }
+
+        if (r == 549) {
+            System.out.println(sb);
+        }
+
+        System.out.println(ans);
+    }
+
+    @Test
+    public void testKeyPriorityQueueMethod() {
+        test(this::keyPriorityQueueMethod);
     }
 }
