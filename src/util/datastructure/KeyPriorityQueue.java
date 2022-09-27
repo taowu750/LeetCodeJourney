@@ -113,6 +113,11 @@ public class KeyPriorityQueue<K, V> {
         return idx != -1 ? elements[idx] : null;
     }
 
+    public V peekOrDefault(K key, V defaultValue) {
+        int idx = key2idx.getOrDefault(key, -1);
+        return idx != -1 ? elements[idx] : defaultValue;
+    }
+
     public V poll() {
         return size > 0 ? poll(idx2key[0], 0) : null;
     }
@@ -124,6 +129,11 @@ public class KeyPriorityQueue<K, V> {
     public V poll(K key) {
         int idx = key2idx.getOrDefault(key, -1);
         return idx != -1 ? poll(key, idx) : null;
+    }
+
+    public V pollOrDefault(K key, V defaultValue) {
+        int idx = key2idx.getOrDefault(key, -1);
+        return idx != -1 ? poll(key, idx) : defaultValue;
     }
 
 
@@ -142,8 +152,8 @@ public class KeyPriorityQueue<K, V> {
         // 还有元素才下沉
         if (size > 0) {
             elements[idx] = tail;
-            key2idx.put(tailKey, idx);
             idx2key[idx] = tailKey;
+            key2idx.put(tailKey, idx);
             sink(idx);
         }
 
