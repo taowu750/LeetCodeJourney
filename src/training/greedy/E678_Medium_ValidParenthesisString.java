@@ -235,4 +235,52 @@ public class E678_Medium_ValidParenthesisString {
     public void testGreedyMethod() {
         test(this::greedyMethod);
     }
+
+
+    /**
+     * 自己想出来的，易于理解的方法。
+     *
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：36.3 MB - 40.25%
+     */
+    public boolean easyUnderstandMethod(String s) {
+        // lpr = count('(')-count(')'), sign = count('*'), rightSign = 变成 ) 的 *
+        // ) 必须和之前的 ( 配对
+        int lpr = 0, sign = 0, rightSign = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(') {
+                lpr++;
+            } else if (c == ')') { // 遇到 )
+                if (lpr > 0) { // 如果之前有多的 (，就用 (
+                    lpr--;
+                } else {
+                    // 如果之前有多的 *，就变成 (
+                    if (sign > 0) {
+                        sign--;
+                    } else if (rightSign > 0) { // 如果前面有原先变成 ) 的 *，现在让它变回 *
+                        rightSign--;
+                        sign++;
+                    } else { // 否则无法配对这个 )
+                        return false;
+                    }
+                }
+            } else {
+                // 如果 ( 多了，先尝试把 * 变成 )
+                if (lpr > 0) {
+                    rightSign++;
+                    lpr--;
+                } else {
+                    sign++;
+                }
+            }
+        }
+
+        return lpr == 0;
+    }
+
+    @Test
+    public void testEasyUnderstandMethod() {
+        test(this::easyUnderstandMethod);
+    }
 }

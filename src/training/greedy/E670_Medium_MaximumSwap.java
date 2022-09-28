@@ -71,4 +71,31 @@ public class E670_Medium_MaximumSwap {
     public void testMaximumSwap() {
         test(this::maximumSwap);
     }
+
+
+    /**
+     * 和上面的方法类似，但是不使用字符串，更加高效简洁。
+     *
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：35.2 MB - 63.90%
+     */
+    public int betterMethod(int num) {
+        int ans = num, maxDigit = num % 10, digitModulo = 1;
+        for (int a = num / 10, modulo = 10; a > 0; a /= 10, modulo *= 10) {
+            int cur = a % 10;
+            if (cur < maxDigit) {
+                ans = Math.max(ans, num + (maxDigit - cur) * (modulo - digitModulo));
+            } else if (cur > maxDigit) {
+                maxDigit = cur;
+                digitModulo = modulo;
+            }
+        }
+
+        return ans;
+    }
+
+    @Test
+    public void testBetterMethod() {
+        test(this::betterMethod);
+    }
 }
