@@ -259,13 +259,11 @@ public class G029_ColorATree {
             parents[child] = parent;
         }
 
-        StringBuilder sb = new StringBuilder();
         double rootWeight = 0;
         UF uf = new UF(n);
         while (!pq.isEmpty()) {
             // 取最大权值的节点
             final KeyPriorityQueue.Entry<Integer, Double> e = pq.pollEntry();
-            sb.append(String.format("%.2f", e.value)).append(' ');
             // 如果取的是根节点
             if (e.key == r) {
                 rootWeight = e.value;
@@ -286,10 +284,6 @@ public class G029_ColorATree {
                 rootWeight = mergeWeight;
             }
             weights[pid] += weights[id];
-        }
-
-        if (r == 549) {
-            System.out.println(sb);
         }
 
         System.out.println(ans);

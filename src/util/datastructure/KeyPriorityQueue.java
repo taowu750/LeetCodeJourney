@@ -80,22 +80,20 @@ public class KeyPriorityQueue<K, V> {
     public void push(K key, V elem) {
         Objects.requireNonNull(elem, "elem is null");
 
+        int idx = key2idx.getOrDefault(key, -1);
         // 没有设置过这个 key，就添加到队列最后面再上浮
-        if (!key2idx.containsKey(key)) {
+        if (idx == -1) {
             ensureCapacity();
-            elements[size] = elem;
-            key2idx.put(key, size);
-            idx2key[size] = key;
-            swim(size++);
+            swim(size++, key, elem);
         } else {  // 已经设置过 key，则覆盖原有元素，并尝试上浮/下沉
-            int idx = key2idx.get(key);
-            V old = elements[idx];
-            elements[idx] = elem;
-            int cmp = comparator.compare(old, elem);
+            int cmp = comparator.compare(elements[idx], elem);
             if (cmp < 0) {
-                sink(idx);
+                sink(idx, key, elem);
             } else if (cmp > 0) {
-                swim(idx);
+                swim(idx, key, elem);
+            } else {
+                //注意虽然比较结果相同，但还是需要覆盖原来的对象
+                elements[idx] = elem;
             }
         }
     }
@@ -149,22 +147,18 @@ public class KeyPriorityQueue<K, V> {
         if (idx == size) {
             return tail;
         }
-        // 还有元素才下沉
-        if (size > 0) {
-            elements[idx] = tail;
-            idx2key[idx] = tailKey;
-            key2idx.put(tailKey, idx);
-            sink(idx);
+        sink(idx, tailKey, tail);
+        // 如果队尾元素没有沉下去，那么就需要把它浮上来试试看
+        // 这种情况是因为队尾可能不是 idx 节点的子节点（不再它的子树中），所以可能小于 idx 节点
+        if (elements[idx] == tail) {
+            swim(idx, tailKey, tail);
         }
 
         return elem;
     }
 
-    private void swim(int idx) {
+    private void swim(int idx, K key, V elem) {
         // 当 idx 处的元素比父元素要小时，进行上浮
-        int oldIdx = idx;
-        K key = idx2key[idx];
-        V elem = elements[idx];
         for (int parentIdx = (idx - 1) / 2;
              idx > 0 && comparator.compare(elem, elements[parentIdx]) < 0;
              idx = parentIdx, parentIdx = (idx - 1) / 2) {
@@ -175,22 +169,17 @@ public class KeyPriorityQueue<K, V> {
             key2idx.put(parentKey, idx);
         }
 
-        // 如果上浮成功，更新 elem 的位置和映射关系
-        if (oldIdx != idx) {
-            elements[idx] = elem;
-            idx2key[idx] = key;
-            key2idx.put(key, idx);
-        }
+        // 更新 elem 的位置和映射关系
+        elements[idx] = elem;
+        idx2key[idx] = key;
+        key2idx.put(key, idx);
     }
 
-    private void sink(int idx) {
+    private void sink(int idx, K key, V elem) {
         // 当 idx 处的元素比子元素要大时，进行下沉
-        int oldIdx = idx;
-        K key = idx2key[idx];
-        V elem = elements[idx];
         for (int childIdx = idx * 2 + 1; childIdx < size; idx = childIdx, childIdx = idx * 2 + 1) {
             // 选择最小的子元素
-            if (childIdx < size - 1 && comparator.compare(elements[childIdx], elements[childIdx + 1]) > 0) {
+            if (childIdx + 1 < size && comparator.compare(elements[childIdx], elements[childIdx + 1]) > 0) {
                 childIdx++;
             }
             // 当前元素 <= 子元素，则终止下沉
@@ -204,12 +193,10 @@ public class KeyPriorityQueue<K, V> {
             key2idx.put(childKey, idx);
         }
 
-        // 如果下沉成功，更新 elem 的位置和映射关系
-        if (oldIdx != idx) {
-            elements[idx] = elem;
-            idx2key[idx] = key;
-            key2idx.put(key, idx);
-        }
+        // 更新 elem 的位置和映射关系
+        elements[idx] = elem;
+        idx2key[idx] = key;
+        key2idx.put(key, idx);
     }
 
     @SuppressWarnings("unchecked")
