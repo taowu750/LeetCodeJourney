@@ -149,7 +149,7 @@ public class KeyPriorityQueue<K, V> {
         }
         sink(idx, tailKey, tail);
         // 如果队尾元素没有沉下去，那么就需要把它浮上来试试看
-        // 这种情况是因为队尾可能不是 idx 节点的子节点（不再它的子树中），所以可能小于 idx 节点
+        // 这种情况是因为队尾可能不是 idx 节点的子节点（不在它的子树中），所以可能小于 idx 节点
         if (elements[idx] == tail) {
             swim(idx, tailKey, tail);
         }

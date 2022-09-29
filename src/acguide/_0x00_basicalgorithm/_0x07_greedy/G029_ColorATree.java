@@ -271,7 +271,6 @@ public class G029_ColorATree {
             }
             // 取它的父节点
             int id = e.key, pid = uf.rid(parents[id]);
-            // 这里如果用 pollOrDefault，在第 3 个测试用例就会报错
             double weight = e.value, parentWeight = pq.peekOrDefault(pid, rootWeight);
             int size = uf.size(id), parentSize = uf.size(pid);
             // 更新权值，计算结果
