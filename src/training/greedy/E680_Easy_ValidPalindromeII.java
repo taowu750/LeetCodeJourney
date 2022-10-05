@@ -36,6 +36,7 @@ public class E680_Easy_ValidPalindromeII {
         assertTrue(method.test("abca"));
         assertFalse(method.test("abc"));
         assertFalse(method.test("eeccccbebaeeabebccceea"));
+        assertTrue(method.test("ac"));
     }
 
     /**
