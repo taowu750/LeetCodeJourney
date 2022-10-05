@@ -242,30 +242,28 @@ public class E44_Hard_WildcardMatching {
         /*
         我们定义 p 的片段是被 * 号包围的序列，p 就类似于  * u_i * u_i+1 * ... * u_x *
 
-        我们用 sIndex 和 pIndex 表示当前遍历到 s 和 p 的位置，此时我们在 s 中寻找一个 p 的片段 u_i，
+        我们用 si 和 pi 表示当前遍历到 s 和 p 的位置，此时我们在 s 中寻找一个 p 的片段 u_i，
         u_i 在 s 和 p 中的起始位置为 sRecord 和 pRecord
 
         我们先让 sRecord 和 tRecord 的初始值为 -1，表示模式 p 的开头字符不是星号，并且在匹配失败时进行判断，
         如果它们的值仍然为 -1，说明没有「反悔」重新进行匹配的机会
          */
-        int sIndex = 0, pIndex = 0;
+        int si = 0, pi = 0;
         int sRecord = -1, pRecord = -1;
 
-        while (sIndex < sRight && pIndex < pRight) {
+        while (si < sRight && pi < pRight) {
             // 如果遇到星号，说明找到了 u_i，开始寻找 u_i+1
-            if (p.charAt(pIndex) == '*') {
-                ++pIndex;
-                sRecord = sIndex;
-                pRecord = pIndex;
-            } else if (isMatch(s.charAt(sIndex), p.charAt(pIndex))) {
+            if (p.charAt(pi) == '*') {
+                sRecord = si;
+                pRecord = ++pi;
+            } else if (isMatch(s.charAt(si), p.charAt(pi))) {
                 // 如果两个字符可以匹配，就继续寻找 u_i 的下一个字符
-                ++sIndex;
-                ++pIndex;
-            } else if (sRecord != -1 && sRecord + 1 < sRight) {
+                ++si;
+                ++pi;
+            } else if (pRecord != -1) {
                 // 如果两个字符不匹配，那么需要重新寻找 u_i。枚举下一个 s 中的起始位置
-                ++sRecord;
-                sIndex = sRecord;
-                pIndex = pRecord;
+                si = ++sRecord;
+                pi = pRecord;
             } else {
                 // 如果不匹配并且下一个起始位置不存在，那么匹配失败
                 return false;
@@ -276,15 +274,12 @@ public class E44_Hard_WildcardMatching {
         由于 p 的最后一个字符是星号，那么 s 未匹配完，那么没有关系;
         但如果 p 没有匹配完，那么 p 剩余的字符必须都是星号
          */
-        return allStars(p, pIndex, pRight);
-    }
-
-    public boolean allStars(String str, int left, int right) {
-        for (int i = left; i < right; ++i) {
-            if (str.charAt(i) != '*') {
+        for (; pi < pRight; pi++) {
+            if (p.charAt(pi) != '*') {
                 return false;
             }
         }
+
         return true;
     }
 
