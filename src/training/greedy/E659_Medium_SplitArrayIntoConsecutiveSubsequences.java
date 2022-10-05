@@ -108,9 +108,40 @@ public class E659_Medium_SplitArrayIntoConsecutiveSubsequences {
 
 
     /**
+     * 无需优先队列的方法。
+     *
+     * LeetCode 耗时：47 ms - 31.25%
+     *          内存消耗：42.7 MB - 38.68%
+     */
+    public boolean betterHashMethod(int[] nums) {
+        final int n = nums.length;
+        Map<Integer, Integer> end2cnt = new HashMap<>(n), need = new HashMap<>(n);
+        for (int num : nums) {
+            if (end2cnt.containsKey(num - 1)) {
+                end2cnt.merge(num - 1, -1, (old, delta) -> old + delta > 0 ? old + delta : null);
+                if (need.containsKey(num)) {
+                    need.merge(num, -1, (old, delta) -> old + delta > 0 ? old + delta : null);
+                }
+            } else {
+                need.merge(num + 1, 1, Integer::sum);
+                need.merge(num + 2, 1, Integer::sum);
+            }
+            end2cnt.merge(num, 1, Integer::sum);
+        }
+
+        return need.isEmpty();
+    }
+
+    @Test
+    public void testBetterHashMethod() {
+        test(this::betterHashMethod);
+    }
+
+
+    /**
      * 算法思路参见：https://labuladong.gitee.io/algo/5/33/
      *
-     * 这个算法其实是对上面算法的改进，是一种贪心策略。
+     * 这个算法其实是对上面算法的改进，是一种贪心策略，利用了剪枝操作提前退出循环。
      *
      * 我们想把 nums 的元素划分到若干个子序列中，其实就是下面这个代码逻辑：
      * for (int v : nums) {
@@ -138,7 +169,7 @@ public class E659_Medium_SplitArrayIntoConsecutiveSubsequences {
      * 2. need 记录哪些元素可以被接到其他子序列后面。
      *    比如说现在已经组成了两个子序列 [1,2,3,4] 和 [2,3,4]，那么 need[5] 的值就应该是 2，说明对元素 5 的需求为 2。
      *
-     * LeetCode 耗时：30 ms - 90.24%
+     * LeetCode 耗时：23 ms - 90.24%
      *          内存消耗：39.8 MB - 51.66%
      */
     public boolean isPossible(int[] nums) {
