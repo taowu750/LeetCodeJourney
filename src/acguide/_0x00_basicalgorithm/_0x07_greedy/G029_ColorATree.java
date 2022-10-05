@@ -251,7 +251,9 @@ public class G029_ColorATree {
         for (int i = 1; i <= n; i++) {
             weights[i] = in.nextInt();
             ans += weights[i];
-            pq.push(i, (double) weights[i]);
+            if (i != r) {
+                pq.push(i, (double) weights[i]);
+            }
         }
         int[] parents = new int[n + 1];
         for (int i = 0; i < n - 1; i++) {
@@ -259,30 +261,21 @@ public class G029_ColorATree {
             parents[child] = parent;
         }
 
-        double rootWeight = 0;
         UF uf = new UF(n);
         while (!pq.isEmpty()) {
             // 取最大权值的节点
             final KeyPriorityQueue.Entry<Integer, Double> e = pq.pollEntry();
-            // 如果取的是根节点
-            if (e.key == r) {
-                rootWeight = e.value;
-                continue;
-            }
             // 取它的父节点
             int id = e.key, pid = uf.rid(parents[id]);
-            double weight = e.value, parentWeight = pq.peekOrDefault(pid, rootWeight);
-            int size = uf.size(id), parentSize = uf.size(pid);
             // 更新权值，计算结果
-            ans += parentSize * weights[id];
-            // 计算等价权值
-            double mergeWeight = (weight * size + parentWeight * parentSize) / (size + parentSize);
+            ans += uf.size(pid) * weights[id];
             // 进行合并
-            pq.push(uf.connect(id, pid), mergeWeight);
-            if (pid == r) {
-                rootWeight = mergeWeight;
-            }
+            uf.connect(id, pid);
             weights[pid] += weights[id];
+            // 不是根节点才添加
+            if (pid != r) {
+                pq.push(pid, (double) weights[pid] / uf.size(pid));
+            }
         }
 
         System.out.println(ans);
@@ -291,5 +284,68 @@ public class G029_ColorATree {
     @Test
     public void testKeyPriorityQueueMethod() {
         test(this::keyPriorityQueueMethod);
+    }
+
+
+    public static class Elem implements Comparable<Elem> {
+        public final double weight;
+        public final int id;
+        public final int timestamp;
+
+        public Elem(double weight, int id, int timestamp) {
+            this.weight = weight;
+            this.id = id;
+            this.timestamp = timestamp;
+        }
+
+        @Override
+        public int compareTo(Elem o) {
+            return Double.compare(o.weight, weight);
+        }
+    }
+
+    /**
+     * 使用内置优先队列的方法，使用 timestamp 解决优先队列中的过期值问题
+     */
+    public void priorityQueueMethod() {
+        Scanner in = new Scanner(System.in);
+        int n = in.nextInt(), r = in.nextInt(), ans = 0;
+        int[] weights = new int[n + 1], timestamp = new int[n + 1];
+        PriorityQueue<Elem> pq = new PriorityQueue<>(n);
+        for (int i = 1; i <= n; i++) {
+            weights[i] = in.nextInt();
+            ans += weights[i];
+            if (i != r) {
+                pq.add(new Elem(weights[i], i, 0));
+            }
+        }
+        int[] parents = new int[n + 1];
+        for (int i = 0; i < n - 1; i++) {
+            int parent = in.nextInt(), child = in.nextInt();
+            parents[child] = parent;
+        }
+
+        UF uf = new UF(n);
+        while (!pq.isEmpty()) {
+            Elem elem = pq.poll();
+            // 过期值则忽略
+            if (elem.timestamp != timestamp[elem.id]) {
+                continue;
+            }
+            int pid = uf.rid(parents[elem.id]);
+            ans += uf.size(pid) * weights[elem.id];
+            uf.connect(elem.id, pid);
+            weights[pid] += weights[elem.id];
+            if (pid != r) {
+                pq.add(new Elem((double) weights[pid] / uf.size(pid), pid, ++timestamp[pid]));
+            }
+        }
+
+        System.out.println(ans);
+    }
+
+    @Test
+    public void testPriorityQueueMethod() {
+        test(this::priorityQueueMethod);
     }
 }
