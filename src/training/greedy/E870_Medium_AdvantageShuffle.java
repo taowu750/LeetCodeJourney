@@ -2,10 +2,7 @@ package training.greedy;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.PriorityQueue;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BinaryOperator;
 
 /**
@@ -31,10 +28,11 @@ import java.util.function.BinaryOperator;
 public class E870_Medium_AdvantageShuffle {
 
     public static void assertAdvantage(int expected, BinaryOperator<int[]> method, int[] nums1, int[] nums2) {
+        int[] nums = nums2.clone();
         int[] result = method.apply(nums1, nums2);
         int advantage = 0;
-        for (int i = 0; i < nums1.length; i++) {
-            if (result[i] > nums2[i]) {
+        for (int i = 0; i < nums.length; i++) {
+            if (result[i] > nums[i]) {
                 advantage++;
             }
         }
@@ -172,5 +170,73 @@ public class E870_Medium_AdvantageShuffle {
     @Test
     public void testPointMethod() {
         test(this::pointMethod);
+    }
+
+
+    /**
+     * 和上面的方法思想类似，只不过用排序替代了优先队列。
+     *
+     * LeetCode 耗时：65 ms - 72.51%
+     *          内存消耗：58.8 MB - 34.69%
+     */
+    public int[] betterGreedyMethod(int[] nums1, int[] nums2) {
+        final int n = nums1.length;
+        int[][] nums2Idx = new int[n][2];
+        for (int i = 0; i < nums2.length; i++) {
+            nums2Idx[i][0] = i;
+            nums2Idx[i][1] = nums2[i];
+        }
+        Arrays.sort(nums1);
+        Arrays.sort(nums2Idx, Comparator.comparingInt(a -> a[1]));
+
+        int[] ans = new int[n];
+        for (int i = 0, j = n - 1, k = n - 1; i <= j; k--) {
+            if (nums1[j] > nums2Idx[k][1]) {
+                ans[nums2Idx[k][0]] = nums1[j--];
+            } else {
+                ans[nums2Idx[k][0]] = nums1[i++];
+            }
+        }
+
+        return ans;
+    }
+
+    @Test
+    public void testBetterGreedyMethod() {
+        test(this::betterGreedyMethod);
+    }
+
+
+    /**
+     * 类似于田忌赛马的思路，如果 nums1 最小值大于 nums2 最小值则配对，否则 nums1 最小值和 nums2 最大值配对。
+     * 其中用到了排序下标和原地赋值的技巧。
+     *
+     * 参见：https://leetcode.cn/problems/advantage-shuffle/solution/you-shi-xi-pai-by-leetcode-solution-sqsf/
+     *
+     * LeetCode 耗时：60 ms - 83.53%
+     *          内存消耗：55.6 MB - 92.29%
+     */
+    public int[] bestGreedyMethod(int[] nums1, int[] nums2) {
+        final int n = nums1.length;
+        Integer[] indices = new Integer[n];
+        Arrays.setAll(indices, i -> i);
+        Arrays.sort(nums1);
+        // 排序下标
+        Arrays.sort(indices, (i, j) -> nums2[i] - nums2[j]);
+
+        for (int i = 0, l = 0, r = n - 1; i < n; i++) {
+            if (nums1[i] > nums2[indices[l]]) {
+                nums2[indices[l++]] = nums1[i];
+            } else {
+                nums2[indices[r--]] = nums1[i];
+            }
+        }
+
+        return nums2;
+    }
+
+    @Test
+    public void testBestGreedyMethod() {
+        test(this::bestGreedyMethod);
     }
 }

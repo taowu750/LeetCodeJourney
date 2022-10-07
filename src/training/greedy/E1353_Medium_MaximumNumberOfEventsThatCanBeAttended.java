@@ -40,6 +40,7 @@ public class E1353_Medium_MaximumNumberOfEventsThatCanBeAttended {
         assertEquals(4, method.applyAsInt(new int[][]{{1,2}, {2,3}, {3,4}, {1,2}}));
         assertEquals(4, method.applyAsInt(new int[][]{{1,4}, {4,4}, {2,2}, {3,4}, {1,1}}));
         assertEquals(5, method.applyAsInt(new int[][]{{1,2}, {1,2}, {3,3}, {1,5}, {1,5}}));
+        assertEquals(4, method.applyAsInt(new int[][]{{1,3}, {1,3}, {1,3}, {3,4}}));
     }
 
     /**
@@ -66,7 +67,7 @@ public class E1353_Medium_MaximumNumberOfEventsThatCanBeAttended {
         // 小顶堆：用于高效的维护最小的 endDay
         PriorityQueue<Integer> pq = new PriorityQueue<>();
         int result = 0;
-        for (int i = 0, curDay = 1; i < n || !pq.isEmpty();) {
+        for (int i = 0, curDay = events[0][0]; i < n || !pq.isEmpty(); curDay++) {
             // 将所有开始时间等于 curDay 的会议的结束时间放到小顶堆
             while (i < n && events[i][0] == curDay) {
                 pq.add(events[i][1]);
@@ -84,9 +85,6 @@ public class E1353_Medium_MaximumNumberOfEventsThatCanBeAttended {
                 pq.remove();
                 result++;
             }
-
-            // 当前的天往前走一天，开始看下下一天能不能参加会议
-            curDay++;
         }
 
         return result;

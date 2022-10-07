@@ -3,6 +3,7 @@ package training.greedy;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.PriorityQueue;
 import java.util.function.ToIntFunction;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -29,6 +30,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 输入: [ [1,2], [2,3] ]
  * 输出: 0
  * 解释: 你不需要移除任何区间，因为它们已经是无重叠的了。
+ *
+ * 说明：
+ * - 1 <= intervals.length <= 10^5
+ * - intervals[i].length == 2
+ * - -5 * 10^4 <= starti < endi <= 5 * 10^4
  */
 public class E435_Medium_NonOverlappingIntervals {
 
@@ -37,6 +43,7 @@ public class E435_Medium_NonOverlappingIntervals {
         assertEquals(method.applyAsInt(new int[][]{{1,2}, {1,2}, {1,2}}), 2);
         assertEquals(method.applyAsInt(new int[][]{{1,2}, {2,3}}), 0);
         assertEquals(method.applyAsInt(new int[][]{{1,2}}), 0);
+        // 下面测试样例的图示参见 https://www.liuchengtu.com/lct/#X9d6c81e8f6de16bc022294d4c4950a19
         assertEquals(method.applyAsInt(new int[][]{{-52,31}, {-73,-26}, {82,97}, {-65,-11}, {-62,-49}, {95,99}, {58,95},
                 {-31,49}, {66,98}, {-63,2}, {30,47}, {-40,-26}}), 7);
     }
@@ -85,7 +92,7 @@ public class E435_Medium_NonOverlappingIntervals {
 
     /**
      * 在选择要保留区间时，区间的结尾十分重要：选择的区间结尾越小，余留给其它区间的空间就越大，
-     * 就越能保留更多的区间。因此，我们采取的贪心策略为，优先保留结尾小且不相交的区间。
+     * 就越能保留更多的区间。因此，我们采取的贪心策略为，优先保留结尾小且不相交的区间。逆向思维。
      *
      * 我们不妨想一想应该选择哪一个区间作为首个区间。
      *
@@ -102,8 +109,8 @@ public class E435_Medium_NonOverlappingIntervals {
      *
      * 一个更直观的说明是 https://leetcode-cn.com/problems/non-overlapping-intervals/solution/tan-xin-jie-fa-qi-shi-jiu-shi-yi-ceng-ch-i63h/
      *
-     * LeetCode 耗时：4 ms - 44.46%
-     *          内存消耗：38.5 MB - 35.96%
+     * LeetCode 耗时：48 ms - 77.49%
+     *          内存消耗：97.4 MB - 95.80%
      */
     public int greedyMethod(int[][] intervals) {
         // 按照 end 进行排序。
@@ -130,5 +137,112 @@ public class E435_Medium_NonOverlappingIntervals {
     @Test
     public void testGreedyMethod() {
         test(this::greedyMethod);
+    }
+
+
+    /**
+     * 和上面的方法类似，只不过排序是用区间开头，遍历顺序也反过来了
+     *
+     * LeetCode 耗时：48 ms - 77.49%
+     *          内存消耗：97.4 MB - 95.80%
+     */
+    public int inverseGreedyMethod(int[][] intervals) {
+        final int n = intervals.length;
+        Arrays.sort(intervals, (a, b) -> Integer.compare(a[0], b[0]));
+        int count = 1;
+        int lastStart = intervals[n - 1][0];
+        for (int i = intervals.length - 2; i >= 0; i--) {
+            if (intervals[i][1] <= lastStart) {
+                count++;
+                lastStart = intervals[i][0];
+            }
+        }
+
+        return n - count;
+    }
+
+    @Test
+    public void testInverseGreedyMethod() {
+        test(this::inverseGreedyMethod);
+    }
+
+
+    /**
+     * 扫描贪心算法，思路类似于 {@link E1353_Medium_MaximumNumberOfEventsThatCanBeAttended}
+     *
+     * LeetCode 耗时：89 ms - 5.40%
+     *          内存消耗：96.7 MB - 98.41%
+     */
+    public int scanGreedyMethod(int[][] intervals) {
+        /*
+        对于重叠的区间，我们需要去除重叠个数-1个区间。
+        当 n 个区间重叠时，我们去除重叠位置之后跨度最长的 n-1 个区间
+         */
+        final int n = intervals.length;
+        int ans = 0;
+        Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
+        // 大顶堆，记录区间右端点
+        PriorityQueue<Integer> pq = new PriorityQueue<>(n, (a, b) -> b - a);
+        for (int i = 0, cur = intervals[0][0]; i < n || !pq.isEmpty(); cur++) {
+            // 去除 cur 之前的区间
+            if (!pq.isEmpty() && pq.peek() <= cur) {
+                pq.clear();
+            }
+            for (; i < n && intervals[i][0] == cur; i++) {
+                pq.add(intervals[i][1]);
+            }
+            // 去除 size-1 个重叠的区间
+            while (pq.size() > 1) {
+                pq.poll();
+                ans++;
+            }
+        }
+
+        return ans;
+    }
+
+    @Test
+    public void testScanGreedyMethod() {
+        test(this::scanGreedyMethod);
+    }
+
+
+    /**
+     * 和 {@link #greedyMethod(int[][])} 类似，只不过它计算不相交的区间数量，而此方法直接计算需要删除的区间数量。
+     *
+     * LeetCode 耗时：66 ms - 12%
+     *          内存消耗：97.4 MB - 95.80%
+     */
+    public int forwardGreedyMethod(int[][] intervals) {
+        final int n = intervals.length;
+        int ans = 0;
+        // 先按末尾升序，再按开头降序
+        Arrays.sort(intervals, (a, b) -> {
+            int cmp = a[1] - b[1];
+            if (cmp != 0) {
+                return cmp;
+            }
+            return a[0] - b[0];
+        });
+        int lastEnd = Integer.MIN_VALUE;
+        for (int i = 0, j; i < n; i = j) {
+            // 找出所有末尾相同的区间
+            for (j = i + 1; j < n && intervals[j][1] == intervals[i][1]; j++);
+            // 所有末尾相同的 m 个区间需要去掉其中 m-1 个，保留其中开头最大的区间 inter
+            ans += j - i - 1;
+            // inter 的开头如果小于上一个被保留区间的结尾，那它也需要被删除
+            if (intervals[j - 1][0] < lastEnd) {
+                ans++;
+            } else {  // 否则保留 inter，更新 lastEnd
+                lastEnd = intervals[i][1];
+            }
+        }
+
+        return ans;
+    }
+
+    @Test
+    public void testForwardGreedyMethod() {
+        test(this::forwardGreedyMethod);
     }
 }
