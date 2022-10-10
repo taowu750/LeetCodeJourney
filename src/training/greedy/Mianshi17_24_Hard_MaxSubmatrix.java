@@ -2,7 +2,6 @@ package training.greedy;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -45,41 +44,47 @@ public class Mianshi17_24_Hard_MaxSubmatrix {
      * 我们固定上界 top 和下界 bottom，求最大子数组和。也就是固定上下两条边，之后从左往右遍历一遍，
      * 找到固定上下边下的最大子序和即可。
      *
-     * LeetCode 耗时：51 ms - 61.18%
-     *          内存消耗：43.5 MB - 22.44%
+     * LeetCode 耗时：41 ms - 92.51%
+     *          内存消耗：46.5 MB - 32.27%
      */
     public int[] getMaxMatrix(int[][] matrix) {
-        int m = matrix.length, n = matrix[0].length;
-        // 上界到下界每列的和
-        int[] colSum = new int[n];
-        int[] result = new int[]{0, 0, 0, 0};
-        int max = matrix[0][0];
+        final int m = matrix.length, n = matrix[0].length;
+        int[] ret = new int[4];
+        int[][] colPrefix = new int[m + 1][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                colPrefix[i + 1][j] = colPrefix[i][j] + matrix[i][j];
+            }
+        }
+        int ans = Integer.MIN_VALUE;
         for (int top = 0; top < m; top++) {
-            // 从上到下，从左到右
             for (int bottom = top; bottom < m; bottom++) {
-                int sum = 0, leftJ = 0;
-                for (int col = 0; col < n; col++) {
-                    colSum[col] += matrix[bottom][col];
-                    if (sum > 0) {
-                        sum += colSum[col];
-                    } else {
-                        sum = colSum[col];
-                        leftJ = col;
+                int sum = 0, maxSum = Integer.MIN_VALUE;
+                int c0 = 0, c1 = 0, maxC0 = 0, maxC1 = 0;
+                for (int j = 0; j < n; j++) {
+                    sum += colPrefix[bottom + 1][j] - colPrefix[top][j];
+                    if (sum > maxSum) {
+                        maxSum = sum;
+                        maxC0 = c0;
+                        maxC1 = c1;
                     }
-                    if (max < sum) {
-                        max = sum;
-                        result[0] = top;
-                        result[1] = leftJ;
-                        result[2] = bottom;
-                        result[3] = col;
+                    c1++;
+                    if (sum < 0) {
+                        sum = 0;
+                        c0 = c1 = j + 1;
                     }
                 }
+                if (maxSum > ans) {
+                    ans = maxSum;
+                    ret[0] = top;
+                    ret[1] = maxC0;
+                    ret[2] = bottom;
+                    ret[3] = maxC1;
+                }
             }
-            // top 改变，需要重置 colSum
-            Arrays.fill(colSum, 0);
         }
 
-        return result;
+        return ret;
     }
 
     @Test
