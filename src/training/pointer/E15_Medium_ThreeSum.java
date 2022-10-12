@@ -38,28 +38,28 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class E15_Medium_ThreeSum {
 
     public static void test(Function<int[], List<List<Integer>>> method) {
+        // -4 -1 -1 0 1 2
         List<List<Integer>> result = method.apply(new int[]{-1,0,1,2,-1,-4});
-        System.out.println(result);
-        assertTrue(CollectionUtil.deepEqualsIgnoreOrder(result,
-                new ArrayList<>(Arrays.asList(Arrays.asList(-1,-1,2), Arrays.asList(-1,0,1)))));
+        CollectionUtil.deepEqualsIgnoreOrder(new ArrayList<>(Arrays.asList(Arrays.asList(-1,-1,2), Arrays.asList(-1,0,1))), result);
 
         assertTrue(method.apply(new int[]{}).isEmpty());
         assertTrue(method.apply(new int[]{0}).isEmpty());
 
+        result = method.apply(new int[]{-3, -2, -2, -2, -1, 4});
+        CollectionUtil.deepEqualsIgnoreOrder(new ArrayList<>(Arrays.asList(Arrays.asList(-3, -1, 4), Arrays.asList(-2, -2, 4))),
+                result);
+
+        // -4 -3 -2 -1 -1 0 0 1 2 3 4
         result = method.apply(new int[]{-1,0,1,2,-1,-4,-2,-3,3,0,4});
-        System.out.println(result);
-        assertTrue(CollectionUtil.deepEqualsIgnoreOrder(result,
-                new ArrayList<>(Arrays.asList(Arrays.asList(-4,0,4), Arrays.asList(-4,1,3)
-                        , Arrays.asList(-3,-1,4), Arrays.asList(-3,0,3), Arrays.asList(-3,1,2)
-                        , Arrays.asList(-2,-1,3), Arrays.asList(-2,0,2), Arrays.asList(-1,-1,2)
-                        , Arrays.asList(-1,0,1)))));
+        CollectionUtil.deepEqualsIgnoreOrder(new ArrayList<>(Arrays.asList(Arrays.asList(-4,0,4),
+                Arrays.asList(-4,1,3), Arrays.asList(-3,-1,4), Arrays.asList(-3,0,3), Arrays.asList(-3,1,2),
+                Arrays.asList(-2,-1,3), Arrays.asList(-2,0,2), Arrays.asList(-1,-1,2), Arrays.asList(-1,0,1))),
+                result);
 
         result = method.apply(new int[]{-4,-2,-2,-2,0,1,2,2,2,3,3,4,4,6,6});
-        System.out.println(result);
-        assertTrue(CollectionUtil.deepEqualsIgnoreOrder(result,
-                new ArrayList<>(Arrays.asList(Arrays.asList(-4,-2,6), Arrays.asList(-4,0,4)
-                        , Arrays.asList(-4,1,3), Arrays.asList(-4,2,2), Arrays.asList(-2,-2,4)
-                        , Arrays.asList(-2,0,2)))));
+        CollectionUtil.deepEqualsIgnoreOrder(new ArrayList<>(Arrays.asList(Arrays.asList(-4,-2,6),
+                Arrays.asList(-4,0,4), Arrays.asList(-4,1,3), Arrays.asList(-4,2,2), Arrays.asList(-2,-2,4),
+                Arrays.asList(-2,0,2))), result);
     }
 
     /**
@@ -77,6 +77,7 @@ public class E15_Medium_ThreeSum {
         List<List<Integer>> result = new ArrayList<>();
         // 双指针法
         for (int i = 0; i < nums.length; i++) {
+            // 提前终止
             if (nums[i] > 0)
                 return result;
             if (i > 0 && nums[i] == nums[i - 1])

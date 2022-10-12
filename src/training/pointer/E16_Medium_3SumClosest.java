@@ -27,6 +27,7 @@ public class E16_Medium_3SumClosest {
 
     public static void test(ToIntBiFunction<int[], Integer> method) {
         assertEquals(2, method.applyAsInt(new int[]{-1,2,1,-4}, 1));
+        assertEquals(-101, method.applyAsInt(new int[]{-100,-98,-2,-1}, -101));
     }
 
     /**
