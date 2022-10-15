@@ -41,37 +41,28 @@ public class E80_Medium_RemoveDuplicatesFromSortedArrayII {
     }
 
     /**
-     * 细节是魔鬼。
-     * <p>
-     * 此题的难点在于：
-     * - 如何正确地将后面的元素放到正确的位置
-     * - 将元素覆盖后，不能影响元素数量的判断
-     * <p>
+     * 类似于 {@link E26_Easy_RemoveDuplicatesFromSortedArray}
+     *
      * LeetCode 耗时：0 ms - 100.00%
      *          内存消耗：38.4 MB - 73.90%
      */
     public int removeDuplicates(int[] nums) {
-        int newIdx = 1;
-        for (int i = 1, cnt = 1; i < nums.length; i++) {
-            // 先计算重复元素个数
-            if (nums[i] == nums[i - 1]) {
-                cnt++;
-            } else {
+        final int n = nums.length;
+        if (n < 3) {
+            return n;
+        }
+
+        int j = 1;
+        for (int i = 1, cnt = 1; i < n; i++) {
+            if (nums[i] != nums[i - 1]) {
+                nums[j++] = nums[i];
                 cnt = 1;
-            }
-            /*
-            再覆盖元素。
-            - 计算数量之后，再覆盖元素才不会影响元素数量的判断
-            - 要在移动 newIdx 之前覆盖元素
-             */
-            nums[newIdx] = nums[i];
-            // 最后当重复元素个数小于等于 2 时，才增大 newIdx
-            if (cnt <= 2) {
-                newIdx++;
+            } else if (++cnt <= 2) {
+                nums[j++] = nums[i];
             }
         }
 
-        return newIdx;
+        return j;
     }
 
     @Test

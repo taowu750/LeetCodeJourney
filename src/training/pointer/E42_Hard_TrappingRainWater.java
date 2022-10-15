@@ -30,13 +30,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class E42_Hard_TrappingRainWater {
 
     public static void test(ToIntFunction<int[]> method) {
-        assertEquals(method.applyAsInt(new int[]{0,1,0,2,1,0,1,3,2,1,2,1}), 6);
-        assertEquals(method.applyAsInt(new int[]{4,2,0,3,2,5}), 9);
-        assertEquals(method.applyAsInt(new int[]{}), 0);
-        assertEquals(method.applyAsInt(new int[]{0}), 0);
-        assertEquals(method.applyAsInt(new int[]{4,2,3}), 1);
-        assertEquals(method.applyAsInt(new int[]{5,4,1,2}), 1);
-        assertEquals(method.applyAsInt(new int[]{0,5,6,4,6,1,0,0,2,7}), 23);
+        assertEquals(6, method.applyAsInt(new int[]{0,1,0,2,1,0,1,3,2,1,2,1}));
+        assertEquals(9, method.applyAsInt(new int[]{4,2,0,3,2,5}));
+        assertEquals(0, method.applyAsInt(new int[]{}));
+        assertEquals(0, method.applyAsInt(new int[]{0}));
+        assertEquals(1, method.applyAsInt(new int[]{4,2,3}));
+        assertEquals(1, method.applyAsInt(new int[]{5,4,1,2}));
+        assertEquals(23, method.applyAsInt(new int[]{0,5,6,4,6,1,0,0,2,7}));
     }
 
     /**

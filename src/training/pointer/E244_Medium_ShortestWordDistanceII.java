@@ -26,6 +26,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E244_Medium_ShortestWordDistanceII {
 
+    public interface IWordDistance {
+
+        int shortest(String word1, String word2);
+    }
+
     public static void test(Function<String[], IWordDistance> factory) {
         IWordDistance wordDistance = factory.apply(new String[]{"practice", "makes", "perfect", "coding", "makes"});
         assertEquals(3, wordDistance.shortest("coding", "practice"));
@@ -38,16 +43,11 @@ public class E244_Medium_ShortestWordDistanceII {
     }
 }
 
-interface IWordDistance {
-
-    int shortest(String word1, String word2);
-}
-
 /**
- * LeetCode 耗时：27 ms - 88.16%
+ * LeetCode 耗时：26 ms - 100%
  *          内存消耗：44.8 MB - 77.30%
  */
-class WordDistance implements IWordDistance {
+class WordDistance implements E244_Medium_ShortestWordDistanceII.IWordDistance {
 
     private Map<String, List<Integer>> s2idx;
 
@@ -63,6 +63,9 @@ class WordDistance implements IWordDistance {
         int result = Integer.MAX_VALUE;
         for (int i = 0, j = 0; i < wl1.size() && j < wl2.size();) {
             result = Math.min(result, Math.abs(wl1.get(i) - wl2.get(j)));
+            if (result == 1) {
+                break;
+            }
             if (wl1.get(i) < wl2.get(j)) {
                 i++;
             } else {
