@@ -201,43 +201,6 @@ public class E678_Medium_ValidParenthesisString {
 
 
     /**
-     * 贪心法，参见：
-     * https://leetcode-cn.com/problems/valid-parenthesis-string/solution/you-xiao-de-gua-hao-zi-fu-chuan-by-leetc-osi3/
-     *
-     *
-     *
-     * LeetCode 耗时：0 ms - 100.00%
-     *          内存消耗：36.3 MB - 40.25%
-     */
-    public boolean greedyMethod(String s) {
-        int minCnt = 0, maxCnt = 0;
-        for (int i = 0; i < s.length(); i++) {
-            char c = s.charAt(i);
-            if (c == '(') {
-                minCnt++;
-                maxCnt++;
-            } else if (c == ')') {
-                minCnt = Math.max(minCnt - 1, 0);
-                maxCnt--;
-                if (maxCnt < 0) {
-                    return false;
-                }
-            } else {
-                minCnt = Math.max(minCnt - 1, 0);
-                maxCnt++;
-            }
-        }
-
-        return minCnt == 0;
-    }
-
-    @Test
-    public void testGreedyMethod() {
-        test(this::greedyMethod);
-    }
-
-
-    /**
      * 自己想出来的，易于理解的方法。
      *
      * LeetCode 耗时：0 ms - 100.00%
@@ -283,4 +246,57 @@ public class E678_Medium_ValidParenthesisString {
     public void testEasyUnderstandMethod() {
         test(this::easyUnderstandMethod);
     }
+
+
+    /**
+     * 贪心法，参见：
+     * https://leetcode-cn.com/problems/valid-parenthesis-string/solution/you-xiao-de-gua-hao-zi-fu-chuan-by-leetc-osi3/
+     *
+     * 从左到右遍历字符串，遍历过程中，未匹配的左括号数量可能会出现如下变化：
+     * - 如果遇到左括号，则未匹配的左括号数量加 1；
+     * - 如果遇到右括号，则需要有一个左括号和右括号匹配，因此未匹配的左括号数量减 1；
+     * - 如果遇到星号，由于星号可以看成左括号、右括号或空字符串，因此未匹配的左括号数量可能加 1、减 1 或不变。
+     *
+     * 基于上述结论，可以在遍历过程中维护未匹配的左括号数量可能的最小值和最大值，根据遍历到的字符更新最小值和最大值：
+     * - 如果遇到左括号，则将最小值和最大值分别加 1；
+     * - 如果遇到右括号，则将最小值和最大值分别减 1；
+     * - 如果遇到星号，则将最小值减 1，将最大值加 1。
+     *
+     * 任何情况下，未匹配的左括号数量必须非负，因此当最大值变成负数时，说明没有左括号可以和右括号匹配，返回 false。
+     *
+     * 当最小值为 0 时，不应将最小值继续减少，以确保最小值非负。
+     *
+     * 遍历结束时，所有的左括号都应和右括号匹配，因此只有当最小值为 0 时，字符串 s 才是有效的括号字符串。
+     *
+     *
+     * LeetCode 耗时：0 ms - 100.00%
+     *          内存消耗：36.3 MB - 40.25%
+     */
+    public boolean greedyMethod(String s) {
+        int minCnt = 0, maxCnt = 0;
+        for (int i = 0; i < s.length(); i++) {
+            char c = s.charAt(i);
+            if (c == '(') {
+                minCnt++;
+                maxCnt++;
+            } else if (c == ')') {
+                minCnt = Math.max(minCnt - 1, 0);
+                maxCnt--;
+                if (maxCnt < 0) {
+                    return false;
+                }
+            } else {
+                minCnt = Math.max(minCnt - 1, 0);
+                maxCnt++;
+            }
+        }
+
+        return minCnt == 0;
+    }
+
+    @Test
+    public void testGreedyMethod() {
+        test(this::greedyMethod);
+    }
+
 }
