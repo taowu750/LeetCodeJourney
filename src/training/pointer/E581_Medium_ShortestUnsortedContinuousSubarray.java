@@ -89,13 +89,15 @@ public class E581_Medium_ShortestUnsortedContinuousSubarray {
      * 设数组有三段组成 numsA、numsB、numsC，其中 numsB 使我们要找最短无序连续子数组。
      * 设 numsB 范围为 [left, right]。
      *
-     * 因此有 numsA 中每一个数 nums_i <= min(nums[i+1..n-1])。
-     * 我们可以从大到小枚举 i，用一个变量 minn 记录 min(nums[i+1..n-1])，
-     * 这样最后一个使得不等式不成立的 i（注意上面的不等式里是 i+1）即为 left。
+     * 因此有 numsA 中每一个数 nums_i <= min(nums[i+1..n-1])，即 max(numsA) <= min(nums[i+1..n-1])。
+     * 我们可以「从大到小」枚举 i，用一个变量 minn 记录 min(nums[i+1..n-1])，
+     * 这样「最后一个」使得不等式不成立的 i（注意上面的不等式里是 i+1）即为 left。
+     * 注意，这也保证了 [0, left) 是升序的。
      *
-     * 同理有 numsC 中每一个数 nums_i >= max(nums[0,i-1])。
-     * 我们可以从小到大枚举 i，用一个变量 maxn 记录 max(nums[0,i-1])，
-     * 这样最后一个使得不等式成立的 i 即为 right。
+     * 同理有 numsC 中每一个数 nums_i >= max(nums[0,i-1])，即 min(numsC) >= max(nums[0,i-1])。
+     * 我们可以「从小到大」枚举 i，用一个变量 maxn 记录 max(nums[0,i-1])，
+     * 这样「最后一个」使得不等式成立的 i 即为 right。
+     * 注意，这也保证了 [right+1, n) 是升序的。
      *
      * 参见：https://leetcode-cn.com/problems/shortest-unsorted-continuous-subarray/solution/zui-duan-wu-xu-lian-xu-zi-shu-zu-by-leet-yhlf/
      *
@@ -106,13 +108,14 @@ public class E581_Medium_ShortestUnsortedContinuousSubarray {
         int n = nums.length;
         int maxn = Integer.MIN_VALUE, right = -1;
         int minn = Integer.MAX_VALUE, left = -1;
-        // 注意，下面 maxn 从左到右遍历，minn 从右到左遍历
         for (int i = 0; i < n; i++) {
+            // 左边的最大值大于 nums[i]，则 i 也需要纳入排序范围
             if (maxn > nums[i]) {
                 right = i;
             } else {
                 maxn = nums[i];
             }
+            // 右边的最小值小于 nums[n - i - 1]，则 n-i-1 也需要纳入排序范围
             if (minn < nums[n - i - 1]) {
                 left = n - i - 1;
             } else {

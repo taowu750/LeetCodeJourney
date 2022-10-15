@@ -1,5 +1,8 @@
 package util;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
@@ -128,5 +131,66 @@ public class ArrayUtil {
         }
 
         return true;
+    }
+
+    /**
+     * 在已排序数组 a 中查找等于 x 的最小下标，不存在则返回大于 x 的最小下标
+     *
+     * @param lo 包含
+     * @param hi 不包含
+     */
+    public static int bsl(int[] a, int lo, int hi, int x) {
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (x <= a[mid]) {
+                hi = mid;
+            } else {
+                lo = mid + 1;
+            }
+        }
+
+        return lo;
+    }
+
+    /**
+     * 在已排序数组 a 中查找等于 x 的最大下标，不存在则返回大于 x 的最小下标
+     *
+     * @param lo 包含
+     * @param hi 不包含
+     */
+    public static int bsr(int[] a, int lo, int hi, int x) {
+        int start = lo;
+        while (lo < hi) {
+            int mid = (lo + hi) >>> 1;
+            if (x >= a[mid]) {
+                lo = mid + 1;
+            } else {
+                hi = mid;
+            }
+        }
+
+        if (lo > start && a[lo - 1] == x) {
+            return lo - 1;
+        } else {
+            return lo;
+        }
+    }
+
+    @Test
+    public void test() {
+        int[] a = {1, 3, 5, 5, 5, 7};
+        Assertions.assertEquals(2, bsl(a, 0, a.length, 5));
+        Assertions.assertEquals(1, bsl(a, 0, a.length, 3));
+        Assertions.assertEquals(2, bsl(a, 0, a.length, 4));
+        Assertions.assertEquals(5, bsl(a, 0, a.length, 6));
+        Assertions.assertEquals(6, bsl(a, 0, a.length, 8));
+        Assertions.assertEquals(0, bsl(a, 0, a.length, -1));
+
+        Assertions.assertEquals(4, bsr(a, 0, a.length, 5));
+        Assertions.assertEquals(1, bsr(a, 0, a.length, 3));
+        Assertions.assertEquals(2, bsr(a, 0, a.length, 4));
+        Assertions.assertEquals(5, bsr(a, 0, a.length, 6));
+        Assertions.assertEquals(6, bsr(a, 0, a.length, 8));
+        Assertions.assertEquals(0, bsr(a, 0, a.length, -1));
     }
 }

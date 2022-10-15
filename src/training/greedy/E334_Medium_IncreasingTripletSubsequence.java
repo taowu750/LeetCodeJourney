@@ -1,4 +1,4 @@
-package training.pointer;
+package training.greedy;
 
 import org.junit.jupiter.api.Test;
 
@@ -78,7 +78,7 @@ public class E334_Medium_IncreasingTripletSubsequence {
 
 
     /**
-     * 双指针法，参见：
+     * 贪心双指针法，参见：
      * https://leetcode-cn.com/problems/increasing-triplet-subsequence/solution/c-xian-xing-shi-jian-fu-za-du-xiang-xi-jie-xi-da-b/
      *
      * 首先，新建两个变量 small 和 mid ，分别用来保存题目要我们求的长度为 3 的递增子序列的最小值和中间值。
