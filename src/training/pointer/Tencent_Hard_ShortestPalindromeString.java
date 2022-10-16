@@ -14,7 +14,7 @@ import java.util.function.BinaryOperator;
  */
 public class Tencent_Hard_ShortestPalindromeString {
 
-    static void test(BinaryOperator<String> method) {
+    public static void test(BinaryOperator<String> method) {
         Util.assertIn(method.apply("A1B21C", "121"), "AC1B2B1CA", "CA1B2B1AC");
     }
 

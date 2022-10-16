@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class E977_Easy_SortedSquares {
 
-    static void test(Function<int[], int[]> func) {
+    public static void test(Function<int[], int[]> func) {
         int[] inp = {-4, -1, 0, 3, 10};
         assertArrayEquals(func.apply(inp), new int[]{0, 1, 9, 16, 100});
 

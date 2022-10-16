@@ -1,6 +1,7 @@
-package training.pointer;
+package training.statemachine;
 
 import org.junit.jupiter.api.Test;
+import training.pointer.E42_Hard_TrappingRainWater;
 
 import java.util.function.ToIntFunction;
 
@@ -86,39 +87,45 @@ public class E845_Medium_LongestMountainInArray {
      *          内存消耗：39.5 MB - 48.22%
      */
     public int stateMachineMethod(int[] arr) {
-        int left = 0, right = 0, result = 0;
-        for (int i = 1; i < arr.length; i++) {
-            // 如果 a[i] 大于 a[i-1]
-            if (arr[i] > arr[i - 1]) {
-                // 如果之前已经有一个山脉了，先比较它的长度
-                if (right > 0) {
-                    result = Math.max(result, left + right + 1);
-                    // 注意要覆盖上一个山脉的影响
-                    left = 0;
-                }
-                left++;
-                // right 置 0
-                right = 0;
-            } else if (arr[i] < arr[i - 1]) {  // 如果 a[i] 小于 a[i-1]
-                // 只有在已有左侧山脉的情况下，才有右侧山脉
-                if (left > 0) {
-                    right++;
-                }
-            } else {  // 如果 a[i] 等于 a[i-1]
-                // 如果之前已经有一个山脉了，先比较它的长度
-                if (right > 0) {
-                    result = Math.max(result, left + right + 1);
-                }
-                // 将 left、right 都置 0
-                left = right = 0;
+        final int n = arr.length;
+        // state: 0 初始化/水平；1 上升；2 下降
+        int state = 0, ans = 0;
+        for (int i = 1, len = 1; i < n; i++) {
+            switch (state) {
+                case 0:
+                    if (arr[i] > arr[i - 1]) {
+                        state = 1;
+                        len++;
+                    }
+                    break;
+
+                case 1:
+                    if (arr[i] > arr[i - 1]) {
+                        len++;
+                    } else if (arr[i] == arr[i - 1]) {
+                        state = 0;
+                        len = 1;
+                    } else {
+                        state = 2;
+                        ans = Math.max(ans, ++len);
+                    }
+                    break;
+
+                case 2:
+                    if (arr[i] > arr[i - 1]) {
+                        len = 2;
+                        state = 1;
+                    } else if (arr[i] == arr[i - 1]) {
+                        len = 1;
+                        state = 0;
+                    } else {
+                        ans = Math.max(ans, ++len);
+                    }
+                    break;
             }
         }
-        // 最后再判断一下有没有山脉
-        if (right > 0) {
-            result = Math.max(result, left + right + 1);
-        }
 
-        return result;
+        return ans;
     }
 
     @Test
