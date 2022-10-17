@@ -115,4 +115,52 @@ public class E76_Hard_MinimumWindowSubstring {
     public void testMinWindow() {
         test(this::minWindow);
     }
+
+
+    /**
+     * 和上面的一样，不过在收缩窗口上有小改动。
+     * 上面是循环收缩一个字符，直到字符不匹配为止；这里是一次收缩到刚好匹配为止
+     *
+     * LeetCode 耗时：2 ms - 96.79%
+     *          内存消耗：41.6 MB - 83.02%
+     */
+    public String otherMethod(String s, String t) {
+        if (s.length() < t.length()) {
+            return "";
+        } else if (t.length() == 1) {
+            return s.indexOf(t.charAt(0)) >= 0 ? t : "";
+        }
+
+        int charKind = 0;
+        int[] tcnts = new int[126], window = new int[126];
+        for (int i = 0; i < t.length(); i++) {
+            if (tcnts[t.charAt(i)]++ == 0) {
+                charKind++;
+            }
+        }
+        int left = 0, right = 0, ansLeft = -1, ansRight = -1;
+        while (right < s.length()) {
+            char c = s.charAt(right++);
+            if (++window[c] == tcnts[c]) {
+                charKind--;
+            }
+
+            if (charKind == 0) {
+                for (char leftChar = s.charAt(left); window[leftChar] - 1 >= tcnts[leftChar]; leftChar = s.charAt(++left)) {
+                    window[leftChar]--;
+                }
+                if (ansLeft == -1 || ansRight - ansLeft > right - left) {
+                    ansLeft = left;
+                    ansRight = right;
+                }
+            }
+        }
+
+        return ansLeft == -1 ? "" : s.substring(ansLeft, ansRight);
+    }
+
+    @Test
+    public void testOtherMethod() {
+        test(this::otherMethod);
+    }
 }

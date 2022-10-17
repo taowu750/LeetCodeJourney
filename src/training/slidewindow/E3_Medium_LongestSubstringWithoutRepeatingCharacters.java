@@ -25,8 +25,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 例 3：
  * Input: s = "pwwkew"
  * Output: 3
- * Explanation: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
- *              请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
+ * Explanation: 因为无重复字符的最长子串是 "wke"，所以其长度为 3。
+ *              请注意，你的答案必须是 子串 的长度，"pwke" 是一个子序列，不是子串。
  *
  * 例 4：
  * Input: s = ""
@@ -38,7 +38,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E3_Medium_LongestSubstringWithoutRepeatingCharacters {
 
-    static void test(ToIntFunction<String> method) {
+    public static void test(ToIntFunction<String> method) {
         assertEquals(3, method.applyAsInt("abcabcbb"));
         assertEquals(1, method.applyAsInt("bbbbb"));
         assertEquals(3, method.applyAsInt("pwwkew"));
