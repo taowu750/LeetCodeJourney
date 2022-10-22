@@ -91,32 +91,25 @@ public class E3_Medium_LongestSubstringWithoutRepeatingCharacters {
     /**
      * 更好的滑动窗口方法。
      *
-     * LeetCode 耗时：2 ms - 99.12%
+     * LeetCode 耗时：1 ms - 100%
      *          内存消耗：38.3 MB - 84.68%
      */
     public int betterMethod(String s) {
-        if (s.length() < 2) {
-            return s.length();
-        }
-
-        // 记录字符和它们在 s 中的下标
         int[] window = new int[128];
         Arrays.fill(window, -1);
-        int result = 0, left = 0, right = 0;
-        while (right < s.length()) {
-            char c = s.charAt(right++);
-            // 如果字符已存在窗口中，则需要移动 left
-            if (window[c] >= left) {
-                left = window[c] + 1;
+        int l = 0, r = 0, ans = 0;
+        while (r < s.length()) {
+            char c = s.charAt(r++);
+            // 如果 c 已不再窗口内
+            if (window[c] < l) {
+                ans = Math.max(ans, r - l);
+            } else {
+                l = window[c] + 1;
             }
-            // 更新字符在窗口中的位置
-            window[c] = right - 1;
-            if (right - left > result) {
-                result = right - left;
-            }
+            window[c] = r - 1;
         }
 
-        return result;
+        return ans;
     }
 
     @Test
