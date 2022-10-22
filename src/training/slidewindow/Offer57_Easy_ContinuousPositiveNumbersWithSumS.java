@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class Offer57_Easy_ContinuousPositiveNumbersWithSumS {
 
-    static void test(IntFunction<int[][]> method) {
+    public static void test(IntFunction<int[][]> method) {
         assertArrayEquals(new int[][]{{2, 3, 4}, {4, 5}}, method.apply(9));
         assertArrayEquals(new int[][]{{1, 2, 3, 4, 5}, {4, 5, 6}, {7, 8}}, method.apply(15));
         assertArrayEquals(new int[][]{{9, 10, 11, 12, 13, 14, 15, 16}, {18, 19, 20, 21, 22}}, method.apply(100));
@@ -81,37 +81,27 @@ public class Offer57_Easy_ContinuousPositiveNumbersWithSumS {
     /**
      * 滑动窗口方法。
      *
-     * LeetCode 耗时：3 ms - 78.71%
+     * LeetCode 耗时：2 ms - 95.59%
      *          内存消耗：36.1 MB - 97.94%
      */
     public int[][] flipWindowMethod(int target) {
-        if (target < 3) {
-            return new int[][]{};
-        }
-
-        List<int[]> result = new ArrayList<>();
-        int left = 1, right = 1, sum = 0;
-        while (right < target) {
-            sum += right++;
-            if (sum > target) {
-                do {
-                    sum -= left;
-                    left++;
-                } while (sum > target);
+        List<int[]> ans = new ArrayList<>();
+        int l = 1, r = 1, sum = 0;
+        while (r < target) {
+            sum += r++;
+            while (sum > target) {
+                sum -= l++;
             }
             if (sum == target) {
-                int[] seq = new int[right - left];
-                for (int i = 0; i < seq.length; i++) {
-                    seq[i] = left + i;
+                int[] arr = new int[r - l];
+                for (int i = 0; i < arr.length; i++) {
+                    arr[i] = l + i;
                 }
-                result.add(seq);
-
-                sum -= left;
-                left++;
+                ans.add(arr);
             }
         }
 
-        return result.toArray(new int[][]{});
+        return ans.toArray(new int[0][]);
     }
 
     @Test

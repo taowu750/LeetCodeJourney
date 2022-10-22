@@ -55,66 +55,54 @@ public class E1156_Medium_SwapForLongestRepeatedCharacterSubstring {
      *          内存消耗：41.1 MB - 17.35%
      */
     public int maxRepOpt1(String text) {
-        // 记录每种字符重复子串的范围
-        List<Segment>[] charSegments = new List[26];
-        for (int i = 0, j; i < text.length(); i = j) {
-            char c = text.charAt(i);
-            j = i + 1;
-            while (j < text.length() && text.charAt(j) == c) {
-                j++;
+        final int n = text.length();
+        // 记录所有字符的单字符子串区间
+        List<int[]>[] c2intervals = new List[26];
+        for (int i = 0; i < n; i++) {
+            int c = text.charAt(i) - 'a';
+            if (c2intervals[c] == null) {
+                c2intervals[c] = new ArrayList<>(4);
+                c2intervals[c].add(new int[]{i, i});
+            } else {
+                int[] lastInterval = c2intervals[c].get(c2intervals[c].size() - 1);
+                if (lastInterval[1] == i - 1) {
+                    lastInterval[1] = i;
+                } else {
+                    c2intervals[c].add(new int[]{i, i});
+                }
             }
-            if (charSegments[c - 'a'] == null) {
-                charSegments[c - 'a'] = new ArrayList<>();
-            }
-            charSegments[c - 'a'].add(new Segment(i, j));
         }
 
-        // 遍历每种字符，查找最大长度
-        int result = 1;
-        for (List<Segment> charSegment : charSegments) {
-            if (charSegment == null) {
+        int ans = 0;
+        for (List<int[]> intervals : c2intervals) {
+            if (intervals == null) {
                 continue;
             }
-            // 该字符只有一段
-            if (charSegment.size() == 1) {
-                result = Math.max(result, charSegment.get(0).len());
-            } else if (charSegment.size() == 2) {  // 该字符有两段
-                Segment left = charSegment.get(0), right = charSegment.get(1);
-                // 两段中间只隔着一个别的字符，则可以连接起来
-                if (right.i - left.j == 1) {
-                    result = Math.max(result, left.len() + right.len());
-                } else {  // 否则每段都只能增加一个字符
-                    result = Math.max(result, Math.max(left.len() + 1, right.len() + 1));
-                }
-            } else {  // 该字符多于三段，每两段之间都可能用第三段的字符连接起来
-                for (int i = 0; i < charSegment.size() - 1; i++) {
-                    Segment left = charSegment.get(i), right = charSegment.get(i + 1);
-                    if (right.i - left.j == 1) {
-                        result = Math.max(result, left.len() + right.len() + 1);
-                    } else {
-                        result = Math.max(result, Math.max(left.len() + 1, right.len() + 1));
+            for (int i = 0; i < intervals.size() - 1; i++) {
+                int[] prev = intervals.get(i), next = intervals.get(i + 1);
+                // 如果两个子串之间只隔着一个字符，则可以连起来
+                if (prev[1] == next[0] - 2) {
+                    int len = prev[1] - prev[0] + next[1] - next[0] + 2;
+                    // 如果有多余两个子串，则可以使用第三个子串字符
+                    if (intervals.size() > 2) {
+                        len++;
                     }
+                    ans = Math.max(ans, len);
+                } else {
+                    // 注意这里是+2，因为还可以交换一个字符
+                    ans = Math.max(ans, prev[1] - prev[0] + 2);
                 }
             }
+            int[] end = intervals.get(intervals.size() - 1);
+            int len = end[1] - end[0] + 1;
+            // 如果有多余一个子串，则可以交换一个字符
+            if (intervals.size() > 1) {
+                len++;
+            }
+            ans = Math.max(ans, len);
         }
 
-        return result;
-    }
-
-    /**
-     * [i,j) 范围内的子串字符相同
-     */
-    public static class Segment {
-        public int i, j;
-
-        public Segment(int i, int j) {
-            this.i = i;
-            this.j = j;
-        }
-
-        public int len() {
-            return j - i;
-        }
+        return ans;
     }
 
     @Test
@@ -139,11 +127,11 @@ public class E1156_Medium_SwapForLongestRepeatedCharacterSubstring {
 
         final int n = text.length();
         for (int i = 0; i < n; i++) {
-            int num = text.charAt(i) - 'a';
-            if (prev[num] == -1) {
-                prev[num] = i;
+            int idx = text.charAt(i) - 'a';
+            if (prev[idx] == -1) {
+                prev[idx] = i;
             }
-            after[text.charAt(i) - 'a'] = i;
+            after[idx] = i;
         }
 
         // windowNum 表示当前窗口 [left, right) 内的主要字符
@@ -170,6 +158,7 @@ public class E1156_Medium_SwapForLongestRepeatedCharacterSubstring {
                     windowUnMatchPos = right;
                     // 如果可以用窗口外的字符填补
                     if (prev[windowNum] < left || after[windowNum] > right) {
+                        // 注意 windowCanSwapUseOutOf 只有在这里才会赋值为 1，因为 windowNum 可能只有一段重复子串
                         windowCanSwapUseOutOf = 1;
                         windowSwapPos = prev[windowNum] < left ? prev[windowNum] : after[windowNum];
                         result = Math.max(result, right - left + 1);
