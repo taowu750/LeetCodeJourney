@@ -67,80 +67,37 @@ public class E632_Hard_SmallestRangeCoveringElementsFromKLists {
                         singletonList(4), singletonList(5), singletonList(6), singletonList(7))));
     }
 
-    static class State implements Comparable<State> {
-        int val, idx;
-
-        State(int val, int idx) {
-            this.val = val;
-            this.idx = idx;
-        }
-
-        @Override
-        public int compareTo(State o) {
-            int cmp = Integer.compare(val, o.val);
-            return cmp != 0 ? cmp : Integer.compare(idx, o.idx);
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (this == o) return true;
-            State state = (State) o;
-            return val == state.val && idx == state.idx;
-        }
-
-        @Override
-        public int hashCode() {
-            return Objects.hash(val, idx);
-        }
-
-        @Override
-        public String toString() {
-            return "{" + val + ", " + idx + "}";
-        }
-    }
-
     /**
-     * LeetCode 耗时：50 ms - 52.99%
+     * LeetCode 耗时：32 ms - 52.99%
      *          内存消耗：45 MB - 47.76%
      */
     public int[] smallestRange(List<List<Integer>> nums) {
-        int k = nums.size();
-        if (k == 1) {
-            int b = nums.get(0).get(0);
-            return new int[]{b,b};
-        }
-
-        TreeSet<State> treeSet = new TreeSet<>();
-        int[] indices = new int[k];
+        final int k = nums.size();
+        int[] ans = {0, Integer.MAX_VALUE};
+        TreeSet<int[]> tree = new TreeSet<>((a, b) -> {
+            int cmp = a[0] - b[0];
+            return cmp != 0 ? cmp : a[1] - b[1];
+        });
         for (int i = 0; i < k; i++) {
-            treeSet.add(new State(nums.get(i).get(0), i));
+            tree.add(new int[]{nums.get(i).get(0), i, 0});
         }
-
-        int lo = 0, hi = Integer.MAX_VALUE;
-        outer: for(;;) {
-            State min = treeSet.first();
-            State max = treeSet.last();
-            if (max.val - min.val < hi - lo) {
-                lo = min.val;
-                hi = max.val;
+        while (!tree.isEmpty()) {
+            int min = tree.first()[0], max = tree.last()[0];
+            if (max - min < ans[1] - ans[0]) {
+                ans[0] = min;
+                ans[1] = max;
             }
-
-            do {
-                min = treeSet.pollFirst();
-                // 跳过相等的值
-                while (++indices[min.idx] < nums.get(min.idx).size()
-                        && nums.get(min.idx).get(indices[min.idx]) == min.val);
-                // 如果最小值序列的值全部遍历完了，则可以确定范围
-                if (indices[min.idx] >= nums.get(min.idx).size())
-                    break outer;
-                // 添加最小值序列的下一个值
-                treeSet.add(new State(nums.get(min.idx).get(indices[min.idx]), min.idx));
-
-                // 如果还有别的序列的值等于 min，则也推进它们
-            } while (!treeSet.isEmpty() && treeSet.first().val == min.val);
+            int[] a = tree.pollFirst();
+            if (a[2] == nums.get(a[1]).size() - 1) {
+                break;
+            } else {
+                a[2]++;
+                a[0] = nums.get(a[1]).get(a[2]);
+                tree.add(a);
+            }
         }
 
-        return new int[]{lo, hi};
+        return ans;
     }
 
     @Test

@@ -34,6 +34,8 @@ public class E930_Medium_BinarySubarraysWithSum {
     public static void test(ToIntBiFunction<int[], Integer> method) {
         assertEquals(4, method.applyAsInt(new int[]{1,0,1,0,1}, 2));
         assertEquals(15, method.applyAsInt(new int[]{0,0,0,0,0}, 0));
+        assertEquals(3, method.applyAsInt(new int[]{0,1,1,1,1}, 3));
+        assertEquals(27, method.applyAsInt(new int[]{0,0,0,0,0,0,1,0,0,0}, 0));
     }
 
     /**
@@ -92,5 +94,59 @@ public class E930_Medium_BinarySubarraysWithSum {
     @Test
     public void testSlideWindowMethod() {
         test(this::slideWindowMethod);
+    }
+
+
+    /**
+     * 自己后来想出来的一种滑动窗口方法，但不如上面简洁优雅。
+     *
+     * LeetCode 耗时：2 ms - 98.99%
+     *          内存消耗：45.1 MB - 68.10%
+     */
+    public int otherSlideWindowMethod(int[] nums, int goal) {
+        /*
+        找到一段和等于 goal 的子数组，它的左边 0 的个数是 l，右边是 r，则有
+        ans += l + r + l * r + 1
+
+        循环渐进式地计算
+        ans += l + 1
+         */
+        int l = 0, r = 0, sum = 0, ans = 0, leftZeroCnt = -1;
+        while (r < nums.length) {
+            sum += nums[r++];
+            while (l < r && sum > goal) {
+                sum -= nums[l++];
+                leftZeroCnt = -1;
+            }
+            if (sum == goal) {
+                if (goal == 0) {
+                    if (leftZeroCnt == -1) {
+                        // 如果滑动窗口不是空的
+                        if (l < r) {
+                            leftZeroCnt = 0;
+                        }
+                    } else {
+                        leftZeroCnt++;
+                    }
+                } else if (leftZeroCnt == -1) {
+                    leftZeroCnt = 0;
+                    for (int i = l; i < r - 1; i++) {
+                        if (nums[i] == 0) {
+                            leftZeroCnt++;
+                        } else {
+                            break;
+                        }
+                    }
+                }
+                ans += leftZeroCnt + 1;
+            }
+        }
+
+        return ans;
+    }
+
+    @Test
+    public void testOtherSlideWindowMethod() {
+        test(this::otherSlideWindowMethod);
     }
 }
