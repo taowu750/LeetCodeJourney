@@ -48,6 +48,7 @@ public class E30_Hard_SubstringWithConcatenationOfAllWords {
         equalsIgnoreOrder(singletonList(0), method.apply("ababababab", new String[]{"ababa","babab"}));
         equalsIgnoreOrder(singletonList(1), method.apply("acbcaabacb", new String[]{"aab","cbc"}));
         equalsIgnoreOrder(asList(0,1,2,3,4,5,6,7,8,9), method.apply("ssssssssssssssssss", new String[]{"sss","sss","sss"}));
+        equalsIgnoreOrder(asList(0,1), method.apply("aaa", new String[]{"a", "a"}));
     }
 
     /**
@@ -175,50 +176,36 @@ public class E30_Hard_SubstringWithConcatenationOfAllWords {
      *          内存消耗：41.8 MB - 41.02%
      */
     public List<Integer> slideWindowMethod(String s, String[] words) {
-        final int n = s.length(), m = words.length, d = words[0].length(), L = m * d;
-        if (n < L) {
-            return Collections.emptyList();
-        }
-
-        Map<String, Integer> word2cnt = new HashMap<>();
+        final int m = s.length(), n = words.length, d = words[0].length(), L = n * d;
+        Map<String, Integer> w2c = new HashMap<>();
         for (String word : words) {
-            word2cnt.merge(word, 1, Integer::sum);
+            w2c.merge(word, 1, Integer::sum);
         }
 
-        List<Integer> result = new ArrayList<>();
+        List<Integer> ans = new ArrayList<>();
         // 起点最多有 d 个，且起点+L需要小于等于 s 的长度
-        for (int start = 0; start < d && start + L <= n; start++) {
-            Map<String, Integer> window = new HashMap<>();
+        for (int start = 0; start < d && start + L <= m; start++) {
             int left = start, right = start;
+            Map<String, Integer> window = new HashMap<>();
             // 当还有单词可以截取，并且滑动窗口最左边到 s 末尾长度大于等于 L时，继续滑动
-            while (right + d <= n && left + L <= n) {
-                // 截取单词
-                String subWord = s.substring(right, right + d);
+            while (right + d <= m && left + L <= m) {
+                String word = s.substring(right, right + d);
                 right += d;
-                // 加到滑动窗口中
-                window.merge(subWord, 1, Integer::sum);
-                // 获取需要多少个这个单词
-                int cnt = word2cnt.getOrDefault(subWord, -1);
-                // 如果没有这个单词，则需要清空滑动窗口
-                if (cnt == -1) {
-                    for (; left < right; left += d) {
-                        window.put(s.substring(left, left + d), 0);
-                    }
-                } else if (window.get(subWord) > cnt) {  // 如果比所需的多了，则需要移动 left，去掉多出来的一个
-                    do {
-                        window.merge(s.substring(left, left + d), -1, Integer::sum);
-                        left += d;
-                    } while (window.get(subWord) > cnt);
-                } else if (right - left == L) {  // 如果已达成目标，则添加滑动窗口起点到结果中
-                    result.add(left);
-                    // 收缩 left
+                int cnt = window.merge(word, 1, Integer::sum);
+                int origin = w2c.getOrDefault(word, 0);
+                // 如果比所需的多了，则需要移动 left，去掉多出来的一个
+                while (origin < cnt) {
                     window.merge(s.substring(left, left + d), -1, Integer::sum);
+                    cnt = window.get(word);
                     left += d;
+                }
+                if (right - left == L) {
+                    ans.add(left);
                 }
             }
         }
 
-        return result;
+        return ans;
     }
 
     @Test

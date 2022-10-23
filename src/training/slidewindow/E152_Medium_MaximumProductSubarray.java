@@ -1,4 +1,4 @@
-package training.dynamicprogramming;
+package training.slidewindow;
 
 import org.junit.jupiter.api.Test;
 
@@ -22,14 +22,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * 输入: [-2,0,-1]
  * 输出: 0
  * 解释: 结果不能为 2, 因为 [-2,-1] 不是子数组。
+ *
+ * 说明：
+ * - 1 <= nums.length <= 2 * 10^4
+ * - -10 <= nums[i] <= 10
+ * - nums 的任何前缀或后缀的乘积都保证是一个 32 位整数
  */
 public class E152_Medium_MaximumProductSubarray {
 
-    static void test(ToIntFunction<int[]> method) {
+    public static void test(ToIntFunction<int[]> method) {
         assertEquals(6, method.applyAsInt(new int[]{2,3,-2,4}));
         assertEquals(0, method.applyAsInt(new int[]{-2,0,-1}));
         assertEquals(288, method.applyAsInt(new int[]{2,3,-2,4,-1,3,2,-3}));
         assertEquals(-2, method.applyAsInt(new int[]{-2}));
+        assertEquals(3, method.applyAsInt(new int[]{2, 0, 3, -2}));
     }
 
     /**

@@ -100,10 +100,11 @@ public class E3_Medium_LongestSubstringWithoutRepeatingCharacters {
         int l = 0, r = 0, ans = 0;
         while (r < s.length()) {
             char c = s.charAt(r++);
-            // 如果 c 已不再窗口内
+            // 如果 c 已不在窗口内
             if (window[c] < l) {
                 ans = Math.max(ans, r - l);
             } else {
+                // 快速收缩窗口
                 l = window[c] + 1;
             }
             window[c] = r - 1;

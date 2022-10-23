@@ -102,12 +102,23 @@ public class E658_Medium_FindKClosestElements {
 
 
     /**
-     * 二分查找结合滑动窗口。
+     * 二分查找结合滑动窗口。参见：
+     * https://leetcode.cn/problems/find-k-closest-elements/solution/pai-chu-fa-shuang-zhi-zhen-er-fen-fa-python-dai-ma/
      *
      * LeetCode 耗时：1ms - 100%
      */
     public List<Integer> betterMethod(int[] arr, int k, int x) {
         /*
+        如果 x 的值落在长度为 size 的区间内，要得到 size - 1 个符合题意的最接近的元素，此时看左右边界：
+        - 如果左边界与 x 的差值的绝对值较小，删除右边界；
+        - 如果右边界与 x 的差值的绝对值较小，删除左边界；
+        - 如果左、右边界与 x 的差值的绝对值相等，删除右边界。
+
+        所以为了找到长度为 k 的最优区间，我们需要使用长度为 k + 1 的区间来判断如何收缩左右边界和移动区间。
+        用 k + 1 个元素，这样的话左右边界肯定有一个数不满足要求，方便定位最优区间。
+        实际上比较的是两个长度为 k 的区间的「左边界」谁更合适。这两个区间的「并集」的长度是 k + 1。
+
+
         假设 A[mid] ~ A[mid + k] 是滑动窗口
 
         case 1: x - A[mid] < A[mid + k] - x, 需要向左移动窗口
