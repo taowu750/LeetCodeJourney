@@ -104,41 +104,31 @@ public class E930_Medium_BinarySubarraysWithSum {
      *          内存消耗：45.1 MB - 68.10%
      */
     public int otherSlideWindowMethod(int[] nums, int goal) {
-        /*
-        找到一段和等于 goal 的子数组，它的左边 0 的个数是 l，右边是 r，则有
-        ans += l + r + l * r + 1
-
-        循环渐进式地计算
-        ans += l + 1
-         */
-        int l = 0, r = 0, sum = 0, ans = 0, leftZeroCnt = -1;
+        // firstOneIdx 记录滑动窗口内首个 1 的下标
+        int l = 0, r = 0, sum = 0, firstOneIdx = -1, ans = 0;
         while (r < nums.length) {
-            sum += nums[r++];
-            while (l < r && sum > goal) {
-                sum -= nums[l++];
-                leftZeroCnt = -1;
+            int num = nums[r++];
+            if (num == 1 && firstOneIdx == -1) {
+                firstOneIdx = r - 1;
             }
-            if (sum == goal) {
-                if (goal == 0) {
-                    if (leftZeroCnt == -1) {
-                        // 如果滑动窗口不是空的
-                        if (l < r) {
-                            leftZeroCnt = 0;
-                        }
-                    } else {
-                        leftZeroCnt++;
-                    }
-                } else if (leftZeroCnt == -1) {
-                    leftZeroCnt = 0;
-                    for (int i = l; i < r - 1; i++) {
-                        if (nums[i] == 0) {
-                            leftZeroCnt++;
-                        } else {
-                            break;
-                        }
-                    }
+            sum += num;
+            if (sum > goal) {
+                do {
+                    sum -= nums[l++];
+                } while (sum > goal);
+
+                // 收缩窗口需要重新计算 firstOneIdx
+                firstOneIdx = l;
+                while (firstOneIdx < r && nums[firstOneIdx] == 0) {
+                    firstOneIdx++;
                 }
-                ans += leftZeroCnt + 1;
+                if (firstOneIdx == r) {
+                    firstOneIdx = -1;
+                }
+            }
+            // sum==goal，则 ans += 第一个 1 之前 0 的数量 + 1
+            if (sum == goal) {
+                ans += firstOneIdx == -1 ? r - l : firstOneIdx - l + 1;
             }
         }
 

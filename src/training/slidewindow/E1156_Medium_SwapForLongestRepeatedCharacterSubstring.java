@@ -48,6 +48,7 @@ public class E1156_Medium_SwapForLongestRepeatedCharacterSubstring {
         assertEquals(4, method.applyAsInt("aaabbaaa"));
         assertEquals(5, method.applyAsInt("aaaaa"));
         assertEquals(1, method.applyAsInt("abcdef"));
+        assertEquals(4, method.applyAsInt("acbaaa"));
     }
 
     /**

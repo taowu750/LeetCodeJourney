@@ -26,9 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class E718_Medium_MaximumLengthOfRepeatedSubarray {
 
     public static void test(ToIntBiFunction<int[], int[]> method) {
-        assertEquals(method.applyAsInt(new int[]{1,2,3,2,1}, new int[]{3,2,1,4,7}), 3);
-        assertEquals(method.applyAsInt(new int[]{0,1,1,1,1}, new int[]{1,0,1,0,1}), 2);
-        assertEquals(method.applyAsInt(new int[]{1,0,0,0,1}, new int[]{1,0,0,1,1}), 3);
+        assertEquals(3, method.applyAsInt(new int[]{1,2,3,2,1}, new int[]{3,2,1,4,7}));
+        assertEquals(2, method.applyAsInt(new int[]{0,1,1,1,1}, new int[]{1,0,1,0,1}));
+        assertEquals(3, method.applyAsInt(new int[]{1,0,0,0,1}, new int[]{1,0,0,1,1}));
+        assertEquals(1, method.applyAsInt(new int[]{5,14,53,80,48}, new int[]{50,47,3,80,83}));
     }
 
     /**
@@ -37,7 +38,7 @@ public class E718_Medium_MaximumLengthOfRepeatedSubarray {
      * LeetCode 耗时：80 ms - 11.48%
      *          内存消耗：47.3 MB - 43.52%
      */
-    public int dpMethod(int[] A, int[] B) {
+    public int findLength(int[] A, int[] B) {
         final int n = A.length, m = B.length;
         // (i,j) 表示 A 中 i 开头 和 B 中 j 开头的最长公共子数组的长度。
         // (i,j) 依赖 (i+1,j+1)、(i+1,j)、(i,j+1)
@@ -57,8 +58,8 @@ public class E718_Medium_MaximumLengthOfRepeatedSubarray {
     }
 
     @Test
-    public void testDpMethod() {
-        test(this::dpMethod);
+    public void testFindLength() {
+        test(this::findLength);
     }
 
 

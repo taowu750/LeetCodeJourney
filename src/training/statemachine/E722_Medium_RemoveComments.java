@@ -105,6 +105,27 @@ public class E722_Medium_RemoveComments {
         };
         */
         assertEquals(asList("struct Node{", "    ", "    int size;", "    int val;", "};"), method.apply(new String[]{"struct Node{", "    /*/ declare members;/**/", "    int size;", "    /**/int val;", "};"}));
+
+        /*
+        void func(int k) {
+        // this function does nothing /*
+           k = k*2/4;
+           k = k/2;*\/
+        }
+        */
+        assertEquals(asList("void func(int k) {","   k = k*2/4;","   k = k/2;*/","}"), method.apply(new String[]{"void func(int k) {", "// this function does nothing /*", "   k = k*2/4;", "   k = k/2;*/", "}"}));
+
+        /*
+        main() {
+           func(1);
+           /** / more comments here
+           float f = 2.0
+           f += f;
+
+           cout << f; *\/
+        }
+        */
+        assertEquals(asList("main() {","   func(1);","   ","}"), method.apply(new String[]{"main() {", "   func(1);", "   /** / more comments here", "   float f = 2.0", "   f += f;", "   cout << f; */", "}"}));
     }
 
     public enum State {
@@ -119,42 +140,56 @@ public class E722_Medium_RemoveComments {
 
     /**
      * 状态机解法，可以使用 EnumMap 优化，参见 {@link Offer20_Medium_StringRepresentingNumericValue}。
+     * 如果使用整数替代 Enum 就是 0ms
      *
-     * LeetCode 耗时：2 ms - 21.28%
+     * LeetCode 耗时：1 ms - 66.27%
      *          内存消耗：37 MB - 41.85%
      */
     public List<String> removeComments(String[] source) {
         /*
-        输入字符串有着以下字符组成：
-        普通字符  //  /*  *\/  \n(每个字符串后隐形存在)
+        普通 --[/]--> 可能注释开始
+        普通 --[\n]--> 普通(一行结束)
+        普通 --[其他]--> 普通
+
+        可能注释开始 --[/]--> 行注释
+        可能注释开始 --[*]--> 块注释
+        可能注释开始 --[\n]--> 普通(一行结束)
+        可能注释开始 --[其他]--> 普通
+
+        行注释，快速去掉后面所有字符 --> 普通
+
+        块注释 --[*]--> 可能注释结束
+        块注释 --[其他]--> 块注释
+
+        可能注释结束 --[/]--> 普通
+        可能注释结束 --[*]--> 预备结束
+        可能注释结束 --[其他]--> 块注释
          */
-        List<String> result = new ArrayList<>(source.length);
-        StringBuilder line = new StringBuilder();
+        List<String> ans = new ArrayList<>();
+        StringBuilder sb = new StringBuilder();
         State state = State.NORMAL;
-        for (String src : source) {
-            for (int i = 0; i < src.length(); i++) {
-                char c = src.charAt(i);
+        for (String s : source) {
+            LABEL: for (int i = 0; i < s.length(); i++) {
+                char c = s.charAt(i);
                 switch (state) {
                     case NORMAL:
-                        if (c != '/') {
-                            line.append(c);
-                        } else {
+                        if (c == '/') {
                             state = State.COMMENT_POSSIBLE_START;
+                        } else {
+                            sb.append(c);
                         }
                         break;
 
                     case COMMENT_POSSIBLE_START:
                         if (c == '/') {
-                            state = State.LINE_COMMENT;
+                            state = State.NORMAL;
+                            break LABEL;
                         } else if (c == '*') {
                             state = State.BLOCK_COMMENT;
                         } else {
                             state = State.NORMAL;
-                            line.append('/').append(c);
+                            sb.append('/').append(c);
                         }
-                        break;
-
-                    case LINE_COMMENT:
                         break;
 
                     case BLOCK_COMMENT:
@@ -166,44 +201,24 @@ public class E722_Medium_RemoveComments {
                     case BLOCK_COMMENT_POSSIBLE_END:
                         if (c == '/') {
                             state = State.NORMAL;
-                        }
-                        // 需要注意，如果还遇到 '*'，则还应该保持在 BLOCK_COMMENT_POSSIBLE_END 状态！！！
-                        else if (c == '*') {
-                            continue;
-                        } else {
+                        } else if (c != '*') { // 不要忘了 *
                             state = State.BLOCK_COMMENT;
                         }
                         break;
                 }
             }
-            // 最后处理 \n
-            switch (state) {
-                case NORMAL:
-                case LINE_COMMENT:
-                    state = State.NORMAL;
-                    if (line.length() > 0) {
-                        result.add(line.toString());
-                        line = new StringBuilder();
-                    }
-                    break;
-
-                case COMMENT_POSSIBLE_START:
-                    state = State.NORMAL;
-                    // 需要添加一个 '/'
-                    result.add(line.append('/').toString());
-                    line = new StringBuilder();
-                    break;
-
-                case BLOCK_COMMENT:
-                    break;
-
-                case BLOCK_COMMENT_POSSIBLE_END:
-                    state = State.BLOCK_COMMENT;
-                    break;
+            // 预备注释遇到换行也需要转换
+            if (state == State.COMMENT_POSSIBLE_START) {
+                state = State.NORMAL;
+                sb.append('/');
+            }
+            if (state == State.NORMAL && sb.length() > 0) {
+                ans.add(sb.toString());
+                sb.setLength(0);
             }
         }
 
-        return result;
+        return ans;
     }
 
     @Test
