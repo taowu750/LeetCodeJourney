@@ -95,32 +95,20 @@ public class E738_Medium_MonotoneIncreasingDigits {
      *          内存消耗：38.6 MB - 23.97%
      */
     public int betterMethod(int n) {
-        if (n < 10)
-            return n;
-
-        char[] chars = String.valueOf(n).toCharArray();
-
-        // 从左往右遍历各位数字，找到第一个 chars[i] > chars[i+1]
-        int i = 0;
-        while (i+1 < chars.length && chars[i] <= chars[i+1]) {
-            i++;
-        }
-        if (i == chars.length-1)
-            return n; // 整个数字符合要求，直接返回
-
-        // 需要再往前再看下，是否还有等于当前[i]的数字，找到最前面那个
-        while (i-1 >= 0 && chars[i-1] == chars[i]) {
-            i--;
-        }
-        // 将此时的[i]--，并将[i+1 ...]各位数字全部置为9
-        chars[i] = (char) (chars[i] - 1);
-        i++;
-        while (i < chars.length) {
-            chars[i] = '9';
-            i++;
+        char[] chars = Integer.toString(n).toCharArray();
+        char min = Character.MAX_VALUE;
+        for (int i = chars.length - 2; i >= 0; i--) {
+            min = (char) Math.min(min, chars[i + 1]);
+            if (chars[i] > min) {
+                chars[i]--;
+                for (int j = i + 1; j < chars.length && chars[j] != '9'; j++) {
+                    chars[j] = '9';
+                }
+                min = chars[i];
+            }
         }
 
-        return Integer.parseInt(String.valueOf(chars));
+        return Integer.parseInt(new String(chars));
     }
 
     @Test

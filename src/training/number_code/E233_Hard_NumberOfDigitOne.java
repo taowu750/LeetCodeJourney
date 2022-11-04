@@ -26,9 +26,10 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E233_Hard_NumberOfDigitOne {
 
-    static void test(IntUnaryOperator method) {
+    public static void test(IntUnaryOperator method) {
         assertEquals(6, method.applyAsInt(13));
         assertEquals(0, method.applyAsInt(0));
+        assertEquals(154, method.applyAsInt(234));
         assertEquals(316, method.applyAsInt(1011));
     }
 

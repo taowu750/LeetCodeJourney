@@ -32,7 +32,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E29_Medium_DivideTwoIntegers {
 
-    static void test(IntBinaryOperator method) {
+    public static void test(IntBinaryOperator method) {
         assertEquals(3, method.applyAsInt(10, 3));
         assertEquals(-2, method.applyAsInt(7, -3));
         assertEquals(Integer.MAX_VALUE, method.applyAsInt(Integer.MIN_VALUE, -1));
@@ -49,20 +49,14 @@ public class E29_Medium_DivideTwoIntegers {
      *          内存消耗：35.7 MB - 17.66%
      */
     public int divide(int dividend, int divisor) {
-        // 都为最小值的特殊情况
-        if (dividend == Integer.MIN_VALUE && divisor == Integer.MIN_VALUE) {
-            return 1;
-        }
-        // 否则，divisor 为最小值，结果肯定为 0
-        else if (divisor == Integer.MIN_VALUE) {
-            return 0;
-        }
-        // dividend 为最小值，divisor 为 -1，这是唯一一种会溢出的情况
-        else if (dividend == Integer.MIN_VALUE && divisor == -1) {
+        // 唯一一种会溢出的方法
+        if (dividend == Integer.MIN_VALUE && divisor == -1) {
             return Integer.MAX_VALUE;
         }
-
-        // 如果 dividend 不为最小值（最小值的绝对值还是最小值），且绝对值小于 divisor 的绝对值，返回 0
+        // 注意 abs(MIN_VALUE) 仍然为 MIN_VALUE，所以要特殊处理
+        if (dividend != Integer.MIN_VALUE && divisor == Integer.MIN_VALUE) {
+            return 0;
+        }
         if (dividend != Integer.MIN_VALUE && Math.abs(dividend) < Math.abs(divisor)) {
             return 0;
         }
@@ -76,23 +70,22 @@ public class E29_Medium_DivideTwoIntegers {
             divisor = -divisor;
         }
 
-        // dividend 的一半，divisor 小于它，那么商就只能为 1
-        int limit = (dividend + 1) >> 1;
-        int quotient = 0;
+        // 倍增法
+        int ans = 0;
         do {
-            // 不断倍增法
-            int div = divisor, q = 1;
-            while (div >= limit) {
-                div <<= 1;
-                q *= 2;
-            }
-            // 更新 dividend、limit
-            dividend -= div;
-            limit = (dividend + 1) >> 1;
-            quotient += q;
-        } while (dividend <= divisor);
+            int div = divisor, factor = 1;
+            do {
+                dividend -= div;
+                ans += factor;
+                // 防止 div 溢出，也可以用 long
+                if (div + div < div) {
+                    div += div;
+                    factor += factor;
+                }
+            } while (div >= dividend);
+        } while (divisor >= dividend);
 
-        return sign == 1 ? quotient : -quotient;
+        return sign * ans;
     }
 
     @Test
