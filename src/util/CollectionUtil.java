@@ -2,10 +2,7 @@ package util;
 
 import org.junit.jupiter.api.Assertions;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class CollectionUtil {
 
@@ -74,5 +71,34 @@ public class CollectionUtil {
             }
         }
         throw new AssertionError("no match. actual=" + actual);
+    }
+
+    public static String toString(List<int[]> intArrays) {
+        if (intArrays.size() == 0) {
+            return "[]";
+        }
+
+        StringBuilder sb = new StringBuilder(intArrays.size() * 8);
+        sb.append('[');
+        for (int[] intArray : intArrays) {
+            sb.append(Arrays.toString(intArray)).append(", ");
+        }
+        sb.deleteCharAt(sb.length() - 1);
+        sb.deleteCharAt(sb.length() - 1);
+        sb.append(']');
+
+        return sb.toString();
+    }
+
+    public static void equalsIntArrays(List<int[]> expected, List<int[]> actual) {
+        if (expected.size() != actual.size()) {
+            throw new AssertionError("size no match, actual=" + toString(actual));
+        }
+        for (int i = 0; i < expected.size(); i++) {
+            int[] e = expected.get(i), a = actual.get(i);
+            if (!Arrays.toString(e).equals(Arrays.toString(a))) {
+                throw new AssertionError("no match, idx=" + i + ", actual=" + toString(actual));
+            }
+        }
     }
 }
