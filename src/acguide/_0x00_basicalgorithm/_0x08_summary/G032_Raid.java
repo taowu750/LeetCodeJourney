@@ -72,10 +72,12 @@ public class G032_Raid {
                 "acguide/_0x00_basicalgorithm/_0x08_summary/data/G032_output.txt");
         StdIOTestUtil.test(method, "acguide/_0x00_basicalgorithm/_0x08_summary/data/G032_input1.txt",
                 "acguide/_0x00_basicalgorithm/_0x08_summary/data/G032_output1.txt");
+        StdIOTestUtil.test(method, "acguide/_0x00_basicalgorithm/_0x08_summary/data/G032_input2.txt",
+                "acguide/_0x00_basicalgorithm/_0x08_summary/data/G032_output2.txt");
     }
 
     public static class Point implements Comparable<Point> {
-        public double x, y;
+        public int x, y;
         public boolean type;
         public int rand;
 
@@ -93,7 +95,7 @@ public class G032_Raid {
             这导致在分治时，除了最后一次将两组数混合在了一起，其余情况均是A组在一起，B组在一起。每次计算答案都会将所有点考虑在内。
             给每个点加一个随机数，排序时若横坐标相同，则按随机数排序。
              */
-            if (Math.abs(x - o.x) < 1e-6) {
+            if (x == o.x) {
                 return rand - o.rand;
             } else {
                 return x < o.x ? -1 : 1;
@@ -120,8 +122,8 @@ public class G032_Raid {
             for (int i = N; i < 2 * N; i++) {
                 points[i] = new Point(in.nextInt(), in.nextInt(), true);
             }
+            min = Double.POSITIVE_INFINITY;
             Arrays.sort(points);
-            min = dist(points[0], points[2*N-1]);
 
             System.out.printf("%.3f\n", find(points, new Point[2 * N], 0, 2 * N - 1));
         }
@@ -132,7 +134,7 @@ public class G032_Raid {
             return Double.MAX_VALUE;
         }
         int mid = (l + r) / 2;
-        double midX = points[mid].x;
+        int midX = points[mid].x;
         double ans = Math.min(find(points, tmp, l, mid), find(points, tmp, mid + 1, r));
 
         // 先将 points 中的 [l, mid] 和 [mid + 1, r] 两段进行按 y 轴坐标进行按序归并
@@ -153,7 +155,7 @@ public class G032_Raid {
         // 找到所有在 [mid_x - ans, mid_x + ans] 中的点，存入 tmp
         int cnt = 0;
         for (int i = l; i <= r; i++) {
-            if (points[i].x > midX - ans && points[i].x < midX + ans) {
+            if (points[i].x >= midX - ans && points[i].x <= midX + ans) {
                 tmp[cnt++] = points[i];
             }
         }
@@ -208,10 +210,10 @@ public class G032_Raid {
     }
 
     /**
-     * 创建 hack 数据
+     * 创建 hack 数据，x 都相同
      */
     @Test
-    public void testCreateHackData() throws IOException {
+    public void testCreateHackDataSameX() throws IOException {
         String dataPath = this.getClass().getResource("data").getPath();
         File file = Paths.get(dataPath, "G032_input1.txt").toFile();
         if (!file.exists()) {
@@ -232,6 +234,34 @@ public class G032_Raid {
         }
         out = new PrintStream(new FileOutputStream(file));
         out.println("1.000");
+        out.close();
+    }
+
+    /**
+     * 创建 hack 数据，都是 0
+     */
+    @Test
+    public void testCreateHackDataBothZero() throws IOException {
+        String dataPath = this.getClass().getResource("data").getPath();
+        File file = Paths.get(dataPath, "G032_input2.txt").toFile();
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        int n = 10_0000;
+        PrintStream out = new PrintStream(new FileOutputStream(file));
+        out.println("1");
+        out.printf("%d\n", n);
+        for (int i = 0; i < 2 * n; i++) {
+            out.println("0 0");
+        }
+        out.close();
+
+        file = Paths.get(dataPath, "G032_output2.txt").toFile();
+        if (!file.exists()) {
+            file.createNewFile();
+        }
+        out = new PrintStream(new FileOutputStream(file));
+        out.println("0.000");
         out.close();
     }
 }
