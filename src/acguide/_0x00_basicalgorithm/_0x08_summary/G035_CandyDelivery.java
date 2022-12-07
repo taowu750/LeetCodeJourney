@@ -63,7 +63,7 @@ public class G035_CandyDelivery {
 
         int[] c = new int[n];
         for (int i = 1; i < n; i++) {
-            c[i] = c[i - 1] + a[i] - ave;
+            c[i] = c[i - 1] + a[i - 1] - ave;
         }
         Arrays.sort(c);
 
