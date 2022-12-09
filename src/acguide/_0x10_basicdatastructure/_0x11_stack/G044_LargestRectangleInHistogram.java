@@ -104,7 +104,7 @@ public class G044_LargestRectangleInHistogram {
     /**
      * 书上的方法
      */
-    public void betterMethod() {
+    public void bookMethod() {
         Scanner in = new Scanner(System.in);
         for (;;) {
             int n = in.nextInt();
@@ -130,6 +130,45 @@ public class G044_LargestRectangleInHistogram {
                 }
                 stack[++top][0] = heights[i];
                 stack[top][1] = width + 1;
+            }
+
+            System.out.println(ans);
+        }
+    }
+
+    @Test
+    public void testBookMethod() {
+        test(this::bookMethod);
+    }
+
+
+    public void betterMethod() {
+        Scanner in = new Scanner(System.in);
+        while (true) {
+            int n = in.nextInt();
+            if (n == 0) {
+                break;
+            }
+
+            int[] heights = new int[n + 1];
+            for (int i = 0; i < n; i++) {
+                heights[i] = in.nextInt();
+            }
+
+            // 单调栈存储下标，从而不用存储宽度
+            int[] stack = new int[n];
+            int top = -1;
+            long ans = 0;
+            for (int i = 0; i <= n; i++) {
+                while (top != -1 && heights[stack[top]] >= heights[i]) {
+                    int idx = stack[top--];
+                    if (top == -1) {
+                        ans = Math.max(ans, (long) i * heights[idx]);
+                    } else {
+                        ans = Math.max(ans, (long) (i - stack[top] - 1) * heights[idx]);
+                    }
+                }
+                stack[++top] = i;
             }
 
             System.out.println(ans);
