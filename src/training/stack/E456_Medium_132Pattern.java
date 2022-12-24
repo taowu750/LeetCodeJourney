@@ -81,14 +81,7 @@ public class E456_Medium_132Pattern {
             // 更新 num1
             num1 = Math.min(num1, num3);
             // 移除 i+1
-            right.merge(nums[i + 1], -1, (older, delta) -> {
-                int result = older + delta;
-                if (result == 0) {
-                    return null;
-                } else {
-                    return result;
-                }
-            });
+            right.merge(nums[i + 1], -1, (old, neg) -> old + neg > 0 ? old + neg : null);
         }
 
         return false;
@@ -304,12 +297,8 @@ public class E456_Medium_132Pattern {
                 return true;
             }
             stack.push(i);
-            // i == 0 时左侧没有元素，直接添加
-            if (i == 0) {
-                minPrefix.add(nums[i]);
-            } else {  // 更新 [0,i] 最小的元素
-                minPrefix.add(Math.min(minPrefix.get(minPrefix.size() - 1), nums[i]));
-            }
+            // 更新 [0,i] 最小的元素
+            minPrefix.add(Math.min(minPrefix.get(minPrefix.size() - 1), nums[i]));
         }
 
         return false;

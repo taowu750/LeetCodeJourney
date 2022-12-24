@@ -45,6 +45,7 @@ public class E321_Hard_CreateMaximumNumber {
         assertArrayEquals(new int[]{9, 8, 6, 5, 3}, method.apply(new int[]{3, 4, 6, 5}, new int[]{9, 1, 2, 5, 8, 3}, 5));
         assertArrayEquals(new int[]{7, 4, 3}, method.apply(new int[]{5, 7, 3}, new int[]{4, 2, 3}, 3));
         assertArrayEquals(new int[]{8, 8, 8, 5, 4}, method.apply(new int[]{3, 8, 5, 3, 4}, new int[]{8, 7, 3, 6, 8}, 5));
+        assertArrayEquals(new int[]{9, 8, 9}, method.apply(new int[]{8, 9}, new int[]{3, 9}, 3));
     }
 
     /**
