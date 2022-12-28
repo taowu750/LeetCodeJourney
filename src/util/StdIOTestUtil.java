@@ -32,7 +32,7 @@ public class StdIOTestUtil {
                     && (actual = actualReader.readLine()) != null) {
                 if (!expect.equals(actual)) {
                     throw new AssertionError(expectPath + " => line " + lineCnt +
-                            ": expect=" + expect + ", but actual=" + actual);
+                            ":\nexpect=" + expect + "\nactual=" + actual);
                 }
                 lineCnt++;
             }
@@ -67,5 +67,17 @@ public class StdIOTestUtil {
 
         System.setIn(stdIn);
         System.setOut(stdOut);
+    }
+
+    public static void output(Runnable method, String inPath, String outputPath) {
+        try (InputStream redirectIn = StdIOTestUtil.class.getClassLoader().getResourceAsStream(inPath);
+             PrintStream redirectOut = new PrintStream(StdIOTestUtil.class.getClassLoader().getResource(outputPath).getFile())) {
+            System.setIn(redirectIn);
+            System.setOut(redirectOut);
+            method.run();
+            redirectOut.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
