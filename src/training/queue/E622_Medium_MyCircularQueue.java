@@ -1,13 +1,19 @@
 package training.queue;
 
+import org.junit.jupiter.api.Test;
+
+import java.util.function.Function;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * 622. 设计循环队列：https://www.acwing.com/problem/content/description/137/
+ *
  * 设计循环队列的实现。循环队列是一种线性数据结构，其中的操作是基于FIFO（先进先出）原理执行的，
  * 最后一个位置又连接回第一个位置以构成一个圆。也称为“环形缓冲区”。
  * <p>
  * 循环队列的好处之一是我们可以利用队列前面的空间。在普通队列中，一旦队列已满，即使队列前面有空位，
- * 我们也不能插入下一个元素。但是使用循环队列，我们​​可以使用空间来存储新值。
+ * 我们也不能插入下一个元素。但是使用循环队列，我们可以使用空间来存储新值。
  * <p>
  * 实现 MyCircularQueue 类：
  * - MyCircularQueue(k): 初始化一个大小为 k 的队列。
@@ -43,8 +49,22 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class E622_Medium_MyCircularQueue {
 
-    public static void main(String[] args) {
-        E622_Medium_MyCircularQueue myCircularQueue = new E622_Medium_MyCircularQueue(3);
+    public interface ICircularQueue {
+        int Front();
+
+        int Rear();
+
+        boolean enQueue(int value);
+
+        boolean deQueue();
+
+        boolean isEmpty();
+
+        boolean isFull();
+    }
+
+    public static void test(Function<Integer, ICircularQueue> factory) {
+        ICircularQueue myCircularQueue = factory.apply(3);
         assertTrue(myCircularQueue.enQueue(1));
         assertTrue(myCircularQueue.enQueue(2));
         assertTrue(myCircularQueue.enQueue(3));
@@ -70,56 +90,124 @@ public class E622_Medium_MyCircularQueue {
         assertFalse(myCircularQueue.deQueue());
     }
 
-    private int[] buffer;
-    private int size;
-    private int headIndex;
-    private int tailIndex;
+    public static class MyQueue implements ICircularQueue {
 
-    public E622_Medium_MyCircularQueue(int k) {
-        buffer = new int[k];
-        headIndex = 0;
-        tailIndex = -1;
+        private final int[] queue;
+        // 只靠 head 和 tail 指针很难同时处理队列为空、为满、只有一个元素的情况
+        private int head, tail, count;
+
+        public MyQueue(int n) {
+            queue = new int[n];
+            tail = -1;
+        }
+
+        public int Front() {
+            if (isEmpty()) {
+                return -1;
+            }
+            return queue[head];
+        }
+
+        public int Rear() {
+            if (isEmpty()) {
+                return -1;
+            }
+            return queue[tail];
+        }
+
+        public boolean enQueue(int value) {
+            if (isFull()) {
+                return false;
+            }
+            count++;
+            queue[tail = (tail + 1) % queue.length] = value;
+            return true;
+        }
+
+        public boolean deQueue() {
+            if (isEmpty()) {
+                return false;
+            }
+            count--;
+            head = (head + 1) % queue.length;
+            return true;
+        }
+
+        public boolean isEmpty() {
+            return count == 0;
+        }
+
+        public boolean isFull() {
+            return count == queue.length;
+        }
     }
 
-    public boolean enQueue(int value) {
-        if (size == buffer.length)
-            return false;
-        tailIndex = ++tailIndex % buffer.length;
-        buffer[tailIndex] = value;
-        size++;
-
-        return true;
+    @Test
+    public void testMyQueue() {
+        test(MyQueue::new);
     }
 
-    public boolean deQueue() {
-        if (size == 0)
-            return false;
 
-        headIndex = ++headIndex % buffer.length;
-        size--;
+    public class OtherQueue implements ICircularQueue {
 
-        return true;
+        private final int[] queue;
+        private final int cap;
+        private int head, tail;
+
+        public OtherQueue(int n) {
+            // 如果设计 tail 指向尾元素的下一个元素，这样判断 isEmpty() 容易判断，只要看 tail==head 即可。
+            // 但是看 isFull() 就麻烦了，判断条件应该是 tail%len==head，但是这一情况有两种可能，一个是前面说的isFull()，
+            // 另一方面，刚开始时我们初始化了 tail = head = 0，也是满足这一条件的。
+            // 所以为了区分这两种情况，我们就不要让循环队列装满，于是我们判断 (tail+1)%len==head(即空出来一个元素)，
+            // 但是这样就会导致少一个元素，所以我们把整个循环队列的长度在实现时隐式+1。
+            //
+            // 类似地，如果我们设计 tail 指向尾元素，也是会有对应多种情况的问题。
+            cap = n + 1;
+            queue = new int[cap];
+        }
+
+        public int Front() {
+            if (isEmpty()) {
+                return -1;
+            }
+            return queue[head];
+        }
+
+        public int Rear() {
+            if (isEmpty()) {
+                return -1;
+            }
+            return queue[(tail - 1 + cap) % cap];
+        }
+
+        public boolean enQueue(int value) {
+            if (isFull()) {
+                return false;
+            }
+            queue[tail] = value;
+            tail = (tail + 1) % cap;
+            return true;
+        }
+
+        public boolean deQueue() {
+            if (isEmpty()) {
+                return false;
+            }
+            head = (head + 1) % cap;
+            return true;
+        }
+
+        public boolean isEmpty() {
+            return head == tail;
+        }
+
+        public boolean isFull() {
+            return (tail + 1) % cap == head;
+        }
     }
 
-    public int Front() {
-        if (size == 0)
-            return -1;
-
-        return buffer[headIndex];
-    }
-
-    public int Rear() {
-        if (size == 0)
-            return -1;
-
-        return buffer[tailIndex];
-    }
-
-    public boolean isEmpty() {
-        return size == 0;
-    }
-
-    public boolean isFull() {
-        return size == buffer.length;
+    @Test
+    public void testOtherQueue() {
+        test(OtherQueue::new);
     }
 }
