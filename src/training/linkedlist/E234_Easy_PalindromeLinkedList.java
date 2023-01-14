@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Input: 1->2->2->1
  * Output: true
  */
-public class Review_E234_Easy_PalindromeLinkedList {
+public class E234_Easy_PalindromeLinkedList {
 
     static void test(Predicate<ListNode> method) {
         ListNode head = newList(-1, 1, 2);

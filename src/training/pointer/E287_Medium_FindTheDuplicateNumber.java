@@ -1,7 +1,7 @@
 package training.pointer;
 
 import org.junit.jupiter.api.Test;
-import training.linkedlist.Review_E142_Medium_LinkedListCycleHead;
+import training.linkedlist.E142_Medium_LinkedListCycleHead;
 
 import java.util.function.ToIntFunction;
 
@@ -56,7 +56,7 @@ public class E287_Medium_FindTheDuplicateNumber {
     /**
      * 快慢指针法。
      *
-     * 此题的解题思路和 {@link Review_E142_Medium_LinkedListCycleHead}（寻找环开头）类似。
+     * 此题的解题思路和 {@link E142_Medium_LinkedListCycleHead}（寻找环开头）类似。
      * 如果数组中没有重复项，我们可以将每个索引映射到该数组中的每个数字。
      *
      * 参见：

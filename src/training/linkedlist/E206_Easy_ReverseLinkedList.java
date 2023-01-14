@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * Input: 1->2->3->4->5->NULL
  * Output: 5->4->3->2->1->NULL
  */
-public class Review_E206_Easy_ReverseLinkedList {
+public class E206_Easy_ReverseLinkedList {
 
     static void test(Function<ListNode, ListNode> method) {
         ListNode head = newList(-1, 1, 2, 3, 4, 5);

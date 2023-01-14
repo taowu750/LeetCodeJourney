@@ -2,7 +2,7 @@ package training.uf;
 
 import org.junit.jupiter.api.Test;
 import training.linkedlist.E92_Medium_ReverseLinkedListII;
-import training.linkedlist.Review_E206_Easy_ReverseLinkedList;
+import training.linkedlist.E206_Easy_ReverseLinkedList;
 import util.datastructure.function.TriFunction;
 
 import java.util.*;
@@ -231,7 +231,7 @@ public class E399_Medium_EvaluateDivision {
         /**
          * 找到 p 的根，并执行路径压缩，同时更新 weight[p] = p / parent[p]。
          *
-         * 递归算法，想出定义、每层需要做的事情即可，参见 {@link Review_E206_Easy_ReverseLinkedList}
+         * 递归算法，想出定义、每层需要做的事情即可，参见 {@link E206_Easy_ReverseLinkedList}
          * 和 {@link E92_Medium_ReverseLinkedListII}。
          */
         int find(int p) {

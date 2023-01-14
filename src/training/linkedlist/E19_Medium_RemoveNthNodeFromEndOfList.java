@@ -2,11 +2,15 @@ package training.linkedlist;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.function.BiFunction;
+
 import static training.linkedlist.ListNode.*;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 19. 删除链表的倒数第 N 个结点: https://leetcode.cn/problems/remove-nth-node-from-end-of-list/
+ *
  * 给定链表的开头，请从链表末尾删除第 n 个节点并返回其开头。
  * 你可以遍历一次完成此操作吗？
  *
@@ -33,30 +37,25 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * - 0 <= Node.val <= 100
  * - 1 <= n <= sz
  */
-public class Review_E19_Medium_RemoveNthNodeFromEndOfList {
+public class E19_Medium_RemoveNthNodeFromEndOfList {
 
-    interface RemoveNthFromEndMethod {
-
-        ListNode removeNthFromEnd(ListNode head, int n);
-    }
-
-    static void test(RemoveNthFromEndMethod method) {
+    public static void test(BiFunction<ListNode, Integer, ListNode> method) {
         ListNode head = newList(-1, 1, 2, 3, 4, 5);
-        head = method.removeNthFromEnd(head, 2);
+        head = method.apply(head, 2);
         printList(head);
         assertTrue(listEqual(head,1, 2, 3, 5));
 
         head = newList(-1, 1);
-        head = method.removeNthFromEnd(head, 1);
+        head = method.apply(head, 1);
         assertNull(head);
 
         head = newList(-1, 1, 2);
-        head = method.removeNthFromEnd(head, 1);
+        head = method.apply(head, 1);
         printList(head);
         assertTrue(listEqual(head,1));
 
         head = newList(-1, 1, 2, 3, 4);
-        head = method.removeNthFromEnd(head, 4);
+        head = method.apply(head, 4);
         printList(head);
         assertTrue(listEqual(head, 2, 3, 4));
     }

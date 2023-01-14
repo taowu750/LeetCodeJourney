@@ -10,6 +10,8 @@ import static util.datastructure.SingleLinkedListNode.listEqual;
 import static util.datastructure.SingleLinkedListNode.printList;
 
 /**
+ * 25. K 个一组翻转链表: https://leetcode.cn/problems/reverse-nodes-in-k-group/
+ *
  * 给定一个链表，每次反转链表 k 个节点，最后返回其修改后的列表。
  *
  * k 是正整数，小于或等于链表的长度。如果节点数不是 k 的倍数，那么剩下节点最终应该保持原样。
@@ -48,7 +50,7 @@ import static util.datastructure.SingleLinkedListNode.printList;
  */
 public class E25_Hard_ReverseNodesInKGroup {
 
-    static void test(BiFunction<ListNode, Integer, ListNode> method) {
+    public static void test(BiFunction<ListNode, Integer, ListNode> method) {
         ListNode head = newList(-1, 1, 2, 3, 4, 5);
         head = method.apply(head, 2);
         printList(head);

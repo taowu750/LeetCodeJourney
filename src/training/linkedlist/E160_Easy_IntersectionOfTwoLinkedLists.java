@@ -58,7 +58,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * - 每个链表上的每个值都在范围 [1, 10**9]
  * - 使用 O(n) 的时间和 O(1) 的空间
  */
-public class Review_E160_Easy_IntersectionOfTwoLinkedLists {
+public class E160_Easy_IntersectionOfTwoLinkedLists {
 
     static void test(BiFunction<ListNode, ListNode, ListNode> method) {
         ListNode listA = newList(-1, 4, 1, 8, 4, 5);

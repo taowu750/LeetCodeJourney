@@ -42,7 +42,7 @@ import static util.datastructure.RandomLinkedListNode.printRandomList;
  * - Node.random 为 null 或指向链表中的节点。
  * -结点数不超过 1000
  */
-public class Review_E138_Medium_CopyListWithRandomPointer {
+public class E138_Medium_CopyListWithRandomPointer {
 
     public static class Node extends RandomLinkedListNode<Node> {
 

@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  * - -10**5 <= Node.val <= 10**5
  * - pos 是 -1 或合法下标
  */
-public class Review_E142_Medium_LinkedListCycleHead {
+public class E142_Medium_LinkedListCycleHead {
 
     static void test(Function<ListNode, ListNode> method) {
         ListNode head = newList(1, 3, 2, 0, -4);

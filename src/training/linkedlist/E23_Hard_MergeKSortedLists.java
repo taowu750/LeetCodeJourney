@@ -47,7 +47,7 @@ import static util.datastructure.SingleLinkedListNode.listEqual;
  */
 public class E23_Hard_MergeKSortedLists {
 
-    static void test(Function<ListNode[], ListNode> method) {
+    public static void test(Function<ListNode[], ListNode> method) {
         assertTrue(listEqual(method.apply(new ListNode[]{
                         newList(-1, 1,4,5),
                         newList(-1, 1,3,4),

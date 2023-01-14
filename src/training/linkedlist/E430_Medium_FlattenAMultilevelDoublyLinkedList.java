@@ -62,7 +62,7 @@ import static util.datastructure.MultilevelDoubleLinkedListNode.printList;
  * - 结点数不超过 1000
  * - 1 <= Node.val <= 10**5
  */
-public class Review_E430_Medium_FlattenAMultilevelDoublyLinkedList {
+public class E430_Medium_FlattenAMultilevelDoublyLinkedList {
 
     public static class Node extends MultilevelDoubleLinkedListNode<Node> {
 

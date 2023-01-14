@@ -30,7 +30,7 @@ public class E203_Easy_RemoveLinkedListElements {
     }
 
     /**
-     * {@link Review_E19_Medium_RemoveNthNodeFromEndOfList} 中的小技巧一样，
+     * {@link E19_Medium_RemoveNthNodeFromEndOfList} 中的小技巧一样，
      * 我们也可以在开头添加一个结点避免对头结点进行特殊处理。
      */
     public ListNode removeElements(ListNode head, int val) {

@@ -57,7 +57,7 @@ public class E92_Medium_ReverseLinkedListII {
     }
 
     /**
-     * 参见 {@link Review_E206_Easy_ReverseLinkedList#betterIterateMethod(ListNode)}。
+     * 参见 {@link E206_Easy_ReverseLinkedList#betterIterateMethod(ListNode)}。
      *
      * LeetCode 耗时：0ms - 100%
      */

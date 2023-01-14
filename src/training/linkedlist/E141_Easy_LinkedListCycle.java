@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * - -10**5 <= Node.val <= 10**5
  * - pos 是 -1 或合法下标
  */
-public class Review_E141_Easy_LinkedListCycle {
+public class E141_Easy_LinkedListCycle {
 
     static void test(Predicate<ListNode> method) {
         ListNode head = newList(1, 3, 2, 0, -4);
