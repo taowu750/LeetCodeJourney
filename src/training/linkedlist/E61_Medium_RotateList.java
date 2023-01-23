@@ -2,10 +2,14 @@ package training.linkedlist;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.function.BiFunction;
+
 import static training.linkedlist.ListNode.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 61. 旋转链表: https://leetcode.cn/problems/rotate-list/
+ *
  * 给定链表的头，将列表向右旋转k个位置。
  * <p>
  * 例 1：
@@ -23,27 +27,22 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  */
 public class E61_Medium_RotateList {
 
-    interface RotateRightMethod {
-
-        ListNode rotateRight(ListNode head, int k);
-    }
-
-    static void test(RotateRightMethod method) {
+    public static void test(BiFunction<ListNode, Integer, ListNode> method) {
         ListNode head = newList(-1, 1, 2, 3, 4, 5);
-        head = method.rotateRight(head, 2);
+        head = method.apply(head, 2);
         printList(head);
         assertTrue(listEqual(head, 4, 5, 1, 2, 3));
 
         head = newList(-1, 0, 1, 2);
-        head = method.rotateRight(head, 4);
+        head = method.apply(head, 4);
         printList(head);
         assertTrue(listEqual(head, 2, 0, 1));
 
         head = new ListNode(1);
-        assertTrue(listEqual(method.rotateRight(head, 20000), 1));
+        assertTrue(listEqual(method.apply(head, 20000), 1));
 
         head = newList(-1, 1, 2);
-        assertTrue(listEqual(method.rotateRight(head, 20001), 2, 1));
+        assertTrue(listEqual(method.apply(head, 20001), 2, 1));
     }
 
     public ListNode rotateRight(ListNode head, int k) {

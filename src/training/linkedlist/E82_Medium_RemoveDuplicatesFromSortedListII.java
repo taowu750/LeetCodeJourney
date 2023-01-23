@@ -30,21 +30,19 @@ import static util.datastructure.SingleLinkedListNode.listEqual;
  */
 public class E82_Medium_RemoveDuplicatesFromSortedListII {
 
-    static void test(UnaryOperator<ListNode> method) {
+    public static void test(UnaryOperator<ListNode> method) {
         assertTrue(listEqual(method.apply(newList(-1, 1,2,3,3,4,4,5)), 1,2,5));
         assertTrue(listEqual(method.apply(newList(-1, 1,1,1,2,3)), 2,3));
         assertNull(method.apply(newList(-1, 3,3,3)));
         assertTrue(listEqual(method.apply(newList(-1, 1,2,2,3,4,4)), 1,3));
+        assertNull(method.apply(null));
     }
 
     /**
-     * LeetCode 耗时：1 ms - 71.62%
+     * LeetCode 耗时：0 ms - 100%
      *          内存消耗：37.6 MB - 96.60%
      */
     public ListNode deleteDuplicates(ListNode head) {
-        if (head == null)
-            return null;
-
         ListNode newHead = new ListNode();
         newHead.next = head;
         for (ListNode par = newHead, p = head; p != null && p.next != null;) {
@@ -52,8 +50,8 @@ public class E82_Medium_RemoveDuplicatesFromSortedListII {
             if (p.val == nextVal) {
                 while (p != null && p.val == nextVal) {
                     p = p.next;
-                    par.next = p;
                 }
+                par.next = p;
             } else {
                 par = p;
                 p = p.next;
