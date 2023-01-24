@@ -10,6 +10,8 @@ import static util.datastructure.SingleLinkedListNode.listEqual;
 import static util.datastructure.SingleLinkedListNode.printList;
 
 /**
+ * 92. 反转链表 II: https://leetcode.cn/problems/reverse-linked-list-ii/
+ *
  * 给定一个单链表的头和两个整数 left、right，其中 left <= right，将 left 到 right 的结点反转，
  * 然后返回反转后的链表。
  *
@@ -35,7 +37,7 @@ import static util.datastructure.SingleLinkedListNode.printList;
  */
 public class E92_Medium_ReverseLinkedListII {
 
-    static void test(TriFunction<ListNode, Integer, Integer, ListNode> method) {
+    public static void test(TriFunction<ListNode, Integer, Integer, ListNode> method) {
         ListNode reversed = method.apply(newList(-1, 1, 2, 3, 4, 5), 2, 4);
         printList(reversed);
         assertTrue(listEqual(reversed,1, 4, 3, 2, 5));

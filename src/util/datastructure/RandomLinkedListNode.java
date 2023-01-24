@@ -20,6 +20,11 @@ public class RandomLinkedListNode<T extends RandomLinkedListNode<T>> {
         this.random = null;
     }
 
+    @Override
+    public String toString() {
+        return Integer.toString(val);
+    }
+
     public static <T extends RandomLinkedListNode<T>> T newRandomList(Class<T> clazz, Integer... valAndRandomIndexes) {
         try {
             Constructor<T> constructor = clazz.getConstructor(int.class);
@@ -76,13 +81,16 @@ public class RandomLinkedListNode<T extends RandomLinkedListNode<T>> {
     public static <T extends RandomLinkedListNode<T>> boolean deepEqualRandomList(T l1, T l2) {
         while (l1 != null && l2 != null) {
             if (l1 == l2)
-                return false;
+                throw new AssertionError("l1 == l2: val=" + l1);
             if (l1.val != l2.val)
-                return false;
+                throw new AssertionError("l1.val == l2.val: l1.val=" + l1 + ", l2.val=" + l2);
             if (l1.random == l2.random && l1.random != null)
-                return false;
-            if (l1.random != null && l2.random != null && l1.random.val != l2.random.val)
-                return false;
+                throw new AssertionError("l1.random == l2.random: random.val=" + l1.random);
+            if ((l1.random == null && l2.random != null) || (l1.random != null && l2.random == null)) {
+                throw new AssertionError("l1.random == null || l2.random == null: l1.random=" + l1.random + ", l2.random=" + l2.random);
+            }
+            if (l1.random != null && l1.random.val != l2.random.val)
+                throw new AssertionError("l1.random.val != l2.random.val: l1.random=" + l1.random + ", l2.random=" + l2.random);
             l1 = l1.next;
             l2 = l2.next;
         }
