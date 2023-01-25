@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  */
 public class E142_Medium_LinkedListCycleHead {
 
-    static void test(Function<ListNode, ListNode> method) {
+    public static void test(Function<ListNode, ListNode> method) {
         ListNode head = newList(1, 3, 2, 0, -4);
         assertEquals(method.apply(head), getNodeAt(head, 1));
 
@@ -64,18 +64,18 @@ public class E142_Medium_LinkedListCycleHead {
     /**
      * 找出快指针和慢指针之间的数学关系
      *
-     * 设从链表头到环的开头的长度为 x1；
-     * 设从环的开头到快慢指针第一次相遇的位置的长度为 x2；
-     * 设快慢指针第一次相遇的位置到环的开头的长度为 x3。
+     * 设从链表头到环的开头的长度为 a；
+     * 设从环的开头到快慢指针第一次相遇的位置的长度为 b；
+     * 设快慢指针第一次相遇的位置到环的开头的长度为 c。
      *
-     * 我们得出以下公式：
-     * - 快指针移动的距离：x1 + x2 + x3 + x2 + 2nr（n = 0, 1, ...）
-     * - 慢指针移动的距离：x1 + x2 + nr
-     * - 因为快指针速度是慢指针的两倍，所以有：x1 + x2 + x3 + x2 + 2nr = 2(x1 + x2 + nr)
-     * 最后可以得出 x1 = x3。
+     * slow 指针进入环后，又走了 b 的距离与 fast 相遇。此时，fast 指针已经走完了环的 n 圈，
+     * 因此它走过的总距离为 a+n(b+c)+b=a+(n+1)b+nc。
      *
-     * 因此，我们在快慢指针相遇之后，在让两个指针分别从链表头和相遇位置开始移动，
-     * 一次一步，最后它们会在环开头相遇。
+     * 根据题意，任意时刻，fast 指针走过的距离都为 slow 指针的 2 倍。因此，我们有
+     *          a+(n+1)b+nc=2(a+b) → a=c+(n−1)(b+c)
+     *
+     * 有了 a=c+(n−1)(b+c) 的等量关系，我们会发现：从相遇点到入环点的距离加上 n−1 圈的环长，
+     * 恰好等于从链表头部到入环点的距离。
      */
     public ListNode useTwoPoint(ListNode head) {
         ListNode slow = head, fast = head;
