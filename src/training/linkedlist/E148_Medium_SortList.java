@@ -32,17 +32,17 @@ import static util.datastructure.SingleLinkedListNode.listEqual;
  */
 public class E148_Medium_SortList {
 
-    static void test(UnaryOperator<ListNode> method) {
-        listEqual(method.apply(newList(-1, 4,2,1,3)), 1,2,3,4);
-        listEqual(method.apply(newList(-1, -1,5,3,4,0)), -1,0,3,4,5);
+    public static void test(UnaryOperator<ListNode> method) {
+        listEqual(method.apply(newList(-1, 4, 2, 1, 3)), 1, 2, 3, 4);
+        listEqual(method.apply(newList(-1, -1, 5, 3, 4, 0)), -1, 0, 3, 4, 5);
         assertNull(method.apply(null));
-        listEqual(method.apply(newList(-1, 100,-1,3,4,6,5,3,2,18,1,15)),
-                -1,1,2,3,3,4,5,6,15,18,100);
+        listEqual(method.apply(newList(-1, 100, -1, 3, 4, 6, 5, 3, 2, 18, 1, 15)),
+                -1, 1, 2, 3, 3, 4, 5, 6, 15, 18, 100);
     }
 
     /**
-     * LeetCode 耗时：9 ms - 40.90%
-     *          内存消耗：42.9 MB - 97.55%
+     * LeetCode 耗时：17 ms - 18.02%
+     *          内存消耗：49.2 MB - 77.95%
      */
     public ListNode sortList(ListNode head) {
         if (head == null || head.next == null)
@@ -75,7 +75,7 @@ public class E148_Medium_SortList {
             do {
                 mergeCount++;
                 // 归并相邻两块。每次将节点放到 p 的末尾
-                for (int i = 0, j = 0, k = 0; i < mergeSize || (j < mergeSize && right != null);) {
+                for (int i = 0, j = 0, k = 0; i < mergeSize || (j < mergeSize && right != null); ) {
                     if (i < mergeSize && (j == mergeSize || right == null || left.val <= right.val)) {
                         p.next = left;
                         left = left.next;
@@ -137,8 +137,8 @@ public class E148_Medium_SortList {
     /**
      * 递归式的归并排序。
      *
-     * LeetCode 耗时：5 ms - 99.32%
-     *          内存消耗：42.7 MB - 98.93%
+     * LeetCode 耗时：12 ms - 45.69%
+     *          内存消耗：49.6 MB - 55.70%
      */
     public ListNode recursiveMethod(ListNode head) {
         return recursiveMethod(head, null);
@@ -198,5 +198,73 @@ public class E148_Medium_SortList {
     @Test
     public void testRecursiveMethod() {
         test(this::recursiveMethod);
+    }
+
+
+    /**
+     * 更好的自底向上：https://leetcode.cn/problems/sort-list/solution/pai-xu-lian-biao-by-leetcode-solution/
+     *
+     * LeetCode 耗时：15 ms - 30.99%
+     *          内存消耗：49.2 MB - 79%
+     */
+    public ListNode betterDownToUp(ListNode head) {
+        if (head == null) {
+            return null;
+        }
+
+        // 1. 首先从头向后遍历,统计链表长度
+        int length = 0; // 用于统计链表长度
+        ListNode node = head;
+        while (node != null) {
+            length++;
+            node = node.next;
+        }
+
+        // 2. 初始化 引入dummyNode
+        ListNode dummyHead = new ListNode(0);
+        dummyHead.next = head;
+
+        // 3. 每次将链表拆分成若干个长度为subLen的子链表 , 并按照每两个子链表一组进行合并
+        for (int subLen = 1; subLen < length; subLen <<= 1) {
+            ListNode prev = dummyHead;
+            ListNode curr = dummyHead.next;     // curr用于记录拆分链表的位置
+
+            while (curr != null) {               // 如果链表没有被拆完
+                // 3.1 拆分subLen长度的链表1
+                ListNode head_1 = curr;        // 第一个链表的头 即 curr初始的位置
+                for (int i = 1; i < subLen && curr.next != null; i++) {     // 拆分出长度为subLen的链表1
+                    curr = curr.next;
+                }
+
+                // 3.2 拆分subLen长度的链表2
+                ListNode head_2 = curr.next;  // 第二个链表的头  即 链表1尾部的下一个位置
+                curr.next = null;             // 断开第一个链表和第二个链表的链接
+                curr = head_2;                // 第二个链表头 重新赋值给curr
+                for (int i = 1; i < subLen && curr != null && curr.next != null; i++) {      // 再拆分出长度为subLen的链表2
+                    curr = curr.next;
+                }
+
+                // 3.3 再次断开 第二个链表最后的next的链接
+                ListNode next = null;
+                if (curr != null) {
+                    next = curr.next;   // next用于记录 拆分完两个链表的结束位置
+                    curr.next = null;   // 断开连接
+                }
+
+                // 3.4 合并两个subLen长度的有序链表
+                prev.next = merge(head_1, head_2);        // prev.next 指向排好序链表的头
+                while (prev.next != null) {  // while循环 将prev移动到 subLen*2 的位置后去
+                    prev = prev.next;
+                }
+                curr = next;              // next用于记录 拆分完两个链表的结束位置
+            }
+        }
+        // 返回新排好序的链表
+        return dummyHead.next;
+    }
+
+    @Test
+    public void testBetterDownToUp() {
+        test(this::betterDownToUp);
     }
 }

@@ -23,7 +23,7 @@ import static util.datastructure.SingleLinkedListNode.listEqual;
  */
 public class E143_Medium_ReorderList {
 
-    static void test(Consumer<ListNode> method) {
+    public static void test(Consumer<ListNode> method) {
         ListNode head = newList(-1, 1,2,3,4);
         method.accept(head);
         listEqual(head, 1,4,2,3);
