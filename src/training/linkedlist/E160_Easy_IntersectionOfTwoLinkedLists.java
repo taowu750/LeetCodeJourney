@@ -9,6 +9,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
 /**
+ * 160. 相交链表: https://leetcode.cn/problems/intersection-of-two-linked-lists/
+ *
  * 查找两个链表的交点。例如下面两个链表：
  * A：    a1->a2--
  *               |
@@ -60,7 +62,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
  */
 public class E160_Easy_IntersectionOfTwoLinkedLists {
 
-    static void test(BiFunction<ListNode, ListNode, ListNode> method) {
+    public static void test(BiFunction<ListNode, ListNode, ListNode> method) {
         ListNode listA = newList(-1, 4, 1, 8, 4, 5);
         ListNode intersect = getNodeAt(listA, 2);
         ListNode listB = intersectList(listA, intersect, 5, 6, 1);

@@ -13,6 +13,8 @@ import static util.datastructure.MultilevelDoubleLinkedListNode.listEqual;
 import static util.datastructure.MultilevelDoubleLinkedListNode.printList;
 
 /**
+ * 430. 扁平化多级双向链表: https://leetcode.cn/problems/flatten-a-multilevel-doubly-linked-list/
+ *
  * 给定一个双向链接列表，该列表除了下一个和上一个指针外，还可以具有一个子指针，
  * 该子指针可能指向也可能不指向单独的双向链接列表。这些子列表可能有一个或多个自己的子列表，
  * 依此类推，以产生一个多级数据结构，如下例所示。
@@ -82,7 +84,7 @@ public class E430_Medium_FlattenAMultilevelDoublyLinkedList {
         return MultilevelDoubleLinkedListNode.newList(Node.class, vals);
     }
 
-    static void test(Function<Node, Node> method) {
+    public static void test(Function<Node, Node> method) {
         Node head = newList(1, 2, 3, 4, 5, 6, null,
                 null, null, 7, 8, 9, 10, null,
                 null, 11, 12);
@@ -168,7 +170,7 @@ public class E430_Medium_FlattenAMultilevelDoublyLinkedList {
                 p.next.prev = pChild;
 
             p.next = p.child;
-            p.child.prev = p.next;
+            p.child.prev = p;
             p.child = null;
         }
 

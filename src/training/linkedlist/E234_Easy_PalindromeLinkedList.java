@@ -9,20 +9,22 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
+ * 234. 回文链表: https://leetcode.cn/problems/palindrome-linked-list/
+ *
  * 给定一个单链表，确定它是否是回文。
  * 要求时间复杂度 O(n)，空间复杂度 O(1)。
- * <p>
+ *
  * 例 1：
  * Input: 1->2
  * Output: false
- * <p>
+ *
  * 例 2：
  * Input: 1->2->2->1
  * Output: true
  */
 public class E234_Easy_PalindromeLinkedList {
 
-    static void test(Predicate<ListNode> method) {
+    public static void test(Predicate<ListNode> method) {
         ListNode head = newList(-1, 1, 2);
         assertFalse(method.test(head));
 
