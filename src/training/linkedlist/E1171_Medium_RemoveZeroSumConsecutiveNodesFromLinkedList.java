@@ -42,6 +42,7 @@ public class E1171_Medium_RemoveZeroSumConsecutiveNodesFromLinkedList {
         listEqual(method.apply(newList(-1, 1,2,3,-3,4)), 1, 2, 4);
         listEqual(method.apply(newList(-1, 1,2,3,-3,-2)), 1);
         assertNull(method.apply(newList(-1, 2, 3, -2, -3)));
+        listEqual(method.apply(newList(-1, 1,3,2,-3,-2,5,5,-5,1)), 1,5,1);
     }
 
     /**
@@ -87,7 +88,7 @@ public class E1171_Medium_RemoveZeroSumConsecutiveNodesFromLinkedList {
     /**
      * 优化了上面的算法，只需要两次遍历即可。
      *
-     * LeetCode 耗时：2 ms - 90.51%
+     * LeetCode 耗时：1 ms - 100%
      *          内存消耗：38.1 MB - 57.64%
      */
     public ListNode betterHashMethod(ListNode head) {

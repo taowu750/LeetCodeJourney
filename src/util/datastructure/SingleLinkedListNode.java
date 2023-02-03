@@ -1,7 +1,13 @@
 package util.datastructure;
 
 
+import org.junit.jupiter.api.Assertions;
+
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 单链表结点，定义了一组实用方法
@@ -100,12 +106,27 @@ public class SingleLinkedListNode<T extends SingleLinkedListNode<T>> {
         return true;
     }
 
-    public static <T extends SingleLinkedListNode<T>> boolean circularListEqual(T head, int... comparedElements) {
+    public static <T extends SingleLinkedListNode<T>> void circularSortedListEqual(T head, int... comparedElements) {
+        T maxNode = head;
         T p = head;
-        for (int i = 0; i < comparedElements.length; i++, p = p.next) {
-            if (p == null || p.val != comparedElements[i])
-                return false;
+        do {
+            if (p.val >= maxNode.val) {
+                maxNode = p;
+            }
+            p = p.next;
+        } while (p != head);
+
+        List<Integer> vals = new ArrayList<>(comparedElements.length);
+        p = maxNode.next;
+        do {
+            vals.add(p.val);
+            p = p.next;
+        } while (p != maxNode.next);
+        if (vals.size() != comparedElements.length) {
+            throw new AssertionError("not equal length: actual=" + vals);
         }
-        return head == p;
+
+        Arrays.sort(comparedElements);
+        Assertions.assertEquals(Arrays.stream(comparedElements).boxed().collect(Collectors.toList()), vals);
     }
 }
