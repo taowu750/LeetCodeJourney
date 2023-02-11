@@ -2,6 +2,7 @@ package acguide._0x10_basicdatastructure._0x14_hash;
 
 import org.junit.jupiter.api.Test;
 import util.StdIOTestUtil;
+import util.algorithm.MathUtil;
 
 import java.util.Scanner;
 
@@ -51,27 +52,6 @@ public class G051_Snowflake {
                 "acguide/_0x10_basicdatastructure/_0x14_hash/data/G051_output.txt");
     }
 
-    /**
-     * 找到小于等于 n 的最大质数
-     */
-    public static int floorPrime(int n) {
-        int i = n;
-        for (; i > 1; i--) {
-            boolean isPrime = true;
-            for (int j = 2; j * j <= i; j++) {
-                if (i % j == 0) {
-                    isPrime = false;
-                    break;
-                }
-            }
-            if (isPrime) {
-                break;
-            }
-        }
-
-        return i;
-    }
-
     public static class SnowflakeHash {
         private final int[][] snowflakes;
         private final int[] head, next;
@@ -82,7 +62,7 @@ public class G051_Snowflake {
             snowflakes = new int[n+1][];
             head = new int[n+1];
             next = new int[n+1];
-            prime = floorPrime(n+1);
+            prime = (int) MathUtil.floorPrime(n+1);
         }
 
         public boolean insert(int[] snowflake) {
