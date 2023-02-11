@@ -93,7 +93,7 @@ public class G052_Rabbit {
                 (hashes[i][r1] - hashes[i][l1-1] * basePow[i][r1 - l1 + 1]) % m
 
                 减法那里取模需要改成下面这样，负数取模会出错：
-                (hashes[i][r1] - hashes[i][l1-1] * basePow[i][r1 - l1 + 1] + m) % m
+                (hashes[i][r1] - hashes[i][l1-1] * basePow[i][r1 - l1 + 1] % m + m) % m
                  */
                 long hash1 = hashes[i][r1] - hashes[i][l1-1] * basePow[i][r1 - l1 + 1];
                 long hash2 = hashes[i][r2] - hashes[i][l2-1] * basePow[i][r2 - l2 + 1];
