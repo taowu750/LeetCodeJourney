@@ -76,6 +76,7 @@ public class G051_Snowflake {
             // size 是不断增长的，所以往 next 里面存的都是不一样的值，不会出现冲突
             // head 下标是 hash 值，里面存的还是 size
             snowflakes[++size] = snowflake;
+            // 头插法
             next[size] = head[hv];
             head[hv] = size;
 
