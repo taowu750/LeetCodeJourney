@@ -51,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E38_Medium_CountAndSay {
 
-    static void test(IntFunction<String> method) {
+    public static void test(IntFunction<String> method) {
         assertEquals("1", method.apply(1));
         assertEquals("1211", method.apply(4));
         assertEquals("111221", method.apply(5));

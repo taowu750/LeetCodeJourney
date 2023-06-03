@@ -127,4 +127,32 @@ public class E6_Medium_ZigZagConversion {
     public void testBetterMethod() {
         test(this::betterMethod);
     }
+
+
+    public String easyToUnderstandMethod(String s, int numRows) {
+        if (numRows == 1) {
+            return s;
+        }
+        char[] result = new char[s.length()];
+        int firstInterval = numRows * 2 - 2;
+        int j = 0;
+        for (int k = 0; k < s.length(); k += firstInterval, j++) {
+            result[j] = s.charAt(k);
+        }
+        for (int i = 1; i < numRows - 1; i++) {
+            int inter = firstInterval - i * 2;
+            for (int k = i; k < s.length(); k += inter, inter = firstInterval - inter, j++) {
+                result[j] = s.charAt(k);
+            }
+        }
+        for (int k = numRows - 1; k < s.length(); k += firstInterval, j++) {
+            result[j] = s.charAt(k);
+        }
+        return new String(result);
+    }
+
+    @Test
+    public void testEasyToUnderstandMethod() {
+        test(this::easyToUnderstandMethod);
+    }
 }
