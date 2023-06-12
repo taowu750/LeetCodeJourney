@@ -45,7 +45,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class E151_Medium_ReverseWordsInString {
 
-    static void test(Function<String, String> method) {
+    public static void test(Function<String, String> method) {
         assertEquals("blue is sky the", method.apply("the sky is blue"));
         assertEquals("world! hello", method.apply("  hello world!  "));
         assertEquals("example good a", method.apply("a good   example"));
