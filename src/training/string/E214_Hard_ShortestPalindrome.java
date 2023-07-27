@@ -98,6 +98,7 @@ public class E214_Hard_ShortestPalindrome {
         // 使用 Rabin-Karp 算法找到 s 最长的前缀回文字符串
         int prefixLength = 0;
         long rkHash = 0, rrkHash = 0, mul = 1;
+        // 可以不用 mod
         final int base = 31, mod = 1000000007, n = s.length();
 
         for (int i = 0; i < n; i++) {
